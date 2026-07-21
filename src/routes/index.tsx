@@ -12,7 +12,7 @@ import story2 from "@/assets/story-2.jpg";
 import story3 from "@/assets/story-3.jpg";
 import {
   Eye, Target, Heart, ShieldCheck, HandHeart, Users, Sparkles, Cross, Star,
-  GraduationCap, HeartPulse, Home, TreePine, ArrowRight, Quote,
+  GraduationCap, HeartPulse, Home as HomeIcon, TreePine, ArrowRight, Quote,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
