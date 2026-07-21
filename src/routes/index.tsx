@@ -279,7 +279,7 @@ function Programs() {
   const list = [
     { i: GraduationCap, t: "Education", d: "Building brighter futures through learning and scholarships.", img: edu },
     { i: HeartPulse, t: "Health", d: "Promoting wellbeing with clinics, checkups, and clean water.", img: health },
-    { i: Home, t: "Shelter & Support", d: "Offering shelter and support to the underprivileged.", img: shelter },
+    { i: HomeIcon, t: "Shelter & Support", d: "Offering shelter and support to the underprivileged.", img: shelter },
     { i: TreePine, t: "Community Development", d: "Creating opportunities that restore dignity and inspire growth.", img: community },
   ];
   return (
