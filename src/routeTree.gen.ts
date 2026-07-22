@@ -12,8 +12,22 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminTeamRouteImport } from './routes/admin.team'
+import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
+import { Route as AdminStatsRouteImport } from './routes/admin.stats'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminProgramsRouteImport } from './routes/admin.programs'
+import { Route as AdminProfileRouteImport } from './routes/admin.profile'
+import { Route as AdminHeroRouteImport } from './routes/admin.hero'
+import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
+import { Route as AdminDonationsRouteImport } from './routes/admin.donations'
+import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
@@ -30,6 +44,16 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -40,40 +64,200 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTeamRoute = AdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStoriesRoute = AdminStoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStatsRoute = AdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProgramsRoute = AdminProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHeroRoute = AdminHeroRouteImport.update({
+  id: '/hero',
+  path: '/hero',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaqsRoute = AdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDonationsRoute = AdminDonationsRouteImport.update({
+  id: '/donations',
+  path: '/donations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContactsRoute = AdminContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/admin/contacts': typeof AdminContactsRoute
+  '/admin/donations': typeof AdminDonationsRoute
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/hero': typeof AdminHeroRoute
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/programs': typeof AdminProgramsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/stories': typeof AdminStoriesRoute
+  '/admin/team': typeof AdminTeamRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/admin/contacts': typeof AdminContactsRoute
+  '/admin/donations': typeof AdminDonationsRoute
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/hero': typeof AdminHeroRoute
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/programs': typeof AdminProgramsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/stories': typeof AdminStoriesRoute
+  '/admin/team': typeof AdminTeamRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/admin/contacts': typeof AdminContactsRoute
+  '/admin/donations': typeof AdminDonationsRoute
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/hero': typeof AdminHeroRoute
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/programs': typeof AdminProgramsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/stats': typeof AdminStatsRoute
+  '/admin/stories': typeof AdminStoriesRoute
+  '/admin/team': typeof AdminTeamRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/donate' | '/programs'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/auth'
+    | '/contact'
+    | '/donate'
+    | '/programs'
+    | '/admin/contacts'
+    | '/admin/donations'
+    | '/admin/faqs'
+    | '/admin/hero'
+    | '/admin/profile'
+    | '/admin/programs'
+    | '/admin/settings'
+    | '/admin/stats'
+    | '/admin/stories'
+    | '/admin/team'
+    | '/admin/testimonials'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/donate' | '/programs'
-  id: '__root__' | '/' | '/about' | '/contact' | '/donate' | '/programs'
+  to:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/contact'
+    | '/donate'
+    | '/programs'
+    | '/admin/contacts'
+    | '/admin/donations'
+    | '/admin/faqs'
+    | '/admin/hero'
+    | '/admin/profile'
+    | '/admin/programs'
+    | '/admin/settings'
+    | '/admin/stats'
+    | '/admin/stories'
+    | '/admin/team'
+    | '/admin/testimonials'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/admin'
+    | '/auth'
+    | '/contact'
+    | '/donate'
+    | '/programs'
+    | '/admin/contacts'
+    | '/admin/donations'
+    | '/admin/faqs'
+    | '/admin/hero'
+    | '/admin/profile'
+    | '/admin/programs'
+    | '/admin/settings'
+    | '/admin/stats'
+    | '/admin/stories'
+    | '/admin/team'
+    | '/admin/testimonials'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
   ProgramsRoute: typeof ProgramsRoute
@@ -102,6 +286,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -116,12 +314,130 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/team': {
+      id: '/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AdminTeamRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stories': {
+      id: '/admin/stories'
+      path: '/stories'
+      fullPath: '/admin/stories'
+      preLoaderRoute: typeof AdminStoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stats': {
+      id: '/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AdminStatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/programs': {
+      id: '/admin/programs'
+      path: '/programs'
+      fullPath: '/admin/programs'
+      preLoaderRoute: typeof AdminProgramsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/hero': {
+      id: '/admin/hero'
+      path: '/hero'
+      fullPath: '/admin/hero'
+      preLoaderRoute: typeof AdminHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faqs': {
+      id: '/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AdminFaqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/donations': {
+      id: '/admin/donations'
+      path: '/donations'
+      fullPath: '/admin/donations'
+      preLoaderRoute: typeof AdminDonationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contacts': {
+      id: '/admin/contacts'
+      path: '/contacts'
+      fullPath: '/admin/contacts'
+      preLoaderRoute: typeof AdminContactsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminContactsRoute: typeof AdminContactsRoute
+  AdminDonationsRoute: typeof AdminDonationsRoute
+  AdminFaqsRoute: typeof AdminFaqsRoute
+  AdminHeroRoute: typeof AdminHeroRoute
+  AdminProfileRoute: typeof AdminProfileRoute
+  AdminProgramsRoute: typeof AdminProgramsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStatsRoute: typeof AdminStatsRoute
+  AdminStoriesRoute: typeof AdminStoriesRoute
+  AdminTeamRoute: typeof AdminTeamRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminContactsRoute: AdminContactsRoute,
+  AdminDonationsRoute: AdminDonationsRoute,
+  AdminFaqsRoute: AdminFaqsRoute,
+  AdminHeroRoute: AdminHeroRoute,
+  AdminProfileRoute: AdminProfileRoute,
+  AdminProgramsRoute: AdminProgramsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStatsRoute: AdminStatsRoute,
+  AdminStoriesRoute: AdminStoriesRoute,
+  AdminTeamRoute: AdminTeamRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
   ProgramsRoute: ProgramsRoute,
@@ -129,13 +445,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
