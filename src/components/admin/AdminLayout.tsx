@@ -43,7 +43,9 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
           <span className="font-display text-xl font-semibold text-primary">Elle CMS</span>
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
-          {items.map(({ to, label, icon: Icon, end }) => {
+          {items.map((item) => {
+            const { to, label, icon: Icon } = item;
+            const end = "end" in item ? item.end : false;
             const active = end ? path === to : path.startsWith(to);
             return (
               <Link
