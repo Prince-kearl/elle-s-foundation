@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin/testimonials")({
           { name: "quote", label: "Quote", type: "textarea" },
           { name: "name", label: "Name", type: "text" },
           { name: "role", label: "Role / Location", type: "text" },
-          { name: "avatar_url", label: "Avatar URL", type: "url" },
+          { name: "avatar_url", label: "Avatar", type: "image", folder: "testimonials" },
         ]}
         columns={[
           { key: "quote", label: "Quote" },
