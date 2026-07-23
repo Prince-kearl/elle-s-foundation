@@ -18,17 +18,22 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminTeamRouteImport } from './routes/admin.team'
 import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
 import { Route as AdminStatsRouteImport } from './routes/admin.stats'
+import { Route as AdminSponsorshipsRouteImport } from './routes/admin.sponsorships'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminProgramsRouteImport } from './routes/admin.programs'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
+import { Route as AdminPagesRouteImport } from './routes/admin.pages'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminHeroRouteImport } from './routes/admin.hero'
 import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
 import { Route as AdminDonationsRouteImport } from './routes/admin.donations'
 import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
+import { Route as AdminBrandRouteImport } from './routes/admin.brand'
 
 const SponsorRoute = SponsorRouteImport.update({
   id: '/sponsor',
@@ -75,6 +80,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -95,6 +105,11 @@ const AdminStatsRoute = AdminStatsRouteImport.update({
   path: '/stats',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSponsorshipsRoute = AdminSponsorshipsRouteImport.update({
+  id: '/sponsorships',
+  path: '/sponsorships',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -108,6 +123,16 @@ const AdminProgramsRoute = AdminProgramsRouteImport.update({
 const AdminProfileRoute = AdminProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPagesRoute = AdminPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminHeroRoute = AdminHeroRouteImport.update({
@@ -130,6 +155,11 @@ const AdminContactsRoute = AdminContactsRouteImport.update({
   path: '/contacts',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBrandRoute = AdminBrandRouteImport.update({
+  id: '/brand',
+  path: '/brand',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -140,17 +170,22 @@ export interface FileRoutesByFullPath {
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
   '/sponsor': typeof SponsorRoute
+  '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/hero': typeof AdminHeroRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/stories': typeof AdminStoriesRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -161,17 +196,22 @@ export interface FileRoutesByTo {
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
   '/sponsor': typeof SponsorRoute
+  '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/hero': typeof AdminHeroRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/stories': typeof AdminStoriesRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -184,17 +224,22 @@ export interface FileRoutesById {
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
   '/sponsor': typeof SponsorRoute
+  '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/hero': typeof AdminHeroRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/pages': typeof AdminPagesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/stories': typeof AdminStoriesRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -208,17 +253,22 @@ export interface FileRouteTypes {
     | '/donate'
     | '/programs'
     | '/sponsor'
+    | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
     | '/admin/faqs'
     | '/admin/hero'
+    | '/admin/media'
+    | '/admin/pages'
     | '/admin/profile'
     | '/admin/programs'
     | '/admin/settings'
+    | '/admin/sponsorships'
     | '/admin/stats'
     | '/admin/stories'
     | '/admin/team'
     | '/admin/testimonials'
+    | '/admin/users'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -229,17 +279,22 @@ export interface FileRouteTypes {
     | '/donate'
     | '/programs'
     | '/sponsor'
+    | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
     | '/admin/faqs'
     | '/admin/hero'
+    | '/admin/media'
+    | '/admin/pages'
     | '/admin/profile'
     | '/admin/programs'
     | '/admin/settings'
+    | '/admin/sponsorships'
     | '/admin/stats'
     | '/admin/stories'
     | '/admin/team'
     | '/admin/testimonials'
+    | '/admin/users'
     | '/admin'
   id:
     | '__root__'
@@ -251,17 +306,22 @@ export interface FileRouteTypes {
     | '/donate'
     | '/programs'
     | '/sponsor'
+    | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
     | '/admin/faqs'
     | '/admin/hero'
+    | '/admin/media'
+    | '/admin/pages'
     | '/admin/profile'
     | '/admin/programs'
     | '/admin/settings'
+    | '/admin/sponsorships'
     | '/admin/stats'
     | '/admin/stories'
     | '/admin/team'
     | '/admin/testimonials'
+    | '/admin/users'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -341,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/testimonials': {
       id: '/admin/testimonials'
       path: '/testimonials'
@@ -369,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStatsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/sponsorships': {
+      id: '/admin/sponsorships'
+      path: '/sponsorships'
+      fullPath: '/admin/sponsorships'
+      preLoaderRoute: typeof AdminSponsorshipsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -388,6 +462,20 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/admin/profile'
       preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pages': {
+      id: '/admin/pages'
+      path: '/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AdminPagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/hero': {
@@ -418,36 +506,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContactsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/brand': {
+      id: '/admin/brand'
+      path: '/brand'
+      fullPath: '/admin/brand'
+      preLoaderRoute: typeof AdminBrandRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminBrandRoute: typeof AdminBrandRoute
   AdminContactsRoute: typeof AdminContactsRoute
   AdminDonationsRoute: typeof AdminDonationsRoute
   AdminFaqsRoute: typeof AdminFaqsRoute
   AdminHeroRoute: typeof AdminHeroRoute
+  AdminMediaRoute: typeof AdminMediaRoute
+  AdminPagesRoute: typeof AdminPagesRoute
   AdminProfileRoute: typeof AdminProfileRoute
   AdminProgramsRoute: typeof AdminProgramsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSponsorshipsRoute: typeof AdminSponsorshipsRoute
   AdminStatsRoute: typeof AdminStatsRoute
   AdminStoriesRoute: typeof AdminStoriesRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBrandRoute: AdminBrandRoute,
   AdminContactsRoute: AdminContactsRoute,
   AdminDonationsRoute: AdminDonationsRoute,
   AdminFaqsRoute: AdminFaqsRoute,
   AdminHeroRoute: AdminHeroRoute,
+  AdminMediaRoute: AdminMediaRoute,
+  AdminPagesRoute: AdminPagesRoute,
   AdminProfileRoute: AdminProfileRoute,
   AdminProgramsRoute: AdminProgramsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSponsorshipsRoute: AdminSponsorshipsRoute,
   AdminStatsRoute: AdminStatsRoute,
   AdminStoriesRoute: AdminStoriesRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
