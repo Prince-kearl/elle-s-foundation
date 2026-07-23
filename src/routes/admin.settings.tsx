@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminCard, PrimaryButton, Field, TextInput } from "@/components/admin/AdminLayout";
+import { ImageField } from "@/components/admin/ImageField";
 import { useSiteSettings } from "@/lib/cms";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
@@ -68,7 +69,11 @@ function SettingsAdmin() {
             <div className="grid sm:grid-cols-2 gap-4">
               {g.fields.map((f) => (
                 <Field key={f.name} label={f.label}>
-                  <TextInput value={values[f.name] ?? ""} onChange={(e) => setValues({ ...values, [f.name]: e.target.value })} />
+                  {f.name === "logo_url" ? (
+                    <ImageField value={values[f.name] ?? ""} onChange={(url) => setValues({ ...values, [f.name]: url })} folder="branding" />
+                  ) : (
+                    <TextInput value={values[f.name] ?? ""} onChange={(e) => setValues({ ...values, [f.name]: e.target.value })} />
+                  )}
                 </Field>
               ))}
             </div>
