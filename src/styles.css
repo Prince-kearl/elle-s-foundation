@@ -45,7 +45,7 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 0.625rem;
 
   /* Brand palette translated to oklch */
   --primary: oklch(0.36 0.03 130);            /* #44533D primary green */
