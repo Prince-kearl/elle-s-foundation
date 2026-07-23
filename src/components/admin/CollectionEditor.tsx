@@ -2,11 +2,13 @@ import { useState, useEffect, type ReactNode } from "react";
 import { Pencil, Trash2, Plus, X, Eye, EyeOff, ArrowUp, ArrowDown } from "lucide-react";
 import { AdminCard, PrimaryButton, GhostButton, Field, TextInput, TextArea, Toggle, Badge } from "./AdminLayout";
 import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
+import { ImageField } from "./ImageField";
 import { toast } from "sonner";
 
 export type FieldDef =
-  | { name: string; label: string; type: "text" | "url" }
-  | { name: string; label: string; type: "textarea"; rows?: number };
+  | { name: string; label: string; type: "text" | "url" | "number" }
+  | { name: string; label: string; type: "textarea"; rows?: number }
+  | { name: string; label: string; type: "image"; folder?: string };
 
 interface Props<T> {
   table: string;
