@@ -154,9 +154,13 @@ function EditorModal({ row, fields, title, onClose, onSave }: { row: Row; fields
         >
           {fields.map((f) => (
             <Field key={f.name} label={f.label}>
-              {f.type === "textarea"
-                ? <TextArea rows={f.rows ?? 4} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />
-                : <TextInput type={f.type === "url" ? "url" : "text"} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />}
+              {f.type === "textarea" ? (
+                <TextArea rows={f.rows ?? 4} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />
+              ) : f.type === "image" ? (
+                <ImageField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} />
+              ) : (
+                <TextInput type={f.type === "url" ? "url" : f.type === "number" ? "number" : "text"} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: f.type === "number" ? Number(e.target.value) : e.target.value })} />
+              )}
             </Field>
           ))}
           <div className="flex items-center justify-between pt-2 border-t border-[#F3F4F6]">
