@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -29,6 +30,11 @@ import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
 import { Route as AdminDonationsRouteImport } from './routes/admin.donations'
 import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 
+const SponsorRoute = SponsorRouteImport.update({
+  id: '/sponsor',
+  path: '/sponsor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/sponsor': typeof SponsorRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
   '/admin/faqs': typeof AdminFaqsRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/sponsor': typeof SponsorRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
   '/admin/faqs': typeof AdminFaqsRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/sponsor': typeof SponsorRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
   '/admin/faqs': typeof AdminFaqsRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/programs'
+    | '/sponsor'
     | '/admin/contacts'
     | '/admin/donations'
     | '/admin/faqs'
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/programs'
+    | '/sponsor'
     | '/admin/contacts'
     | '/admin/donations'
     | '/admin/faqs'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/programs'
+    | '/sponsor'
     | '/admin/contacts'
     | '/admin/donations'
     | '/admin/faqs'
@@ -261,10 +273,18 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
   ProgramsRoute: typeof ProgramsRoute
+  SponsorRoute: typeof SponsorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sponsor': {
+      id: '/sponsor'
+      path: '/sponsor'
+      fullPath: '/sponsor'
+      preLoaderRoute: typeof SponsorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/programs': {
       id: '/programs'
       path: '/programs'
@@ -441,6 +461,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
   ProgramsRoute: ProgramsRoute,
+  SponsorRoute: SponsorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
