@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth";
+import { BrandStyle } from "../lib/brand";
 import { Toaster } from "sonner";
 
 function NotFoundComponent() {
@@ -121,6 +122,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <BrandStyle />
         <Outlet />
         <Toaster position="top-right" richColors />
       </AuthProvider>
