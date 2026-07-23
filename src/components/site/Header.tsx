@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, HandHeart } from "lucide-react";
 
 const nav = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/programs", label: "Programs" },
+  { to: "/sponsor", label: "Sponsor" },
   { to: "/donate", label: "Donate" },
   { to: "/contact", label: "Contact" },
 ];
@@ -44,10 +45,16 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-2">
+          <Link
+            to="/sponsor"
+            className="inline-flex items-center gap-2 rounded-lg border border-primary/30 text-primary px-4 py-2.5 text-sm font-medium hover:bg-secondary transition"
+          >
+            <HandHeart className="size-4" /> Sponsor
+          </Link>
           <Link
             to="/donate"
-            className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-forest transition-all shadow-[var(--shadow-soft)]"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-forest transition-all shadow-[var(--shadow-soft)]"
           >
             <Heart className="size-4" /> Donate
           </Link>
@@ -74,9 +81,16 @@ export function Header() {
               </Link>
             ))}
             <Link
+              to="/sponsor"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-flex justify-center rounded-lg border border-primary/30 text-primary px-5 py-3 text-sm font-medium"
+            >
+              Sponsor
+            </Link>
+            <Link
               to="/donate"
               onClick={() => setOpen(false)}
-              className="mt-2 inline-flex justify-center rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium"
+              className="inline-flex justify-center rounded-lg bg-primary text-primary-foreground px-5 py-3 text-sm font-medium"
             >
               Donate
             </Link>

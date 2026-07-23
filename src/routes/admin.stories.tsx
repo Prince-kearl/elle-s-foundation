@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin/stories")({
           { name: "tag", label: "Tag (Education, Family, Youth…)", type: "text" },
           { name: "title", label: "Title", type: "text" },
           { name: "excerpt", label: "Excerpt", type: "textarea" },
-          { name: "image_url", label: "Image URL", type: "url" },
+          { name: "image_url", label: "Image", type: "image", folder: "stories" },
         ]}
         columns={[
           { key: "title", label: "Title", render: (r: any) => <span className="font-semibold">{r.title}</span> },

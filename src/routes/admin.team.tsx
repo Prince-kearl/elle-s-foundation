@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin/team")({
           { name: "name", label: "Name", type: "text" },
           { name: "role", label: "Role", type: "text" },
           { name: "bio", label: "Bio", type: "textarea" },
-          { name: "avatar_url", label: "Avatar URL", type: "url" },
+          { name: "avatar_url", label: "Avatar", type: "image", folder: "team" },
         ]}
         columns={[
           { key: "name", label: "Name", render: (r: any) => <span className="font-semibold">{r.name}</span> },

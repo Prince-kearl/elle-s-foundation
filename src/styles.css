@@ -45,7 +45,7 @@
 }
 
 :root {
-  --radius: 1rem;
+  --radius: 0.625rem;
 
   /* Brand palette translated to oklch */
   --primary: oklch(0.36 0.03 130);            /* #44533D primary green */
@@ -126,7 +126,7 @@
 @utility soft-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }

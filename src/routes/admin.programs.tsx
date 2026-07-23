@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin/programs")({
           { name: "title", label: "Title", type: "text" },
           { name: "description", label: "Description", type: "textarea" },
           { name: "icon", label: "Icon (GraduationCap, HeartPulse, Home, TreePine, Heart, Sparkles)", type: "text" },
-          { name: "image_url", label: "Image URL", type: "url" },
+          { name: "image_url", label: "Image", type: "image", folder: "programs" },
         ]}
         columns={[
           { key: "title", label: "Title", render: (r: any) => <span className="font-semibold">{r.title}</span> },
