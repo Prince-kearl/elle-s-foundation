@@ -4,8 +4,8 @@ import { supabase } from "./supabase";
 export type PageContentMap = Record<string, string>;
 
 /**
- * Returns a { key -> value } map for a page (all sections combined).
- * Keys are `${section}.${key}` — access `map["hero.image"]`.
+ * Returns a { "section.key" -> value } map for a page.
+ * Live-synced: admin saves invalidate ["page_content", page].
  */
 export function usePageContent(page: string) {
   return useQuery({
@@ -22,9 +22,17 @@ export function usePageContent(page: string) {
       });
       return map;
     },
+    staleTime: 15_000,
   });
 }
 
 export function pv(map: PageContentMap | undefined, key: string, fallback = ""): string {
-  return (map && map[key]) || fallback;
+  const v = map?.[key];
+  return v && v.trim() !== "" ? v : fallback;
+}
+
+/** Convenience hook returning a resolver function bound to a page. */
+export function usePageText(page: string) {
+  const { data } = usePageContent(page);
+  return (key: string, fallback = "") => pv(data, key, fallback);
 }
