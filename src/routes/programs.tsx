@@ -1,19 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
-import edu from "@/assets/program-education.jpg";
-import health from "@/assets/program-health.jpg";
-import shelter from "@/assets/program-shelter.jpg";
-import community from "@/assets/program-community.jpg";
+import { Media } from "@/components/site/Media";
+import { usePageContent, pv } from "@/lib/page-content";
+import { usePrograms } from "@/lib/cms";
+import c1 from "@/assets/community/community-1.jpeg.asset.json";
+import c4 from "@/assets/community/community-4.jpeg.asset.json";
+import c6 from "@/assets/community/community-6.jpeg.asset.json";
+import c8 from "@/assets/community/community-8.jpeg.asset.json";
 import { GraduationCap, HeartPulse, Home, TreePine, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
     meta: [
       { title: "Programs — Elle's Foundation" },
-      { name: "description", content: "Education, healthcare, shelter, and community development programs restoring dignity across four continents." },
+      { name: "description", content: "Education, healthcare, shelter, and community development programs restoring dignity across communities." },
       { property: "og:title", content: "Our Programs — Elle's Foundation" },
       { property: "og:description", content: "Four focused pillars, one shared belief — lasting change begins with people, not projects." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/programs" },
     ],
     links: [{ rel: "canonical", href: "/programs" }],
@@ -21,62 +26,86 @@ export const Route = createFileRoute("/programs")({
   component: Programs,
 });
 
-const programs = [
-  { i: GraduationCap, t: "Education", d: "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.", img: edu, stat: ["4,800", "students supported"] },
-  { i: HeartPulse, t: "Healthcare", d: "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.", img: health, stat: ["62", "outreach clinics"] },
-  { i: Home, t: "Shelter & Support", d: "Safe homes, family stabilization, and crisis support for the most vulnerable.", img: shelter, stat: ["940", "families housed"] },
-  { i: TreePine, t: "Community Development", d: "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.", img: community, stat: ["46", "communities reached"] },
+const ICONS: Record<string, any> = { GraduationCap, HeartPulse, Home, TreePine };
+
+const FALLBACK = [
+  { icon: "GraduationCap", title: "Education", description: "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.", image_url: c1.url, stat_value: "4,800", stat_label: "students supported" },
+  { icon: "HeartPulse", title: "Healthcare", description: "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.", image_url: c4.url, stat_value: "62", stat_label: "outreach clinics" },
+  { icon: "Home", title: "Shelter & Support", description: "Safe homes, family stabilization, and crisis support for the most vulnerable.", image_url: c6.url, stat_value: "940", stat_label: "families housed" },
+  { icon: "TreePine", title: "Community Development", description: "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.", image_url: c8.url, stat_value: "46", stat_label: "communities reached" },
 ];
 
 function Programs() {
+  const { data: c } = usePageContent("programs");
+  const { data: dbPrograms } = usePrograms();
+  const programs = (dbPrograms && dbPrograms.length ? dbPrograms : FALLBACK) as any[];
+  const headerVideo = pv(c, "header.video");
+  const headerImage = pv(c, "header.image");
+
   return (
     <SiteLayout>
       <section className="pt-14 pb-10">
         <div className="container-wide text-center max-w-3xl mx-auto">
-          <span className="eyebrow">Our Programs</span>
+          <span className="eyebrow">{pv(c, "header.eyebrow", "Our Programs")}</span>
           <h1 className="font-display text-5xl md:text-6xl mt-5 leading-[1.02] text-primary">
-            Four pillars. One <span className="italic text-earth">promise.</span>
+            {pv(c, "header.title", "Four pillars. One promise.")}
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Every program we run is designed with the community, delivered by local teams,
-            and measured by the change it creates in real lives.
+            {pv(c, "header.description", "Every program we run is designed with the community, delivered by local teams, and measured by the change it creates in real lives.")}
           </p>
         </div>
+        {headerVideo || headerImage ? (
+          <div className="container-wide mt-10">
+            <div className="rounded-2xl overflow-hidden aspect-[16/7] bg-black">
+              <Media video={headerVideo} src={headerImage} alt="Elle's Foundation programs" className="w-full h-full object-cover" />
+            </div>
+          </div>
+        ) : null}
       </section>
 
-      <section className="py-14">
+      <section className="section-y-sm">
         <div className="container-wide space-y-20">
-          {programs.map(({ i: Icon, t, d, img, stat }, idx) => (
-            <div key={t} className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
-              <div className="rounded-[2rem] overflow-hidden aspect-[5/4]">
-                <img src={img} alt={t} loading="lazy" className="w-full h-full object-cover" />
-              </div>
-              <div>
-                <div className="size-12 rounded-xl bg-primary/10 grid place-items-center text-primary">
-                  <Icon className="size-6" />
+          {programs.map((p, idx) => {
+            const Icon = ICONS[p.icon] ?? GraduationCap;
+            return (
+              <div key={p.id ?? p.title} className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
+                <div className="rounded-2xl overflow-hidden aspect-[5/4] bg-secondary">
+                  <Media
+                    video={p.video_url}
+                    src={p.image_url || FALLBACK[idx % FALLBACK.length].image_url}
+                    alt={p.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <h2 className="font-display text-4xl mt-5 text-primary leading-tight">{t}</h2>
-                <p className="text-muted-foreground mt-4 text-lg leading-relaxed">{d}</p>
-                <div className="mt-6 flex items-center gap-6">
-                  <div>
-                    <div className="font-display text-3xl text-primary">{stat[0]}</div>
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{stat[1]}</div>
+                <div>
+                  <div className="size-12 rounded-xl bg-primary/10 grid place-items-center text-primary">
+                    <Icon className="size-6" />
                   </div>
-                  <Link to="/donate" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium">
-                    Support this program <ArrowRight className="size-4" />
-                  </Link>
+                  <h2 className="font-display text-4xl mt-5 text-primary leading-tight">{p.title}</h2>
+                  <p className="text-muted-foreground mt-4 text-lg leading-relaxed">{p.description}</p>
+                  <div className="mt-6 flex items-center gap-6">
+                    {p.stat_value ? (
+                      <div>
+                        <div className="font-display text-3xl text-primary">{p.stat_value}</div>
+                        <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{p.stat_label}</div>
+                      </div>
+                    ) : null}
+                    <Link to="/donate" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium">
+                      Support this program <ArrowRight className="size-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="section-y">
         <div className="container-wide">
           <SectionHeading
             eyebrow="Impact"
-            title={<>Measured in <span className="italic text-earth">lives</span>, not slides.</>}
+            title={pv(c, "impact.title", "Measured in lives, not slides.")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[

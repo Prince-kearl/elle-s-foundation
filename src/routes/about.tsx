@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
-import unity from "@/assets/children-unity.jpg";
-import heroChildren from "@/assets/hero-children.jpg";
+import { Media } from "@/components/site/Media";
+import { usePageContent, pv } from "@/lib/page-content";
+import c5 from "@/assets/community/community-5.jpeg.asset.json";
+import c10 from "@/assets/community/community-10.jpeg.asset.json";
 import { ArrowRight, Heart } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -12,6 +14,8 @@ export const Route = createFileRoute("/about")({
       { name: "description", content: "Our story, our people, and our commitment to feeding hope and restoring lives across communities." },
       { property: "og:title", content: "About Elle's Foundation" },
       { property: "og:description", content: "A community-focused nonprofit built on compassion, integrity, service, and faith." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/about" },
     ],
     links: [{ rel: "canonical", href: "/about" }],
@@ -35,36 +39,38 @@ const team = [
 ];
 
 function About() {
+  const { data: c } = usePageContent("about");
   return (
     <SiteLayout>
-      <section className="pt-14 pb-20">
+      <section className="pt-14 section-y-sm">
         <div className="container-wide grid lg:grid-cols-2 gap-14 items-center">
           <div>
-            <span className="eyebrow">About Us</span>
+            <span className="eyebrow">{pv(c, "hero.eyebrow", "About Us")}</span>
             <h1 className="font-display text-5xl md:text-6xl mt-5 leading-[1.02] text-primary">
-              Our story is <span className="italic text-earth">their story.</span>
+              {pv(c, "hero.title", "Our story is their story.")}
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Elle's Foundation began in a small kitchen serving warm meals to
-              children who walked hours to school on empty stomachs. A decade
-              later, our work spans education, health, shelter, and community
-              development — but the heart of it hasn't changed.
+              {pv(c, "hero.paragraph_1", "Elle's Foundation began in a small kitchen serving warm meals to children who walked hours to school on empty stomachs. A decade later, our work spans education, health, shelter, and community development — but the heart of it hasn't changed.")}
             </p>
             <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-              We believe that lasting change is built with communities, not for
-              them. Every project we take on is co-designed with the people it
-              serves, and measured by the dignity it restores.
+              {pv(c, "hero.paragraph_2", "We believe that lasting change is built with communities, not for them. Every project we take on is co-designed with the people it serves, and measured by the dignity it restores.")}
             </p>
           </div>
           <div className="relative">
-            <div className="rounded-[2.5rem] overflow-hidden aspect-[5/6]">
-              <img src={heroChildren} alt="Children smiling" loading="lazy" className="w-full h-full object-cover" />
+            <div className="rounded-2xl overflow-hidden aspect-[5/6]">
+              <Media
+                video={pv(c, "hero.video") || pv(c, "story.video")}
+                src={pv(c, "hero.image") || pv(c, "story.image", c5.url)}
+                alt="Children and volunteers at an Elle's Foundation outreach"
+                loading="eager"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-secondary/50">
+      <section className="section-y bg-secondary/50">
         <div className="container-wide">
           <SectionHeading
             eyebrow="Milestones"
@@ -87,7 +93,7 @@ function About() {
         </div>
       </section>
 
-      <section className="py-24">
+      <section className="section-y">
         <div className="container-wide">
           <SectionHeading
             eyebrow="Leadership"
@@ -107,14 +113,19 @@ function About() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="section-y-sm">
         <div className="container-wide">
-          <div className="rounded-[2.5rem] overflow-hidden relative">
-            <img src={unity} alt="Community" loading="lazy" className="w-full h-[380px] object-cover" />
+          <div className="rounded-2xl overflow-hidden relative">
+            <Media
+              video={pv(c, "cta.video")}
+              src={pv(c, "cta.image", c10.url)}
+              alt="Community gathering"
+              className="w-full h-[380px] object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-primary/85 to-primary/40 grid place-items-center text-center px-6">
               <div>
                 <h3 className="font-display text-4xl md:text-5xl text-white leading-tight max-w-2xl mx-auto">
-                  Walk with us into the next decade.
+                  {pv(c, "cta.title", "Walk with us into the next decade.")}
                 </h3>
                 <div className="mt-6 flex flex-wrap gap-3 justify-center">
                   <Link to="/donate" className="inline-flex items-center gap-2 rounded-full bg-gold text-ink px-6 py-3 font-medium">
