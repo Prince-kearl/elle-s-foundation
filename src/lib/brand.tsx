@@ -1,15 +1,41 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useRouterState } from "@tanstack/react-router";
 import { supabase } from "./supabase";
 
-// Loads brand_settings once and injects them as CSS variables on <html>.
-// Admin edits to brand invalidate ["brand"] and re-theme the live site.
+// Loads brand_settings (global) + page_brand (per-page overrides) and injects
+// them as CSS variables on <html>. Admin edits invalidate ["brand"]/["page_brand"]
+// and re-theme the live site instantly.
 
-function hexToOklch(hex: string): string | null {
-  const h = hex.trim().replace("#", "");
-  if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
-  return `oklch(from ${hex} l c h)`;
+export type BrandValues = Record<string, any>;
+
+function toColor(hex: string | null | undefined): string | null {
+  if (!hex) return null;
+  const h = hex.trim();
+  if (!/^#[0-9a-fA-F]{6}$/.test(h)) return null;
+  return `oklch(from ${h} l c h)`;
 }
+
+export const BRAND_DEFAULTS: BrandValues = {
+  primary_color: "#44533D",
+  forest_color: "#566547",
+  cream_color: "#F5EFE5",
+  sand_color: "#E8DCC8",
+  earth_color: "#B48A58",
+  gold_color: "#C59B5C",
+  ink_color: "#2C2C2C",
+  background_color: "#FAF7F2",
+  heading_font: "Playfair Display",
+  body_font: "Inter",
+  base_font_size: "16px",
+  heading_scale: 1,
+  body_scale: 1,
+  letter_spacing: "0em",
+  line_height: "1.6",
+  section_spacing: "6rem",
+  container_width: "1200px",
+  radius: "0.625rem",
+};
 
 export function useBrand() {
   return useQuery({
@@ -17,62 +43,104 @@ export function useBrand() {
     queryFn: async () => {
       const { data, error } = await supabase.from("brand_settings").select("*").eq("id", 1).maybeSingle();
       if (error) throw error;
-      return data as any;
+      return (data as BrandValues) ?? BRAND_DEFAULTS;
     },
-    staleTime: 60_000,
+    staleTime: 30_000,
   });
 }
 
+export function usePageBrand(page?: string) {
+  return useQuery({
+    queryKey: ["page_brand", page],
+    enabled: !!page,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("page_brand").select("*").eq("page", page!).maybeSingle();
+      if (error) throw error;
+      return (data as BrandValues) ?? null;
+    },
+    staleTime: 30_000,
+  });
+}
+
+/** Route path -> page key used by the brand + content editors. */
+export function pageKeyFromPath(path: string): string {
+  const seg = path.split("?")[0].split("/").filter(Boolean)[0];
+  if (!seg) return "home";
+  return seg;
+}
+
+/** Merge global brand with an enabled per-page override. */
+export function mergeBrand(global: BrandValues | undefined, page: BrandValues | null | undefined): BrandValues {
+  const base = { ...BRAND_DEFAULTS, ...(global ?? {}) };
+  if (!page || !page.enabled) return base;
+  const out = { ...base };
+  Object.entries(page).forEach(([k, v]) => {
+    if (k === "page" || k === "enabled" || k === "updated_at") return;
+    if (v !== null && v !== undefined && v !== "") out[k] = v;
+  });
+  return out;
+}
+
+export function brandCssVars(v: BrandValues): Record<string, string> {
+  const vars: Record<string, string> = {};
+  const c = (name: string, key: string) => {
+    const val = toColor(v[key]);
+    if (val) vars[name] = val;
+  };
+  c("--primary", "primary_color");
+  c("--forest", "forest_color");
+  c("--cream", "cream_color");
+  c("--sand", "sand_color");
+  c("--earth", "earth_color");
+  c("--gold", "gold_color");
+  c("--ink", "ink_color");
+  c("--background", "background_color");
+  if (v.radius) vars["--radius"] = String(v.radius);
+  if (v.heading_font) vars["--font-display"] = `"${v.heading_font}", ui-serif, Georgia, serif`;
+  if (v.body_font) vars["--font-sans"] = `"${v.body_font}", ui-sans-serif, system-ui, sans-serif`;
+  if (v.heading_scale) vars["--heading-scale"] = String(v.heading_scale);
+  if (v.body_scale) vars["--body-scale"] = String(v.body_scale);
+  if (v.letter_spacing) vars["--brand-letter-spacing"] = String(v.letter_spacing);
+  if (v.line_height) vars["--brand-line-height"] = String(v.line_height);
+  if (v.section_spacing) vars["--section-spacing"] = String(v.section_spacing);
+  if (v.container_width) vars["--container-width"] = String(v.container_width);
+  return vars;
+}
+
+export function loadBrandFonts(v: BrandValues, id = "brand-fonts") {
+  if (typeof document === "undefined") return;
+  const families = new Set<string>();
+  if (v.heading_font) families.add(String(v.heading_font));
+  if (v.body_font) families.add(String(v.body_font));
+  const familyParam = Array.from(families)
+    .map((f) => `family=${encodeURIComponent(f)}:wght@400;500;600;700`)
+    .join("&");
+  if (!familyParam) return;
+  const href = `https://fonts.googleapis.com/css2?${familyParam}&display=swap`;
+  let link = document.getElementById(id) as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }
+  if (link.href !== href) link.href = href;
+}
+
 export function BrandStyle() {
-  const { data } = useBrand();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const page = pageKeyFromPath(path);
+  const { data: global } = useBrand();
+  const { data: pageOverride } = usePageBrand(page);
 
   useEffect(() => {
-    if (!data) return;
+    const merged = mergeBrand(global, pageOverride);
     const root = document.documentElement;
-    const set = (name: string, hex: string | null | undefined) => {
-      if (!hex) return;
-      const v = hexToOklch(hex);
-      if (v) root.style.setProperty(name, v);
-    };
-    set("--primary", data.primary_color);
-    set("--forest", data.forest_color);
-    set("--cream", data.cream_color);
-    set("--sand", data.sand_color);
-    set("--earth", data.earth_color);
-    set("--gold", data.gold_color);
-    set("--ink", data.ink_color);
-    set("--background", data.background_color);
-    if (data.radius) root.style.setProperty("--radius", data.radius);
-    if (data.base_font_size) root.style.setProperty("font-size", data.base_font_size);
-
-    // Fonts: build a stack
-    if (data.heading_font) {
-      root.style.setProperty("--font-display", `"${data.heading_font}", ui-serif, Georgia, serif`);
-    }
-    if (data.body_font) {
-      root.style.setProperty("--font-sans", `"${data.body_font}", ui-sans-serif, system-ui, sans-serif`);
-    }
-
-    // Dynamically load Google Fonts for chosen families
-    const families = new Set<string>();
-    if (data.heading_font) families.add(data.heading_font);
-    if (data.body_font) families.add(data.body_font);
-    const familyParam = Array.from(families)
-      .map((f) => `family=${encodeURIComponent(f)}:wght@400;500;600;700`)
-      .join("&");
-    if (familyParam) {
-      const id = "brand-fonts";
-      let link = document.getElementById(id) as HTMLLinkElement | null;
-      const href = `https://fonts.googleapis.com/css2?${familyParam}&display=swap`;
-      if (!link) {
-        link = document.createElement("link");
-        link.id = id;
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
-      }
-      if (link.href !== href) link.href = href;
-    }
-  }, [data]);
+    const vars = brandCssVars(merged);
+    Object.entries(vars).forEach(([k, val]) => root.style.setProperty(k, val));
+    if (merged.base_font_size) root.style.setProperty("font-size", String(merged.base_font_size));
+    loadBrandFonts(merged);
+  }, [global, pageOverride]);
 
   return null;
 }
