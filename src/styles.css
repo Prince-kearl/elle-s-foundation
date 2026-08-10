@@ -184,3 +184,15 @@
 @utility rise-in {
   animation: brush-fade 0.8s ease-out both;
 }
+
+/* Unlayered: brand typography scale — wins over Tailwind utilities */
+h1, h2, h3, h4, .font-display {
+  zoom: var(--heading-scale, 1);
+}
+body p, body li, body blockquote {
+  zoom: var(--body-scale, 1);
+  letter-spacing: var(--brand-letter-spacing, 0em);
+}
+body p, body li {
+  line-height: var(--brand-line-height, 1.6);
+}
