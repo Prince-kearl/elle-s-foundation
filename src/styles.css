@@ -77,7 +77,16 @@
 
   --shadow-soft: 0 10px 40px -20px oklch(0.36 0.03 130 / 0.25);
   --shadow-card: 0 4px 24px -12px oklch(0.36 0.03 130 / 0.18);
+
+  /* Brand-editable typography & spacing tokens */
+  --heading-scale: 1;
+  --body-scale: 1;
+  --brand-letter-spacing: 0em;
+  --brand-line-height: 1.6;
+  --section-spacing: 6rem;
+  --container-width: 76rem;
 }
+
 
 .dark {
   --background: oklch(0.22 0.01 130);
