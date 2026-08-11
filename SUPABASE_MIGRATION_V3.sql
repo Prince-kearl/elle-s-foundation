@@ -143,3 +143,6 @@ insert into public.page_content (page, section, key, label, content_type, value,
   ('footer','stats','value_4','Stat 4 Value','text','9',6),
   ('footer','stats','label_4','Stat 4 Label','text','Countries impacted',7)
 on conflict (page, section, key) do nothing;
+
+alter table public.programs add column if not exists stat_value text;
+alter table public.programs add column if not exists stat_label text;
