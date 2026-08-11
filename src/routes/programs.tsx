@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
-import { usePrograms } from "@/lib/cms";
+import { usePublicPrograms } from "@/lib/cms";
 import c1 from "@/assets/community/community-1.jpeg.asset.json";
 import c4 from "@/assets/community/community-4.jpeg.asset.json";
 import c6 from "@/assets/community/community-6.jpeg.asset.json";
@@ -37,7 +37,7 @@ const FALLBACK = [
 
 function Programs() {
   const { data: c } = usePageContent("programs");
-  const { data: dbPrograms } = usePrograms();
+  const { data: dbPrograms } = usePublicPrograms();
   const programs = (dbPrograms && dbPrograms.length ? dbPrograms : FALLBACK) as any[];
   const headerVideo = pv(c, "header.video");
   const headerImage = pv(c, "header.image");
