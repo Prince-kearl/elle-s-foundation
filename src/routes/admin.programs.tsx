@@ -15,6 +15,9 @@ export const Route = createFileRoute("/admin/programs")({
           { name: "description", label: "Description", type: "textarea" },
           { name: "icon", label: "Icon (GraduationCap, HeartPulse, Home, TreePine, Heart, Sparkles)", type: "text" },
           { name: "image_url", label: "Image", type: "image", folder: "programs" },
+          { name: "video_url", label: "Video (optional — replaces image)", type: "video", folder: "programs" },
+          { name: "stat_value", label: "Stat Value (e.g. 4,800)", type: "text" },
+          { name: "stat_label", label: "Stat Label (e.g. students supported)", type: "text" },
         ]}
         columns={[
           { key: "title", label: "Title", render: (r: any) => <span className="font-semibold">{r.title}</span> },
