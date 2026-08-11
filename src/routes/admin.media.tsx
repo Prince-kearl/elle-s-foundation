@@ -113,6 +113,8 @@ function MediaAdmin() {
           </div>
         )}
       </AdminCard>
+      </div>
+
     </AdminLayout>
   );
 }
