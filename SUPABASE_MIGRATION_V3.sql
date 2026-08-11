@@ -126,3 +126,20 @@ insert into public.page_content (page, section, key, label, content_type, value,
   ('footer','social','linkedin','LinkedIn URL','url','#',3),
   ('footer','legal','copyright','Copyright Line','text','Elle''s Foundation. All rights reserved.',0)
 on conflict (page, section, key) do nothing;
+
+-- ---------- V3.1: image fields + program video + footer stats ---------------
+alter table public.programs add column if not exists video_url text;
+
+insert into public.page_content (page, section, key, label, content_type, value, position) values
+  ('home','hero','image','Hero Image','image','',10),
+  ('home','about','image','About Image','image','',5),
+  ('programs','header','image','Header Image','image','',4),
+  ('footer','stats','value_1','Stat 1 Value','text','12,400+',0),
+  ('footer','stats','label_1','Stat 1 Label','text','Children supported',1),
+  ('footer','stats','value_2','Stat 2 Value','text','3,200',2),
+  ('footer','stats','label_2','Stat 2 Label','text','Families assisted',3),
+  ('footer','stats','value_3','Stat 3 Value','text','46',4),
+  ('footer','stats','label_3','Stat 3 Label','text','Communities reached',5),
+  ('footer','stats','value_4','Stat 4 Value','text','9',6),
+  ('footer','stats','label_4','Stat 4 Label','text','Countries impacted',7)
+on conflict (page, section, key) do nothing;
