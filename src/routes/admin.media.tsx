@@ -76,11 +76,9 @@ function MediaAdmin() {
         ))}
       </div>
 
-      <AdminCard
-        className="p-6"
-        onDragOver={(e: any) => e.preventDefault()}
-        onDrop={(e: any) => { e.preventDefault(); onUpload(e.dataTransfer.files); }}
-      >
+      <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); onUpload(e.dataTransfer.files); }}>
+      <AdminCard className="p-6">
+
         {isLoading ? (
           <div className="text-center py-10 text-sm text-[#6B7280]"><Loader2 className="inline size-4 animate-spin" /></div>
         ) : shown.length === 0 ? (
