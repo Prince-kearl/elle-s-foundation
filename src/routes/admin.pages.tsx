@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminCard, PrimaryButton, Field, TextInput, TextArea } from "@/components/admin/AdminLayout";
-import { ImageField } from "@/components/admin/ImageField";
+import { MediaField } from "@/components/admin/ImageField";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/pages")({
   component: PagesAdmin,
 });
 
-const PAGES = ["home", "about", "programs", "sponsor", "donate", "contact"] as const;
+const PAGES = ["home", "about", "programs", "sponsor", "donate", "contact", "footer"] as const;
 
 function PagesAdmin() {
   const [page, setPage] = useState<(typeof PAGES)[number]>("home");
@@ -41,7 +41,7 @@ function PagesAdmin() {
       const { error } = await supabase.from("page_content").upsert(updates);
       if (error) throw error;
       await qc.invalidateQueries({ queryKey: ["page_content", page] });
-      toast.success("Page saved");
+      toast.success("Page saved — live site updated");
     } catch (e: any) { toast.error(e?.message ?? "Save failed"); }
     finally { setSaving(false); }
   };
@@ -53,7 +53,7 @@ function PagesAdmin() {
   return (
     <AdminLayout
       title="Page Content"
-      subtitle="Edit text and images used on each public page."
+      subtitle="Edit every text, image and video used on each public page."
       action={<PrimaryButton onClick={save} disabled={saving || isLoading}><Save className="size-4" /> Save page</PrimaryButton>}
     >
       <div className="mb-4 flex flex-wrap gap-2">
@@ -75,19 +75,28 @@ function PagesAdmin() {
             <AdminCard key={section} className="p-6">
               <h3 className="font-display text-lg text-primary capitalize mb-4">{section}</h3>
               <div className="grid sm:grid-cols-2 gap-4">
-                {items.map((r: any) => (
-                  <div key={r.id} className={r.content_type === "textarea" || r.content_type === "image" ? "sm:col-span-2" : ""}>
-                    <Field label={r.label || r.key}>
-                      {r.content_type === "image" ? (
-                        <ImageField value={values[r.id] ?? ""} onChange={(url) => setValues({ ...values, [r.id]: url })} folder={`pages/${page}`} />
-                      ) : r.content_type === "textarea" ? (
-                        <TextArea rows={4} value={values[r.id] ?? ""} onChange={(e) => setValues({ ...values, [r.id]: e.target.value })} />
-                      ) : (
-                        <TextInput value={values[r.id] ?? ""} onChange={(e) => setValues({ ...values, [r.id]: e.target.value })} />
-                      )}
-                    </Field>
-                  </div>
-                ))}
+                {items.map((r: any) => {
+                  const type = r.content_type as string;
+                  const wide = type === "textarea" || type === "image" || type === "video" || type === "media";
+                  return (
+                    <div key={r.id} className={wide ? "sm:col-span-2" : ""}>
+                      <Field label={r.label || r.key}>
+                        {type === "image" || type === "video" || type === "media" ? (
+                          <MediaField
+                            value={values[r.id] ?? ""}
+                            onChange={(url) => setValues((p) => ({ ...p, [r.id]: url }))}
+                            folder={`pages/${page}`}
+                            accept={type === "video" ? "video" : type === "media" ? "any" : "image"}
+                          />
+                        ) : type === "textarea" ? (
+                          <TextArea rows={4} value={values[r.id] ?? ""} onChange={(e) => setValues((p) => ({ ...p, [r.id]: e.target.value }))} />
+                        ) : (
+                          <TextInput value={values[r.id] ?? ""} onChange={(e) => setValues((p) => ({ ...p, [r.id]: e.target.value }))} />
+                        )}
+                      </Field>
+                    </div>
+                  );
+                })}
               </div>
             </AdminCard>
           ))}

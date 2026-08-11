@@ -77,7 +77,16 @@
 
   --shadow-soft: 0 10px 40px -20px oklch(0.36 0.03 130 / 0.25);
   --shadow-card: 0 4px 24px -12px oklch(0.36 0.03 130 / 0.18);
+
+  /* Brand-editable typography & spacing tokens */
+  --heading-scale: 1;
+  --body-scale: 1;
+  --brand-letter-spacing: 0em;
+  --brand-line-height: 1.6;
+  --section-spacing: 6rem;
+  --container-width: 76rem;
 }
+
 
 .dark {
   --background: oklch(0.22 0.01 130);
@@ -147,10 +156,18 @@
 
 @utility container-wide {
   width: 100%;
-  max-width: 76rem;
+  max-width: var(--container-width, 76rem);
   margin-inline: auto;
   padding-inline: 1.5rem;
 }
+
+@utility section-y {
+  padding-block: var(--section-spacing, 6rem);
+}
+@utility section-y-sm {
+  padding-block: calc(var(--section-spacing, 6rem) * 0.6);
+}
+
 
 @keyframes float-slow {
   0%, 100% { transform: translateY(0) }
@@ -166,4 +183,16 @@
 }
 @utility rise-in {
   animation: brush-fade 0.8s ease-out both;
+}
+
+/* Unlayered: brand typography scale — wins over Tailwind utilities */
+h1, h2, h3, h4, .font-display {
+  zoom: var(--heading-scale, 1);
+}
+body p, body li, body blockquote {
+  zoom: var(--body-scale, 1);
+  letter-spacing: var(--brand-letter-spacing, 0em);
+}
+body p, body li {
+  line-height: var(--brand-line-height, 1.6);
 }

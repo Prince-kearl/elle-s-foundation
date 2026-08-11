@@ -2,13 +2,13 @@ import { useState, useEffect, type ReactNode } from "react";
 import { Pencil, Trash2, Plus, X, Eye, EyeOff, ArrowUp, ArrowDown } from "lucide-react";
 import { AdminCard, PrimaryButton, GhostButton, Field, TextInput, TextArea, Toggle, Badge } from "./AdminLayout";
 import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
-import { ImageField } from "./ImageField";
+import { MediaField } from "./ImageField";
 import { toast } from "sonner";
 
 export type FieldDef =
   | { name: string; label: string; type: "text" | "url" | "number" }
   | { name: string; label: string; type: "textarea"; rows?: number }
-  | { name: string; label: string; type: "image"; folder?: string };
+  | { name: string; label: string; type: "image" | "video" | "media"; folder?: string };
 
 interface Props<T> {
   table: string;
@@ -156,8 +156,8 @@ function EditorModal({ row, fields, title, onClose, onSave }: { row: Row; fields
             <Field key={f.name} label={f.label}>
               {f.type === "textarea" ? (
                 <TextArea rows={f.rows ?? 4} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />
-              ) : f.type === "image" ? (
-                <ImageField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} />
+              ) : f.type === "image" || f.type === "video" || f.type === "media" ? (
+                <MediaField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} accept={f.type === "video" ? "video" : f.type === "media" ? "any" : "image"} />
               ) : (
                 <TextInput type={f.type === "url" ? "url" : f.type === "number" ? "number" : "text"} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: f.type === "number" ? Number(e.target.value) : e.target.value })} />
               )}

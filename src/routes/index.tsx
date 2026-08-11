@@ -1,15 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading, Counter } from "@/components/site/Section";
-import heroChildren from "@/assets/hero-children.jpg";
-import unity from "@/assets/children-unity.jpg";
-import edu from "@/assets/program-education.jpg";
-import health from "@/assets/program-health.jpg";
-import shelter from "@/assets/program-shelter.jpg";
-import community from "@/assets/program-community.jpg";
-import story1 from "@/assets/story-1.jpg";
-import story2 from "@/assets/story-2.jpg";
-import story3 from "@/assets/story-3.jpg";
+import { Media } from "@/components/site/Media";
+import { usePageContent, pv } from "@/lib/page-content";
+import c1 from "@/assets/community/community-1.jpeg.asset.json";
+import c2 from "@/assets/community/community-2.jpeg.asset.json";
+import c3 from "@/assets/community/community-3.jpeg.asset.json";
+import c4 from "@/assets/community/community-4.jpeg.asset.json";
+import c5 from "@/assets/community/community-5.jpeg.asset.json";
+import c6 from "@/assets/community/community-6.jpeg.asset.json";
+import c7 from "@/assets/community/community-7.jpeg.asset.json";
+import c8 from "@/assets/community/community-8.jpeg.asset.json";
+import c9 from "@/assets/community/community-9.jpeg.asset.json";
 import {
   Eye, Target, Heart, ShieldCheck, HandHeart, Users, Sparkles, Cross, Star,
   GraduationCap, HeartPulse, Home as HomeIcon, TreePine, ArrowRight, Quote,
@@ -22,6 +24,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "A community-focused nonprofit improving lives through education, health, shelter, and community development. Join us — donate, volunteer, or partner." },
       { property: "og:title", content: "Elle's Foundation — Feeding Hope. Restoring Lives." },
       { property: "og:description", content: "Every child deserves a chance. Every family deserves support. Every community deserves the opportunity to thrive." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -30,23 +34,26 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { data: c } = usePageContent("home");
   return (
     <SiteLayout>
-      <Hero />
+      <Hero c={c} />
       <Stats />
-      <About />
-      <VisionMission />
-      <Values />
-      <Programs />
-      <Stories />
+      <About c={c} />
+      <VisionMission c={c} />
+      <Values c={c} />
+      <Programs c={c} />
+      <Stories c={c} />
       <Testimonials />
       <Partners />
-      <CTA />
+      <CTA c={c} />
     </SiteLayout>
   );
 }
 
-function Hero() {
+type C = Record<string, string> | undefined;
+
+function Hero({ c }: { c: C }) {
   return (
     <section className="relative overflow-hidden pt-6 pb-24">
       <div className="blob top-[-6rem] left-[-6rem] size-[28rem]"
@@ -56,63 +63,59 @@ function Hero() {
 
       <div className="container-wide grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center relative">
         <div className="rise-in">
-          <span className="eyebrow">Elle's Foundation · Est. 2015</span>
+          <span className="eyebrow">{pv(c, "hero.eyebrow", "Elle's Foundation · Est. 2015")}</span>
           <h1 className="mt-6 font-display text-5xl md:text-7xl font-semibold leading-[0.98] text-primary">
-            Feeding Hope.
+            {pv(c, "hero.title", "Feeding Hope.")}
             <br />
-            <span className="italic text-earth">Restoring</span> Lives.
+            <span className="italic text-earth">{pv(c, "hero.title_accent", "Restoring Lives.")}</span>
           </h1>
           <p className="mt-7 text-lg text-muted-foreground max-w-xl leading-relaxed">
-            We believe every child deserves a chance, every family deserves
-            support, and every community deserves the opportunity to thrive
-            with dignity and hope.
+            {pv(c, "hero.description", "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.")}
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
               to="/donate"
               className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 py-3.5 font-medium hover:bg-forest transition shadow-[var(--shadow-soft)]"
             >
-              <Heart className="size-4" /> Donate Now
+              <Heart className="size-4" /> {pv(c, "hero.cta_primary", "Donate Now")}
             </Link>
             <Link
               to="/contact"
               className="inline-flex items-center gap-2 rounded-full border border-primary/25 text-primary px-7 py-3.5 font-medium hover:bg-secondary transition"
             >
-              Become a Volunteer <ArrowRight className="size-4" />
+              {pv(c, "hero.cta_secondary", "Become a Volunteer")} <ArrowRight className="size-4" />
             </Link>
           </div>
 
           <div className="mt-10 flex items-center gap-5 text-sm text-muted-foreground">
             <div className="flex -space-x-3">
-              {[story1, story2, story3].map((s, i) => (
+              {[c3.url, c5.url, c9.url].map((s, i) => (
                 <img key={i} src={s} alt="" className="size-10 rounded-full border-2 border-background object-cover" />
               ))}
             </div>
-            <div>
-              Trusted by <span className="text-foreground font-medium">3,200+ families</span> across 9 countries.
-            </div>
+            <div>{pv(c, "hero.trust_text", "Trusted by 3,200+ families across Ghana and beyond.")}</div>
           </div>
         </div>
 
         <div className="relative">
           <div className="absolute -inset-6 rounded-[3rem] bg-gradient-to-br from-primary/15 to-gold/15 blur-2xl" />
-          <div className="relative rounded-[2.5rem] overflow-hidden shadow-[var(--shadow-soft)] aspect-[5/6]">
-            <img
-              src={heroChildren}
-              alt="Smiling children in a village at golden hour"
-              width={1400}
-              height={1600}
+          <div className="relative rounded-2xl overflow-hidden shadow-[var(--shadow-soft)] aspect-[5/6]">
+            <Media
+              video={pv(c, "hero.video")}
+              src={pv(c, "hero.image", c5.url)}
+              alt="Elle's Foundation outreach — smiling children and volunteers"
+              loading="eager"
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="absolute -left-6 bottom-10 float-slow bg-card rounded-2xl p-4 shadow-[var(--shadow-card)] border border-border w-56">
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Meals served</div>
-            <div className="font-display text-3xl text-primary">148,720</div>
+          <div className="absolute -left-6 bottom-10 float-slow bg-card rounded-xl p-4 shadow-[var(--shadow-card)] border border-border w-56">
+            <div className="text-xs uppercase tracking-widest text-muted-foreground">{pv(c, "hero.badge_label", "Meals served")}</div>
+            <div className="font-display text-3xl text-primary">{pv(c, "hero.badge_value", "148,720")}</div>
             <div className="mt-2 h-1.5 rounded-full bg-secondary overflow-hidden">
               <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-primary to-gold" />
             </div>
           </div>
-          <div className="absolute -right-4 top-10 float-slow bg-card rounded-2xl px-4 py-3 shadow-[var(--shadow-card)] border border-border flex items-center gap-3" style={{ animationDelay: "1.5s" }}>
+          <div className="absolute -right-4 top-10 float-slow bg-card rounded-xl px-4 py-3 shadow-[var(--shadow-card)] border border-border flex items-center gap-3" style={{ animationDelay: "1.5s" }}>
             <div className="size-10 rounded-full bg-primary/10 grid place-items-center text-primary">
               <Sparkles className="size-5" />
             </div>
@@ -137,41 +140,41 @@ function Stats() {
     ["82", "Projects Completed"],
   ];
   return (
-    <section className="py-16">
-      <div className="container-wide rounded-3xl bg-secondary/60 border border-border py-12 px-6 md:px-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+    <section className="section-y-sm">
+      <div className="container-wide rounded-2xl bg-secondary/60 border border-border py-12 px-6 md:px-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
         {items.map(([n, l]) => <Counter key={l} n={n} label={l} />)}
       </div>
     </section>
   );
 }
 
-function About() {
+function About({ c }: { c: C }) {
   return (
-    <section className="py-24">
+    <section className="section-y">
       <div className="container-wide grid lg:grid-cols-2 gap-14 items-center">
         <div className="relative">
-          <div className="rounded-[2rem] overflow-hidden aspect-[6/5]">
-            <img src={unity} alt="Children looking out over a landscape" loading="lazy" className="w-full h-full object-cover" />
+          <div className="rounded-2xl overflow-hidden aspect-[6/5]">
+            <Media
+              video={pv(c, "about.video")}
+              src={pv(c, "about.image", c2.url)}
+              alt="Volunteers distributing supplies to families"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <div className="absolute -bottom-8 -right-4 bg-card border border-border rounded-2xl p-5 shadow-[var(--shadow-card)] max-w-xs">
+          <div className="absolute -bottom-8 -right-4 bg-card border border-border rounded-xl p-5 shadow-[var(--shadow-card)] max-w-xs">
             <Quote className="size-5 text-gold" />
             <p className="font-display italic text-primary mt-2 leading-snug">
-              "We feed hope, restore dignity, and empower lives."
+              "{pv(c, "about.quote", "We feed hope, restore dignity, and empower lives.")}"
             </p>
           </div>
         </div>
         <div>
-          <span className="eyebrow">About Elle's Foundation</span>
+          <span className="eyebrow">{pv(c, "about.eyebrow", "About Elle's Foundation")}</span>
           <h2 className="font-display text-4xl md:text-5xl mt-4 leading-[1.05] text-primary">
-            A community-focused nonprofit built on compassion.
+            {pv(c, "about.title", "A community-focused nonprofit built on compassion.")}
           </h2>
           <p className="mt-6 text-muted-foreground text-lg leading-relaxed">
-            Elle's Foundation is dedicated to improving lives through
-            <b className="text-foreground"> education</b>,
-            <b className="text-foreground"> health</b>, and
-            <b className="text-foreground"> community development</b>. We walk
-            alongside the families we serve — with humility, integrity, and
-            long-term commitment to real change.
+            {pv(c, "about.description", "Elle's Foundation is dedicated to improving lives through education, health, and community development. We walk alongside the families we serve — with humility, integrity, and long-term commitment to real change.")}
           </p>
           <div className="mt-8 grid grid-cols-2 gap-4">
             {[
@@ -198,7 +201,7 @@ function About() {
   );
 }
 
-function VisionMission() {
+function VisionMission({ c }: { c: C }) {
   const mission = [
     "Provide education for children without access",
     "Offer shelter and support to the underprivileged",
@@ -206,7 +209,7 @@ function VisionMission() {
     "Lead community outreach that restores dignity",
   ];
   return (
-    <section className="py-16">
+    <section className="section-y-sm">
       <div className="container-wide grid lg:grid-cols-2 gap-6">
         <div className="soft-card soft-card-hover p-10 bg-primary text-primary-foreground border-primary/30">
           <div className="size-14 rounded-full bg-white/15 grid place-items-center">
@@ -214,9 +217,7 @@ function VisionMission() {
           </div>
           <span className="eyebrow mt-6 !bg-white/15 !text-white/90">Our Vision</span>
           <h3 className="font-display text-3xl mt-4 leading-tight">
-            A world where every child has access to education, every family
-            has shelter, and every community is empowered with health, dignity
-            and hope.
+            {pv(c, "vision.title", "A world where every child has access to education, every family has shelter, and every community is empowered with health, dignity and hope.")}
           </h3>
         </div>
         <div className="soft-card soft-card-hover p-10">
@@ -225,7 +226,7 @@ function VisionMission() {
           </div>
           <span className="eyebrow mt-6">Our Mission</span>
           <h3 className="font-display text-3xl mt-4 leading-tight text-primary">
-            Restoring dignity through practical, lasting change.
+            {pv(c, "mission.title", "Restoring dignity through practical, lasting change.")}
           </h3>
           <ul className="mt-6 space-y-3">
             {mission.map((m) => (
@@ -241,7 +242,7 @@ function VisionMission() {
   );
 }
 
-function Values() {
+function Values({ c }: { c: C }) {
   const vals = [
     { i: Heart, t: "Compassion", d: "We care deeply and act with kindness." },
     { i: ShieldCheck, t: "Integrity", d: "We are honest, transparent, and accountable." },
@@ -252,12 +253,12 @@ function Values() {
     { i: Star, t: "Excellence", d: "We are committed to quality in all we do." },
   ];
   return (
-    <section className="py-24 relative">
+    <section className="section-y relative">
       <div className="container-wide">
         <SectionHeading
           eyebrow="What Drives Us"
-          title={<>Our <span className="italic text-earth">Core</span> Values</>}
-          intro="The principles that shape every program, partnership, and promise we keep."
+          title={pv(c, "values.title", "Our Core Values")}
+          intro={pv(c, "values.intro", "The principles that shape every program, partnership, and promise we keep.")}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {vals.map(({ i: Icon, t, d }) => (
@@ -275,20 +276,20 @@ function Values() {
   );
 }
 
-function Programs() {
+function Programs({ c }: { c: C }) {
   const list = [
-    { i: GraduationCap, t: "Education", d: "Building brighter futures through learning and scholarships.", img: edu },
-    { i: HeartPulse, t: "Health", d: "Promoting wellbeing with clinics, checkups, and clean water.", img: health },
-    { i: HomeIcon, t: "Shelter & Support", d: "Offering shelter and support to the underprivileged.", img: shelter },
-    { i: TreePine, t: "Community Development", d: "Creating opportunities that restore dignity and inspire growth.", img: community },
+    { i: GraduationCap, t: "Education", d: "Building brighter futures through learning and scholarships.", img: c1.url },
+    { i: HeartPulse, t: "Health", d: "Promoting wellbeing with clinics, checkups, and clean water.", img: c4.url },
+    { i: HomeIcon, t: "Shelter & Support", d: "Offering shelter and support to the underprivileged.", img: c6.url },
+    { i: TreePine, t: "Community Development", d: "Creating opportunities that restore dignity and inspire growth.", img: c8.url },
   ];
   return (
-    <section className="py-24 bg-secondary/50">
+    <section className="section-y bg-secondary/50">
       <div className="container-wide">
         <SectionHeading
           eyebrow="What We Do"
-          title={<>Programs that change <span className="italic text-earth">everything</span>.</>}
-          intro="Four focused pillars, one shared belief — that lasting change begins with people, not projects."
+          title={pv(c, "programs.title", "Programs that change everything.")}
+          intro={pv(c, "programs.intro", "Four focused pillars, one shared belief — that lasting change begins with people, not projects.")}
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {list.map(({ i: Icon, t, d, img }) => (
@@ -314,20 +315,21 @@ function Programs() {
   );
 }
 
-function Stories() {
+function Stories({ c }: { c: C }) {
   const stories = [
-    { img: story1, tag: "Education", t: "Amina found her voice through school.", d: "From a village without a classroom to top of her class — one scholarship changed everything." },
-    { img: story2, tag: "Family", t: "A home rebuilt, a mother renewed.", d: "Grace and her son moved into permanent shelter after two years of uncertainty." },
-    { img: story3, tag: "Youth", t: "Two brothers, one graduation day.", d: "Kwame and Kojo are the first in their family to finish secondary school." },
+    { img: c3.url, tag: "Education", t: "Amina found her voice through school.", d: "From a village without a classroom to top of her class — one scholarship changed everything." },
+    { img: c7.url, tag: "Family", t: "A home rebuilt, a mother renewed.", d: "Grace and her son moved into permanent shelter after two years of uncertainty." },
+    { img: c9.url, tag: "Youth", t: "Two brothers, one graduation day.", d: "Kwame and Kojo are the first in their family to finish secondary school." },
   ];
+  const galleryVideo = pv(c, "gallery.video");
   return (
-    <section className="py-24">
+    <section className="section-y">
       <div className="container-wide">
         <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
           <div className="max-w-xl">
             <span className="eyebrow">Featured Stories</span>
             <h2 className="font-display text-4xl md:text-5xl mt-4 leading-[1.05] text-primary">
-              Real people. <span className="italic text-earth">Real change.</span>
+              {pv(c, "stories.title", "Real people. Real change.")}
             </h2>
           </div>
           <Link to="/programs" className="inline-flex items-center gap-2 text-primary font-medium">
@@ -337,20 +339,23 @@ function Stories() {
         <div className="grid md:grid-cols-3 gap-6">
           {stories.map((s) => (
             <article key={s.t} className="group">
-              <div className="rounded-2xl overflow-hidden aspect-[4/5]">
+              <div className="rounded-xl overflow-hidden aspect-[4/5]">
                 <img src={s.img} alt={s.t} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
               <div className="mt-5">
                 <span className="text-xs uppercase tracking-[0.2em] text-gold font-medium">{s.tag}</span>
                 <h4 className="font-display text-2xl mt-2 text-primary leading-snug">{s.t}</h4>
                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{s.d}</p>
-                <a className="mt-3 inline-flex items-center gap-1.5 text-sm text-primary font-medium">
-                  Read story <ArrowRight className="size-4" />
-                </a>
               </div>
             </article>
           ))}
         </div>
+
+        {galleryVideo ? (
+          <div className="mt-12 rounded-2xl overflow-hidden aspect-video bg-black">
+            <Media video={galleryVideo} alt={pv(c, "gallery.title", "Moments from our work")} className="w-full h-full object-cover" />
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -363,7 +368,7 @@ function Testimonials() {
     { q: "A partner that keeps its word. Elle's Foundation delivers where it matters — on the ground, with the people.", n: "David M.", r: "Corporate Partner" },
   ];
   return (
-    <section className="py-24 bg-secondary/50">
+    <section className="section-y bg-secondary/50">
       <div className="container-wide">
         <SectionHeading
           eyebrow="Voices"
@@ -389,7 +394,7 @@ function Testimonials() {
 function Partners() {
   const partners = ["UNICEF Partner", "Save The Children", "Global Giving", "World Food Aid", "Compassion Intl.", "Rotary Club"];
   return (
-    <section className="py-16">
+    <section className="section-y-sm">
       <div className="container-wide">
         <p className="text-center text-xs uppercase tracking-[0.28em] text-muted-foreground mb-8">
           Proud to work alongside
@@ -404,31 +409,31 @@ function Partners() {
   );
 }
 
-function CTA() {
+function CTA({ c }: { c: C }) {
   return (
-    <section className="py-16">
+    <section className="section-y-sm">
       <div className="container-wide">
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-primary text-primary-foreground px-8 md:px-16 py-16 md:py-20">
+        <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground px-8 md:px-16 py-16 md:py-20">
           <div className="blob top-[-4rem] right-[-4rem] size-[22rem]" style={{ background: "color-mix(in oklab, var(--color-gold) 60%, transparent)" }} />
           <div className="relative grid lg:grid-cols-[1.4fr_1fr] gap-10 items-center">
             <div>
               <span className="eyebrow !bg-white/15 !text-white/90">Get Involved</span>
               <h3 className="font-display text-4xl md:text-6xl mt-4 leading-[1.02]">
-                Be the reason someone's <span className="italic text-gold">life changes.</span>
+                {pv(c, "cta.title", "Be the reason someone's life changes.")}
               </h3>
               <p className="mt-5 opacity-85 text-lg max-w-xl">
-                Volunteer. Donate. Partner with us. Together, we can make a lasting difference.
+                {pv(c, "cta.description", "Volunteer. Donate. Partner with us. Together, we can make a lasting difference.")}
               </p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
               <Link to="/donate" className="inline-flex items-center gap-2 rounded-full bg-gold text-ink px-6 py-3.5 font-medium">
                 <Heart className="size-4" /> Donate
               </Link>
-              <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-6 py-3.5 font-medium">
-                Volunteer
+              <Link to="/sponsor" className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-6 py-3.5 font-medium">
+                Sponsor
               </Link>
               <Link to="/contact" className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/25 px-6 py-3.5 font-medium">
-                Partner With Us
+                Volunteer
               </Link>
             </div>
           </div>
