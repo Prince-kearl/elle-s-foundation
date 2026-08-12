@@ -13,8 +13,8 @@ export function usePageContent(page: string) {
     queryKey: ["page_content", page, preview ? "preview" : "published"],
     queryFn: async (): Promise<PageContentMap> => {
       const { data, error } = await supabase
-        .from("page_content")
-        .select("section,key,value,draft_value,status")
+        .from(preview ? "page_content" : "published_page_content")
+        .select(preview ? "section,key,value,draft_value,status" : "section,key,value")
         .eq("page", page);
       if (error) throw error;
       const map: PageContentMap = {};
