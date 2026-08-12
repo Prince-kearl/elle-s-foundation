@@ -4,6 +4,9 @@ import { useAdminList } from "@/lib/cms";
 import type { Program, Story, TeamMember, ContactSub, DonationIntent, Faq, Testimonial } from "@/lib/cms";
 import { HeartHandshake, Users, MessageSquare, Inbox, Heart, HelpCircle, ImageIcon, TrendingUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { formatCurrency } from "@/lib/utils";
+import { Download } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Dashboard — Elle's Foundation Admin" }, { name: "robots", content: "noindex" }] }),
@@ -27,9 +30,27 @@ function Dashboard() {
   ];
   const inbox = [
     { label: "New Messages", value: contacts.data?.filter((c) => !c.handled).length ?? 0, sub: `${contacts.data?.length ?? 0} total`, icon: Inbox, to: "/admin/contacts" as const },
-    { label: "Donation Intents", value: donations.data?.length ?? 0, sub: `$${(donations.data ?? []).reduce((s, d) => s + Number(d.amount || 0), 0).toFixed(2)} total`, icon: Heart, to: "/admin/donations" as const },
+    { label: "Donation Intents", value: donations.data?.length ?? 0, sub: `${formatCurrency((donations.data ?? []).reduce((s, d) => s + Number(d.amount || 0), 0))} total`, icon: Heart, to: "/admin/donations" as const },
     { label: "FAQs", value: faqs.data?.length ?? 0, sub: "questions answered", icon: HelpCircle, to: "/admin/faqs" as const },
   ];
+  const chart = Array.from({ length: 6 }, (_, index) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - (5 - index));
+    const amount = (donations.data ?? []).filter((item) => {
+      const value = new Date(item.created_at);
+      return value.getMonth() === date.getMonth() && value.getFullYear() === date.getFullYear();
+    }).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    return { month: date.toLocaleDateString("en-GH", { month: "short" }), amount };
+  });
+  const exportDonations = () => {
+    const rows = [["Name", "Email", "Amount (GHS)", "Frequency", "Status", "Date"], ...(donations.data ?? []).map((item) => [item.name ?? "", item.email ?? "", item.amount, item.frequency, item.status, item.created_at])];
+    const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    link.download = "elles-foundation-donations.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
 
   return (
     <AdminLayout title="Dashboard Overview" subtitle="Welcome back to your command center">
@@ -45,6 +66,27 @@ function Dashboard() {
             </div>
           </AdminCard>
         ))}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[2fr_1fr] mb-6">
+        <AdminCard className="p-6">
+          <div className="flex items-center justify-between gap-3 mb-5">
+            <div><h3 className="font-display text-xl">Donation trend</h3><p className="text-xs text-[#6B7280]">Pledged amount in Ghana cedis · last six months</p></div>
+            <button onClick={exportDonations} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] px-3 py-2 text-xs font-semibold"><Download className="size-4" /> CSV</button>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chart}><defs><linearGradient id="donationFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--primary)" stopOpacity={0.28}/><stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)"/><XAxis dataKey="month" tickLine={false} axisLine={false}/><YAxis tickLine={false} axisLine={false}/><Tooltip formatter={(value) => formatCurrency(Number(value))}/><Area type="monotone" dataKey="amount" stroke="var(--primary)" fill="url(#donationFill)" strokeWidth={2}/></AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </AdminCard>
+        <AdminCard className="p-6">
+          <h3 className="font-display text-xl">Reporting</h3>
+          <p className="mt-2 text-sm text-[#6B7280]">Export donation records for reconciliation and impact reporting.</p>
+          <div className="mt-6 text-3xl font-display text-primary">{formatCurrency((donations.data ?? []).reduce((sum, item) => sum + Number(item.amount || 0), 0))}</div>
+          <div className="text-xs uppercase tracking-wider text-[#6B7280]">Total pledged</div>
+          <button onClick={exportDonations} className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white"><Download className="size-4" /> Export donations</button>
+        </AdminCard>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">

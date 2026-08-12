@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminCard, Badge } from "@/components/admin/AdminLayout";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Loader2 } from "lucide-react";
+import { Loader2, KeyRound, UserX, UserCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/users")({
@@ -30,6 +30,12 @@ function UsersAdmin() {
     toast.success("Role updated");
   };
 
+  const sendReset = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
+    if (error) return toast.error(error.message);
+    toast.success("Password reset email sent");
+  };
+
   return (
     <AdminLayout title="User Management" subtitle="Assign admin, editor, or user roles.">
       <AdminCard>
@@ -47,6 +53,7 @@ function UsersAdmin() {
                   <th className="px-6 py-3 text-left">Role</th>
                   <th className="px-6 py-3 text-left">Joined</th>
                   <th className="px-6 py-3 text-left">Last Sign-in</th>
+                  <th className="px-6 py-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F3F4F6]">
@@ -60,6 +67,7 @@ function UsersAdmin() {
                         {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
                       </select>
                     </td>
+                    <td className="px-6 py-3 text-right"><button aria-label="Send password reset" onClick={() => sendReset(u.email)} className="p-2 rounded-lg hover:bg-[#F5EFE5] text-primary"><KeyRound className="size-4" /></button></td>
                     <td className="px-6 py-3 text-[#6B7280] text-xs">{new Date(u.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-3">
                       {u.last_sign_in_at ? <span className="text-xs text-[#6B7280]">{new Date(u.last_sign_in_at).toLocaleDateString()}</span> : <Badge>Never</Badge>}

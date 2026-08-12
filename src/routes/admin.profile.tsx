@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminCard, Field, TextInput, PrimaryButton, Toggle } from "@/components/admin/AdminLayout";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Save, KeyRound, User as UserIcon, Bell } from "lucide-react";
 import { toast } from "sonner";
 
@@ -16,6 +16,20 @@ function ProfileAdmin() {
   const [pw, setPw] = useState(""); const [pw2, setPw2] = useState("");
   const [saving, setSaving] = useState(false);
   const [notifs, setNotifs] = useState({ email: true, browser: true });
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("notification_email,notification_browser").eq("id", user.id).maybeSingle().then(({ data }) => {
+      if (data) setNotifs({ email: data.notification_email, browser: data.notification_browser });
+    });
+  }, [user]);
+
+  const updateNotifications = async (next: { email: boolean; browser: boolean }) => {
+    if (!user) return;
+    setNotifs(next);
+    const { error } = await supabase.from("profiles").upsert({ id: user.id, notification_email: next.email, notification_browser: next.browser });
+    if (error) toast.error(error.message); else toast.success("Notification preferences saved");
+  };
 
   const updatePw = async () => {
     if (pw.length < 6) return toast.error("Password must be at least 6 characters");
@@ -47,14 +61,14 @@ function ProfileAdmin() {
                 <div className="text-sm font-medium">Email Notifications</div>
                 <div className="text-xs text-[#6B7280]">Receive new contact messages and donations via email.</div>
               </div>
-              <Toggle checked={notifs.email} onChange={(v) => setNotifs(p => ({ ...p, email: v }))} />
+              <Toggle checked={notifs.email} onChange={(v) => updateNotifications({ ...notifs, email: v })} />
             </div>
             <div className="flex items-center justify-between border-t border-[#F3F4F6] pt-4">
               <div>
                 <div className="text-sm font-medium">Browser Alerts</div>
                 <div className="text-xs text-[#6B7280]">Show desktop notifications when active in the dashboard.</div>
               </div>
-              <Toggle checked={notifs.browser} onChange={(v) => setNotifs(p => ({ ...p, browser: v }))} />
+              <Toggle checked={notifs.browser} onChange={(v) => updateNotifications({ ...notifs, browser: v })} />
             </div>
           </div>
         </AdminCard>

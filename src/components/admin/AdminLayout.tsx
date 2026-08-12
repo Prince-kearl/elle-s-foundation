@@ -29,6 +29,8 @@ const items = [
 
 export function AdminLayout({ children, title, subtitle, action }: { children: ReactNode; title: string; subtitle?: string; action?: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [alertsOpen, setAlertsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
   const nav = useNavigate();
   const { user, signOut, role } = useAuth();
@@ -91,16 +93,29 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
             </Link>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative p-2 rounded-lg hover:bg-[#F5EFE5]">
+            <div className="relative">
+            <button aria-label="Open notifications" onClick={() => setAlertsOpen((value) => !value)} className="relative p-2 rounded-lg hover:bg-[#F5EFE5]">
               <Bell className="size-5 text-[#4B5563]" />
               <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
             </button>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F5EFE5]">
+            {alertsOpen && <div className="absolute right-0 top-12 w-72 rounded-lg border border-[#E5E7EB] bg-white p-4 shadow-xl">
+              <div className="font-semibold text-sm">Notifications</div>
+              <p className="mt-2 text-xs text-[#6B7280]">New messages, donations, scheduled publications, and system notices appear here.</p>
+              <Link to="/admin" onClick={() => setAlertsOpen(false)} className="mt-3 inline-block text-xs font-semibold text-primary">View activity</Link>
+            </div>}
+            </div>
+            <div className="relative">
+            <button aria-label="Open profile menu" onClick={() => setProfileOpen((value) => !value)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#F5EFE5]">
               <span className="text-xs font-semibold uppercase tracking-wider text-primary">{role ?? "user"}</span>
               <span className="text-xs text-[#4B5563] hidden sm:inline max-w-[140px] truncate">{user?.email}</span>
               <div className="size-7 rounded-full bg-gradient-to-br from-primary to-earth text-white grid place-items-center text-xs font-semibold">
                 {user?.email?.[0]?.toUpperCase() ?? "?"}
               </div>
+            </button>
+            {profileOpen && <div className="absolute right-0 top-12 w-52 rounded-lg border border-[#E5E7EB] bg-white py-2 shadow-xl">
+              <Link to="/admin/profile" onClick={() => setProfileOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-[#F5EFE5]"><User className="size-4" /> My profile</Link>
+              <button onClick={async () => { await signOut(); nav({ to: "/auth" }); }} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"><LogOut className="size-4" /> Sign out</button>
+            </div>}
             </div>
           </div>
         </header>
@@ -122,7 +137,7 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
 
 export function AdminCard({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`bg-white border border-[#EEF0F3] rounded-2xl shadow-[0_1px_2px_rgba(16,24,40,0.04)] ${className}`}>
+    <div className={`bg-white border border-[#EEF0F3] rounded-lg shadow-[0_1px_2px_rgba(16,24,40,0.04)] ${className}`}>
       {children}
     </div>
   );

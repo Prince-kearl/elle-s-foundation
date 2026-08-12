@@ -8,17 +8,18 @@ export type PageContentMap = Record<string, string>;
  * Live-synced: admin saves invalidate ["page_content", page].
  */
 export function usePageContent(page: string) {
+  const preview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("preview") === "1";
   return useQuery({
-    queryKey: ["page_content", page],
+    queryKey: ["page_content", page, preview ? "preview" : "published"],
     queryFn: async (): Promise<PageContentMap> => {
       const { data, error } = await supabase
-        .from("page_content")
-        .select("section,key,value")
+        .from(preview ? "page_content" : "published_page_content")
+        .select(preview ? "section,key,value,draft_value,status" : "section,key,value")
         .eq("page", page);
       if (error) throw error;
       const map: PageContentMap = {};
       (data ?? []).forEach((r: any) => {
-        map[`${r.section}.${r.key}`] = r.value ?? "";
+        map[`${r.section}.${r.key}`] = preview ? (r.draft_value ?? r.value ?? "") : (r.value ?? "");
       });
       return map;
     },
