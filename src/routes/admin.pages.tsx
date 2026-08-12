@@ -43,12 +43,15 @@ function PagesAdmin() {
       if (error) throw error;
       await qc.invalidateQueries({ queryKey: ["page_content", page] });
       toast.success("Draft saved");
+      return true;
     } catch (e: any) { toast.error(e?.message ?? "Save failed"); }
     finally { setSaving(false); }
+    return false;
   };
 
   const publish = async () => {
-    await save();
+    const saved = await save();
+    if (!saved) return;
     const { error } = await supabase.rpc("publish_page", { _page: page, _publish_at: scheduleAt || null });
     if (error) return toast.error(error.message);
     await Promise.all([
