@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminLayout, AdminCard, Field, TextInput, PrimaryButton } from "@/components/admin/AdminLayout";
+import { AdminLayout, AdminCard, Field, TextInput, PrimaryButton, Toggle } from "@/components/admin/AdminLayout";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { Save, KeyRound, User as UserIcon } from "lucide-react";
+import { Save, KeyRound, User as UserIcon, Bell } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/profile")({
@@ -15,6 +15,7 @@ function ProfileAdmin() {
   const { user, role } = useAuth();
   const [pw, setPw] = useState(""); const [pw2, setPw2] = useState("");
   const [saving, setSaving] = useState(false);
+  const [notifs, setNotifs] = useState({ email: true, browser: true });
 
   const updatePw = async () => {
     if (pw.length < 6) return toast.error("Password must be at least 6 characters");
@@ -29,12 +30,32 @@ function ProfileAdmin() {
 
   return (
     <AdminLayout title="My Profile" subtitle="Manage your account settings and security.">
-      <div className="grid gap-4 max-w-3xl">
+      <div className="grid gap-6 max-w-3xl">
         <AdminCard className="p-6">
           <div className="flex items-center gap-2 mb-4"><UserIcon className="size-4 text-primary" /><h3 className="font-display text-xl">Account</h3></div>
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Email"><TextInput value={user?.email ?? ""} disabled /></Field>
             <Field label="Role"><TextInput value={role ?? ""} disabled /></Field>
+          </div>
+        </AdminCard>
+
+        <AdminCard className="p-6">
+          <div className="flex items-center gap-2 mb-4"><Bell className="size-4 text-primary" /><h3 className="font-display text-xl">Notification Preferences</h3></div>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium">Email Notifications</div>
+                <div className="text-xs text-[#6B7280]">Receive new contact messages and donations via email.</div>
+              </div>
+              <Toggle checked={notifs.email} onChange={(v) => setNotifs(p => ({ ...p, email: v }))} />
+            </div>
+            <div className="flex items-center justify-between border-t border-[#F3F4F6] pt-4">
+              <div>
+                <div className="text-sm font-medium">Browser Alerts</div>
+                <div className="text-xs text-[#6B7280]">Show desktop notifications when active in the dashboard.</div>
+              </div>
+              <Toggle checked={notifs.browser} onChange={(v) => setNotifs(p => ({ ...p, browser: v }))} />
+            </div>
           </div>
         </AdminCard>
 
