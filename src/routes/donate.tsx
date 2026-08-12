@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { Heart, Check, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { usePageContent, pv } from "@/lib/page-content";
 
 export const Route = createFileRoute("/donate")({
   head: () => ({
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/donate")({
 const AMOUNTS = [50, 100, 250, 500, 1000];
 
 function Donate() {
+  const { data: c } = usePageContent("donate");
   const [freq, setFreq] = useState<"once" | "monthly">("monthly");
   const [amount, setAmount] = useState(100);
   const [name, setName] = useState("");
@@ -52,12 +54,12 @@ function Donate() {
     <SiteLayout>
       <section className="pt-14 pb-10">
         <div className="container-wide text-center max-w-3xl mx-auto">
-          <span className="eyebrow">Give with purpose</span>
+          <span className="eyebrow">{pv(c, "hero.eyebrow", "Give with purpose")}</span>
           <h1 className="font-display text-5xl md:text-6xl mt-5 leading-[1.02] text-primary">
-            Every cedi becomes <span className="italic text-earth">someone's</span> hope.
+            {pv(c, "hero.title", "Every cedi becomes someone's hope.")}
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            98% of every donation goes directly to programs. All amounts are in Ghana Cedis (GH₵).
+            {pv(c, "hero.description", "98% of every donation goes directly to programs. All amounts are in Ghana Cedis (GH₵).")}
           </p>
         </div>
       </section>

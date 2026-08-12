@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
 import { GraduationCap, Utensils, Home, TreePine, HandHeart, Heart, Loader2, Check, Star } from "lucide-react";
 import { toast } from "sonner";
+import { usePageContent, pv } from "@/lib/page-content";
 
 const ICONS: Record<string, any> = { GraduationCap, Utensils, Home, TreePine, HandHeart, Heart };
 
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/sponsor")({
 });
 
 function SponsorPage() {
+  const { data: c } = usePageContent("sponsor");
   const { data: tiers = [], isLoading } = useQuery({
     queryKey: ["p:sponsorships"],
     queryFn: async () => {
@@ -39,12 +41,12 @@ function SponsorPage() {
     <SiteLayout>
       <section className="pt-14 pb-8">
         <div className="container-wide text-center max-w-3xl mx-auto">
-          <span className="eyebrow">Sponsorship</span>
+          <span className="eyebrow">{pv(c, "hero.eyebrow", "Sponsorship")}</span>
           <h1 className="font-display text-5xl md:text-6xl mt-5 leading-[1.02] text-primary">
-            Sponsor a life. <span className="italic text-earth">Change</span> a story.
+            {pv(c, "hero.title", "Sponsor a life. Change a story.")}
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            Your recurring gift in Ghana Cedis creates lasting change — from meals and schooling to safe homes and clean water.
+            {pv(c, "hero.description", "Your recurring gift in Ghana Cedis creates lasting change — from meals and schooling to safe homes and clean water.")}
           </p>
         </div>
       </section>
