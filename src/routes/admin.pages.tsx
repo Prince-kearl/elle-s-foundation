@@ -4,7 +4,7 @@ import { MediaField } from "@/components/admin/ImageField";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Eye, Send, CalendarClock, Archive } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/pages")({
@@ -29,21 +29,40 @@ function PagesAdmin() {
   const [values, setValues] = useState<Record<string, string>>({});
   useEffect(() => {
     const m: Record<string, string> = {};
-    rows.forEach((r: any) => { m[r.id] = r.value ?? ""; });
+    rows.forEach((r: any) => { m[r.id] = r.draft_value ?? r.value ?? ""; });
     setValues(m);
   }, [rows]);
 
   const [saving, setSaving] = useState(false);
+  const [scheduleAt, setScheduleAt] = useState("");
   const save = async () => {
     setSaving(true);
     try {
-      const updates = rows.map((r: any) => ({ ...r, value: values[r.id] ?? "", updated_at: new Date().toISOString() }));
+      const updates = rows.map((r: any) => ({ id: r.id, draft_value: values[r.id] ?? "", status: r.status === "published" ? "draft" : r.status, updated_at: new Date().toISOString() }));
       const { error } = await supabase.from("page_content").upsert(updates);
       if (error) throw error;
       await qc.invalidateQueries({ queryKey: ["page_content", page] });
-      toast.success("Page saved — live site updated");
+      toast.success("Draft saved");
     } catch (e: any) { toast.error(e?.message ?? "Save failed"); }
     finally { setSaving(false); }
+  };
+
+  const publish = async () => {
+    await save();
+    const { error } = await supabase.rpc("publish_page", { _page: page, _publish_at: scheduleAt || null });
+    if (error) return toast.error(error.message);
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["page_content", page] }),
+      qc.invalidateQueries({ queryKey: ["a", "page_content", page] }),
+    ]);
+    toast.success(scheduleAt ? "Page scheduled" : "Page published");
+  };
+
+  const unpublish = async () => {
+    const { error } = await supabase.rpc("unpublish_page", { _page: page });
+    if (error) return toast.error(error.message);
+    await qc.invalidateQueries({ queryKey: ["page_content", page] });
+    toast.success("Page unpublished");
   };
 
   // group by section
@@ -54,7 +73,11 @@ function PagesAdmin() {
     <AdminLayout
       title="Page Content"
       subtitle="Edit every text, image and video used on each public page."
-      action={<PrimaryButton onClick={save} disabled={saving || isLoading}><Save className="size-4" /> Save page</PrimaryButton>}
+      action={<div className="flex flex-wrap gap-2">
+        <a href={`/${page === "home" ? "" : page}?preview=1`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-medium"><Eye className="size-4" /> Preview</a>
+        <PrimaryButton onClick={save} disabled={saving || isLoading}><Save className="size-4" /> Save draft</PrimaryButton>
+        <PrimaryButton onClick={publish} disabled={saving || isLoading}>{scheduleAt ? <CalendarClock className="size-4" /> : <Send className="size-4" />} {scheduleAt ? "Schedule" : "Publish"}</PrimaryButton>
+      </div>}
     >
       <div className="mb-4 flex flex-wrap gap-2">
         {PAGES.map((p) => (
@@ -64,6 +87,14 @@ function PagesAdmin() {
           </button>
         ))}
       </div>
+
+      <AdminCard className="mb-4 p-4 flex flex-wrap items-end gap-3">
+        <Field label="Schedule publication (optional)">
+          <TextInput type="datetime-local" value={scheduleAt} onChange={(e) => setScheduleAt(e.target.value)} />
+        </Field>
+        <PrimaryButton onClick={unpublish} className="!bg-none !bg-[#7F1D1D]"><Archive className="size-4" /> Unpublish</PrimaryButton>
+        <p className="text-xs text-[#6B7280] pb-2">Drafts are private. Preview opens the admin-only draft view; publishing copies the draft to the live website.</p>
+      </AdminCard>
 
       {isLoading ? (
         <div className="text-center py-10"><Loader2 className="inline size-5 animate-spin text-primary" /></div>
