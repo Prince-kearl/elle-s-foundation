@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SponsorRouteImport } from './routes/sponsor'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -38,6 +39,11 @@ import { Route as AdminBrandRouteImport } from './routes/admin.brand'
 const SponsorRoute = SponsorRouteImport.update({
   id: '/sponsor',
   path: '/sponsor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramsRoute = ProgramsRouteImport.update({
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sponsor': typeof SponsorRoute
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
@@ -195,6 +202,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sponsor': typeof SponsorRoute
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
@@ -223,6 +231,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
   '/programs': typeof ProgramsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/sponsor': typeof SponsorRoute
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
@@ -252,6 +261,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/programs'
+    | '/reset-password'
     | '/sponsor'
     | '/admin/brand'
     | '/admin/contacts'
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/programs'
+    | '/reset-password'
     | '/sponsor'
     | '/admin/brand'
     | '/admin/contacts'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/donate'
     | '/programs'
+    | '/reset-password'
     | '/sponsor'
     | '/admin/brand'
     | '/admin/contacts'
@@ -333,6 +345,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
   ProgramsRoute: typeof ProgramsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SponsorRoute: typeof SponsorRoute
 }
 
@@ -343,6 +356,13 @@ declare module '@tanstack/react-router' {
       path: '/sponsor'
       fullPath: '/sponsor'
       preLoaderRoute: typeof SponsorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/programs': {
@@ -566,6 +586,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
   ProgramsRoute: ProgramsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SponsorRoute: SponsorRoute,
 }
 export const routeTree = rootRouteImport

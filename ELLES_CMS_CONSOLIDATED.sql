@@ -653,20 +653,14 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 drop policy if exists "page_content public read" on public.page_content;
-create policy "page_content public read" on public.page_content
-  for select to anon using (
-    status = 'published'
-    and (published_at is null or published_at <= now())
-    and (unpublish_at is null or unpublish_at > now())
-  );
+revoke select on public.page_content from anon;
 drop policy if exists "page_content staff read" on public.page_content;
 create policy "page_content staff read" on public.page_content
   for select to authenticated using (
     public.has_role(auth.uid(), 'admin') or public.has_role(auth.uid(), 'editor')
   );
 
-create or replace view public.published_page_content
-with (security_invoker=on) as
+create or replace view public.published_page_content as
   select id,page,section,key,label,content_type,value,position,updated_at
   from public.page_content
   where status='published'
