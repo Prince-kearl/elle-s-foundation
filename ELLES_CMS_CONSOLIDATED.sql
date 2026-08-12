@@ -665,6 +665,15 @@ create policy "page_content staff read" on public.page_content
     public.has_role(auth.uid(), 'admin') or public.has_role(auth.uid(), 'editor')
   );
 
+create or replace view public.published_page_content
+with (security_invoker=on) as
+  select id,page,section,key,label,content_type,value,position,updated_at
+  from public.page_content
+  where status='published'
+    and (published_at is null or published_at <= now())
+    and (unpublish_at is null or unpublish_at > now());
+grant select on public.published_page_content to anon, authenticated;
+
 create table if not exists public.page_content_versions (
   id uuid primary key default gen_random_uuid(),
   content_id uuid not null references public.page_content(id) on delete cascade,
@@ -742,6 +751,11 @@ alter table public.audit_log enable row level security;
 drop policy if exists "admins read audit" on public.audit_log;
 create policy "admins read audit" on public.audit_log for select to authenticated
   using (public.has_role(auth.uid(),'admin'));
+
+drop policy if exists "profiles readable by everyone" on public.profiles;
+drop policy if exists "users read own profile" on public.profiles;
+create policy "users read own profile" on public.profiles for select to authenticated using (id=auth.uid() or public.has_role(auth.uid(),'admin'));
+revoke select on public.profiles from anon;
 
 alter table public.profiles
   add column if not exists disabled_at timestamptz,
