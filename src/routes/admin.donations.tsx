@@ -4,6 +4,7 @@ import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
 import type { DonationIntent } from "@/lib/cms";
 import { Trash2, Heart, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/donations")({
   head: () => ({ meta: [{ title: "Donations — Admin" }, { name: "robots", content: "noindex" }] }),
@@ -24,7 +25,7 @@ function DonationsAdmin() {
         <AdminCard className="p-5">
           <div className="flex items-center gap-3">
             <div className="size-11 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center"><TrendingUp className="size-5" /></div>
-            <div><div className="text-xs uppercase tracking-wider text-[#6B7280]">Total pledged</div><div className="font-display text-2xl">${total.toFixed(2)}</div></div>
+            <div><div className="text-xs uppercase tracking-wider text-[#6B7280]">Total pledged</div><div className="font-display text-2xl">{formatCurrency(total)}</div></div>
           </div>
         </AdminCard>
         <AdminCard className="p-5">
@@ -66,7 +67,7 @@ function DonationsAdmin() {
                       <div className="font-semibold">{r.name ?? "Anonymous"}</div>
                       <div className="text-xs text-[#6B7280]">{r.email ?? "—"}</div>
                     </td>
-                    <td className="px-6 py-3 font-display text-lg text-primary">${Number(r.amount).toFixed(2)}</td>
+                    <td className="px-6 py-3 font-display text-lg text-primary">{formatCurrency(r.amount)}</td>
                     <td className="px-6 py-3"><Badge tone={r.frequency === "monthly" ? "brand" : "neutral"}>{r.frequency}</Badge></td>
                     <td className="px-6 py-3">
                       <select
