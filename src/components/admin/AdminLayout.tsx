@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import {
   LayoutGrid, Sparkles, Users, MessageSquare, HelpCircle, ImageIcon,
   Settings, LogOut, Bell, Menu, X, Inbox, HeartHandshake, User,
-  Heart, ShieldCheck, ChevronRight, Palette, FileText, HandHeart, UserCog,
+  Heart, ShieldCheck, ChevronRight, Palette, FileText, HandHeart, UserCog, HardDrive,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
