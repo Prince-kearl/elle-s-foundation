@@ -19,7 +19,9 @@ const items = [
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { to: "/admin/sponsorships", label: "Sponsorships", icon: HandHeart },
   { to: "/admin/media", label: "Media Library", icon: ImageIcon },
+  { to: "/admin/storage", label: "Storage & Health", icon: HardDrive },
   { to: "/admin/brand", label: "Brand & Theme", icon: Palette },
+
   { to: "/admin/users", label: "Users", icon: UserCog },
   { to: "/admin/contacts", label: "Contact Messages", icon: Inbox, badge: "contact" as const },
   { to: "/admin/donations", label: "Donations", icon: Heart, badge: "donation" as const },
