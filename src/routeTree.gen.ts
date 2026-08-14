@@ -23,6 +23,7 @@ import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminTeamRouteImport } from './routes/admin.team'
 import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
+import { Route as AdminStorageRouteImport } from './routes/admin.storage'
 import { Route as AdminStatsRouteImport } from './routes/admin.stats'
 import { Route as AdminSponsorshipsRouteImport } from './routes/admin.sponsorships'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -104,6 +105,11 @@ const AdminTeamRoute = AdminTeamRouteImport.update({
 const AdminStoriesRoute = AdminStoriesRouteImport.update({
   id: '/stories',
   path: '/stories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStorageRoute = AdminStorageRouteImport.update({
+  id: '/storage',
+  path: '/storage',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminStatsRoute = AdminStatsRouteImport.update({
@@ -189,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
+  '/admin/storage': typeof AdminStorageRoute
   '/admin/stories': typeof AdminStoriesRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
+  '/admin/storage': typeof AdminStorageRoute
   '/admin/stories': typeof AdminStoriesRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -245,6 +253,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
+  '/admin/storage': typeof AdminStorageRoute
   '/admin/stories': typeof AdminStoriesRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/sponsorships'
     | '/admin/stats'
+    | '/admin/storage'
     | '/admin/stories'
     | '/admin/team'
     | '/admin/testimonials'
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/sponsorships'
     | '/admin/stats'
+    | '/admin/storage'
     | '/admin/stories'
     | '/admin/team'
     | '/admin/testimonials'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/sponsorships'
     | '/admin/stats'
+    | '/admin/storage'
     | '/admin/stories'
     | '/admin/team'
     | '/admin/testimonials'
@@ -449,6 +461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStoriesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/storage': {
+      id: '/admin/storage'
+      path: '/storage'
+      fullPath: '/admin/storage'
+      preLoaderRoute: typeof AdminStorageRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/stats': {
       id: '/admin/stats'
       path: '/stats'
@@ -549,6 +568,7 @@ interface AdminRouteChildren {
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminSponsorshipsRoute: typeof AdminSponsorshipsRoute
   AdminStatsRoute: typeof AdminStatsRoute
+  AdminStorageRoute: typeof AdminStorageRoute
   AdminStoriesRoute: typeof AdminStoriesRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
@@ -569,6 +589,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSettingsRoute: AdminSettingsRoute,
   AdminSponsorshipsRoute: AdminSponsorshipsRoute,
   AdminStatsRoute: AdminStatsRoute,
+  AdminStorageRoute: AdminStorageRoute,
   AdminStoriesRoute: AdminStoriesRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
