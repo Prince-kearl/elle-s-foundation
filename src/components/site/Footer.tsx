@@ -17,13 +17,13 @@ export function Footer() {
     <footer className="mt-24 bg-[oklch(0.22_0.015_130)] text-[oklch(0.92_0.015_85)]">
       {/* Stats strip */}
       <div className="border-b border-white/10">
-        <div className="container-wide grid grid-cols-2 md:grid-cols-4 gap-8 py-10 text-center">
+        <div className="container-wide grid grid-cols-2 md:grid-cols-3 gap-8 py-10 text-center">
           {[
             [pv(c, "stats.value_1", "12,400+"), pv(c, "stats.label_1", "Children supported")],
             [pv(c, "stats.value_2", "3,200"), pv(c, "stats.label_2", "Families assisted")],
             [pv(c, "stats.value_3", "46"), pv(c, "stats.label_3", "Communities reached")],
-            [pv(c, "stats.value_4", "9"), pv(c, "stats.label_4", "Countries impacted")],
           ].map(([n, l]) => (
+
             <div key={l}>
               <div className="font-display text-3xl text-[color:var(--color-gold)]">{n}</div>
               <div className="text-xs uppercase tracking-[0.22em] mt-1 opacity-70">{l}</div>

@@ -5,7 +5,23 @@ export function Logo({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const accent = "var(--color-gold)";
   return (
     <a href="/" className="flex items-center gap-2.5 group">
-      <img src={logoAsset.url} alt="Elle's Foundation" className="size-10 object-contain" />
+      <span
+        role="img"
+        aria-label="Elle's Foundation"
+        className="size-10 shrink-0"
+        style={{
+          backgroundColor: color,
+          WebkitMaskImage: `url(${logoAsset.url})`,
+          maskImage: `url(${logoAsset.url})`,
+          WebkitMaskSize: "contain",
+          maskSize: "contain",
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
+        }}
+      />
+
       <div className="leading-none">
         <div
           className="font-display text-[1.35rem] font-semibold tracking-tight"

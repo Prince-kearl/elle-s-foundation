@@ -41,7 +41,10 @@ function Home() {
       <Stats />
       <About c={c} />
       <VisionMission c={c} />
+      <Ofts c={c} />
       <Values c={c} />
+
+
       <Programs c={c} />
       <Stories c={c} />
       <Testimonials />
@@ -179,10 +182,11 @@ function About({ c }: { c: C }) {
           <div className="mt-8 grid grid-cols-2 gap-4">
             {[
               ["12,400+", "Children Supported"],
-              ["9", "Countries Impacted"],
               ["82", "Projects Completed"],
               ["98%", "To Direct Programs"],
+              ["148K", "Meals Served"],
             ].map(([n, l]) => (
+
               <div key={l} className="soft-card p-5">
                 <div className="font-display text-2xl text-primary">{n}</div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{l}</div>
@@ -240,6 +244,82 @@ function VisionMission({ c }: { c: C }) {
       </div>
     </section>
   );
+}
+
+function Ofts({ c }: { c: C }) {
+  const points = [
+    {
+      t: pv(c, "ofts.point_1_title", "What We Do"),
+      d: pv(c, "ofts.point_1_text", "Elle's Foundation is committed to providing meals, clean water, and building connections with individuals experiencing hunger and homelessness."),
+    },
+    {
+      t: pv(c, "ofts.point_2_title", "Our Mission"),
+      d: pv(c, "ofts.point_2_text", "To support the lives of children without shelter and education, to feed the poor, the needy, and the homeless."),
+    },
+    {
+      t: pv(c, "ofts.point_3_title", "Our Vision"),
+      d: pv(c, "ofts.point_3_text", "To foster a society where education and food security are fundamental rights, ensuring a brighter and more equitable future for all."),
+    },
+  ];
+  const momo = [
+    ["0502418189", "Telecel", "Rebecca Ashirifie"],
+    ["0559969764", "MTN", "Marilyn Kotei"],
+  ];
+  return (
+    <section className="section-y">
+      <div className="container-wide">
+        <div className="rounded-2xl overflow-hidden bg-primary text-primary-foreground p-8 md:p-12 grid lg:grid-cols-2 gap-12">
+          <div>
+            <span className="eyebrow !bg-white/15 !text-white/90">{pv(c, "ofts.eyebrow", "Operation Feed the Street")}</span>
+            <h2 className="font-display text-4xl md:text-5xl mt-5 leading-[1.05]">
+              {pv(c, "ofts.title", "#OFTS")}
+            </h2>
+            <p className="mt-3 text-lg italic opacity-90">
+              {pv(c, "ofts.tagline", "Feeding Hope. Restoring Dignity.")}
+            </p>
+            <ul className="mt-8 space-y-6">
+              {points.map((p) => (
+                <li key={p.t} className="flex gap-4">
+                  <span className="size-9 rounded-full bg-white/15 grid place-items-center shrink-0">
+                    <HandHeart className="size-4" />
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl">{p.t}</h3>
+                    <p className="opacity-85 mt-1 leading-relaxed">{p.d}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col justify-center">
+            <div className="rounded-xl bg-white/10 border border-white/20 p-6">
+              <h3 className="font-display text-2xl">{pv(c, "ofts.donate_title", "Want to Help? Donate Today!")}</h3>
+              <p className="text-sm opacity-80 mt-2 uppercase tracking-[0.18em]">MoMo Donations</p>
+              <ul className="mt-5 space-y-4">
+                {momo.map(([num, net, name]) => (
+                  <li key={num} className="flex items-center justify-between gap-4 rounded-lg bg-white/10 px-4 py-3">
+                    <div>
+                      <div className="font-display text-xl">{num}</div>
+                      <div className="text-xs opacity-80">{name}</div>
+                    </div>
+                    <span className="text-xs uppercase tracking-widest rounded-full border border-white/30 px-3 py-1">{net}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/donate"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gold text-ink px-6 py-3 font-medium"
+              >
+                <Heart className="size-4" /> Donate online
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
 }
 
 function Values({ c }: { c: C }) {
