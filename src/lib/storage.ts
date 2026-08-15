@@ -1,5 +1,4 @@
 import { supabase } from "./supabase";
-import { r2PresignUpload } from "./r2.functions";
 
 const BUCKET = "media";
 const MAX_IMAGE = 5 * 1024 * 1024; // 5MB
@@ -16,17 +15,9 @@ export function kindOf(file: File | string): MediaKind {
   return "image";
 }
 
-/** Reads the non-secret storage provider preference from app_config. */
-export async function getStorageProvider(): Promise<"r2" | "supabase"> {
-  const { data } = await supabase.from("app_config").select("value").eq("key", "storage").maybeSingle();
-  return (data as any)?.value?.provider === "r2" ? "r2" : "supabase";
-}
-
-async function uploadToR2(file: File, path: string) {
-  const { uploadUrl, publicUrl } = await r2PresignUpload({ data: { key: path, contentType: file.type } });
-  const res = await fetch(uploadUrl, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
-  if (!res.ok) throw new Error(`R2 upload failed (${res.status}). Check your credentials and bucket CORS rules.`);
-  return publicUrl;
+/** Public URL for a stored object path. */
+export function publicUrl(path: string) {
+  return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
 export async function uploadMedia(file: File, folder = "general"): Promise<{ url: string; path: string; kind: MediaKind }> {
@@ -45,20 +36,13 @@ export async function uploadMedia(file: File, folder = "general"): Promise<{ url
   const ext = file.name.split(".").pop()?.toLowerCase() || (kind === "video" ? "mp4" : "jpg");
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-  const provider = await getStorageProvider();
-  let url: string;
-
-  if (provider === "r2") {
-    url = await uploadToR2(file, path);
-  } else {
-    const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
-      cacheControl: "31536000",
-      upsert: false,
-      contentType: file.type,
-    });
-    if (error) throw error;
-    url = supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
-  }
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType: file.type,
+  });
+  if (error) throw error;
+  const url = publicUrl(path);
 
   const { data: user } = await supabase.auth.getUser();
   await supabase.from("media_assets").insert({
@@ -79,7 +63,6 @@ export async function uploadMedia(file: File, folder = "general"): Promise<{ url
 export const uploadImage = uploadMedia;
 
 export async function deleteAsset(id: string, path: string) {
-  const provider = await getStorageProvider().catch(() => "supabase" as const);
-  if (provider === "supabase") await supabase.storage.from(BUCKET).remove([path]);
+  await supabase.storage.from(BUCKET).remove([path]);
   await supabase.from("media_assets").delete().eq("id", id);
 }
