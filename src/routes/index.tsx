@@ -42,6 +42,8 @@ function Home() {
       <About c={c} />
       <VisionMission c={c} />
       <Ofts c={c} />
+      <Values c={c} />
+
 
       <Programs c={c} />
       <Stories c={c} />
