@@ -179,10 +179,11 @@ function About({ c }: { c: C }) {
           <div className="mt-8 grid grid-cols-2 gap-4">
             {[
               ["12,400+", "Children Supported"],
-              ["9", "Countries Impacted"],
               ["82", "Projects Completed"],
               ["98%", "To Direct Programs"],
+              ["148K", "Meals Served"],
             ].map(([n, l]) => (
+
               <div key={l} className="soft-card p-5">
                 <div className="font-display text-2xl text-primary">{n}</div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{l}</div>
