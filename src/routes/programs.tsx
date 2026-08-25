@@ -8,7 +8,6 @@ import programEducation from "@/assets/community/live/community-supplies.jpeg";
 import programHealth from "@/assets/community/live/family-support.jpeg";
 import programShelter from "@/assets/community/live/outreach-children.jpeg";
 import programCommunity from "@/assets/community/live/team-under-tree.jpeg";
-import outreachWelcome from "@/assets/community/live/outreach-welcome.mp4";
 import { GraduationCap, HeartPulse, Home, TreePine, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
@@ -40,7 +39,6 @@ function Programs() {
   const { data: c } = usePageContent("programs");
   const { data: dbPrograms } = usePublicPrograms();
   const programs = (dbPrograms && dbPrograms.length ? dbPrograms : FALLBACK) as any[];
-  const headerVideo = pv(c, "header.video") || outreachWelcome;
   const headerImage = pv(c, "header.image") || programEducation;
 
   return (
@@ -55,10 +53,10 @@ function Programs() {
             {pv(c, "header.description", "Every program we run is designed with the community, delivered by local teams, and measured by the change it creates in real lives.")}
           </p>
         </div>
-        {headerVideo || headerImage ? (
+        {headerImage ? (
           <div className="container-wide mt-10">
             <div className="rounded-2xl overflow-hidden aspect-[16/7] bg-black">
-              <Media video={headerVideo} src={headerImage} poster={programEducation} alt="Elle's Foundation programs" className="w-full h-full object-cover" />
+              <Media src={headerImage} alt="Elle's Foundation programs" className="w-full h-full object-cover" />
             </div>
           </div>
         ) : null}
@@ -72,7 +70,6 @@ function Programs() {
               <div key={p.id ?? p.title} className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
                 <div className="rounded-2xl overflow-hidden aspect-[5/4] bg-secondary">
                   <Media
-                    video={p.video_url}
                     src={p.image_url || FALLBACK[idx % FALLBACK.length].image_url}
                     alt={p.title}
                     className="w-full h-full object-cover"

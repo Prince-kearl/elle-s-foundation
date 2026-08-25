@@ -5,9 +5,7 @@ import { usePublicEvents, type EventRecord } from "@/lib/cms";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import { Media } from "@/components/site/Media";
 import heroChildren from "@/assets/community/live/outreach-street-group.jpeg";
-import outreachWelcome from "@/assets/community/live/outreach-welcome.mp4";
 import childrenUnity from "@/assets/community/live/outreach-children.jpeg";
 import programCommunity from "@/assets/community/live/community-gathering.jpeg";
 import programEducation from "@/assets/community/live/community-supplies.jpeg";
@@ -97,11 +95,9 @@ function Home() {
 function Hero({ c }: { c: C }) {
   return (
     <section className="relative isolate flex min-h-[calc(100svh-5rem)] items-end overflow-hidden bg-[#073b2b] text-white">
-      <Media
-        video={outreachWelcome}
+      <img
         src={heroChildren}
         alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
-        poster={heroChildren}
         className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
         loading="eager"
       />

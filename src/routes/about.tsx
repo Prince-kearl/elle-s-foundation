@@ -5,7 +5,6 @@ import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
 import aboutHero from "@/assets/community/live/outreach-children.jpeg";
 import aboutCta from "@/assets/community/live/community-gathering.jpeg";
-import outreachWelcome from "@/assets/community/live/outreach-welcome.mp4";
 import { ArrowRight, Heart } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -60,11 +59,9 @@ function About() {
           <div className="relative">
             <div className="rounded-2xl overflow-hidden aspect-[5/6]">
               <Media
-                video={pv(c, "hero.video") || pv(c, "story.video") || outreachWelcome}
                 src={pv(c, "hero.image") || pv(c, "story.image", aboutHero)}
                 alt="Children and volunteers at an Elle's Foundation outreach"
                 loading="eager"
-                poster={aboutHero}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -119,7 +116,6 @@ function About() {
         <div className="container-wide">
           <div className="rounded-2xl overflow-hidden relative">
             <Media
-              video={pv(c, "cta.video")}
               src={pv(c, "cta.image", aboutCta)}
               alt="Community gathering"
               className="w-full h-[380px] object-cover"

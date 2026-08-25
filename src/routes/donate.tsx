@@ -28,6 +28,7 @@ function Donate() {
   const [amount, setAmount] = useState(100);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -38,7 +39,13 @@ function Donate() {
     setSubmitting(true);
     try {
       const { error } = await supabase.from("donation_intents").insert({
-        amount, frequency: freq, name: name || null, email: email || null, note: note || null, currency: "GHS",
+        amount,
+        frequency: freq,
+        name: name || null,
+        email: email || null,
+        phone: phone || null,
+        note: note || null,
+        currency: "GHS",
       });
       if (error) throw error;
       setDone(true);
@@ -111,10 +118,11 @@ function Donate() {
               />
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-3 mt-4">
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="rounded-lg border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
-              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" className="rounded-lg border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+            <div className="grid gap-3 mt-4 sm:grid-cols-2">
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" autoComplete="name" className="rounded-lg border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" autoComplete="email" className="rounded-lg border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
             </div>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="Mobile number" autoComplete="tel" className="mt-3 w-full rounded-lg border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
             <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} placeholder="Message (optional)" className="mt-3 w-full rounded-lg border border-border px-4 py-3 text-sm outline-none focus:border-primary" />
 
             <div className="mt-6 rounded-lg bg-secondary p-5 text-sm leading-relaxed">
