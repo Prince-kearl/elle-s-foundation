@@ -94,38 +94,40 @@ function Home() {
 
 function Hero({ c }: { c: C }) {
   return (
-    <section className="relative isolate overflow-hidden bg-[#fbfbf7] text-[#073b2b]">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-32 -top-24 h-[34rem] w-[34rem] rounded-full bg-[#cfeee4]/75 blur-3xl" />
-        <div className="absolute -right-48 bottom-[-12rem] h-[38rem] w-[38rem] rounded-full bg-[#ffe1ca]/80 blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_52%_18%,rgba(255,255,255,0.95),transparent_38%)]" />
-        <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(15,104,72,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(15,104,72,0.06)_1px,transparent_1px)] [background-size:5rem_5rem]" />
-      </div>
+    <section className="relative isolate flex min-h-[calc(100svh-5rem)] items-end overflow-hidden bg-[#073b2b] text-white">
+      <img
+        src={heroChildren}
+        alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
+        className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+        loading="eager"
+      />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(4,48,34,0.94)_0%,rgba(4,48,34,0.74)_40%,rgba(4,48,34,0.18)_78%,rgba(4,48,34,0.35)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(4,48,34,0.84)_0%,transparent_50%)]" />
 
-      <div className="container-wide relative grid min-h-[calc(100svh-5rem)] items-center gap-12 py-14 sm:py-16 md:grid-cols-[0.94fr_1.06fr] md:gap-16 md:py-20 lg:py-24">
-        <div className="rise-in">
-          <div className="mb-6 inline-flex items-center gap-3 border border-[#0f6848]/10 bg-[#edf7ec] px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.22em] text-[#0f6848]">
-            <span className="size-2 bg-[#ff8a3d]" />
+      <div className="container-wide relative flex w-full flex-col justify-between pb-8 pt-16 sm:pb-10 md:min-h-[calc(100svh-5rem)] md:pt-28">
+        <div className="max-w-4xl rise-in">
+          <div className="mb-7 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.24em] text-[#cdeca7]">
+            <span className="size-2 rounded-full bg-[#ff8a3d]" />
             <span>{pv(c, "hero.eyebrow", "Elle's Foundation · Est. 2015")}</span>
           </div>
-          <h1 className="max-w-3xl font-display text-[3.55rem] font-semibold leading-[0.93] tracking-[-0.07em] text-[#0f6848] sm:text-[5rem] md:text-[5.5rem] lg:text-[6.65rem]">
+          <h1 className="max-w-4xl font-display text-[3.3rem] font-semibold leading-[0.94] tracking-[-0.065em] text-white sm:text-[5.5rem] md:text-[7.1rem] lg:text-[8.5rem]">
             Feeding hope.
             <br />
-            <span className="text-[#f26518]">Restoring lives.</span>
+            <span className="text-[#ff8a3d]">Restoring lives.</span>
           </h1>
-          <p className="mt-7 max-w-xl text-base leading-7 text-[#477763] md:text-lg md:leading-8">
+          <p className="mt-7 max-w-xl text-base leading-7 text-white/80 md:text-lg md:leading-8">
             {pv(
               c,
               "hero.description",
               "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.",
             )}
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
               to="/donate"
-              className="group inline-flex items-center gap-3 border border-[#0f6848] bg-[#0f6848] px-5 py-3.5 text-sm font-bold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#073b2b] active:scale-[0.97]"
+              className="group inline-flex items-center gap-3 rounded-full bg-[#ff8a3d] px-5 py-3.5 text-sm font-bold text-[#073b2b] transition duration-200 hover:-translate-y-0.5 hover:bg-white active:scale-[0.97]"
             >
-              <span className="grid size-7 place-items-center bg-[#ff8a3d] text-[#073b2b]">
+              <span className="grid size-7 place-items-center rounded-full bg-[#073b2b] text-[#ff8a3d]">
                 <Heart className="size-3.5 fill-current" />
               </span>
               {pv(c, "hero.cta_primary", "Support us")}
@@ -133,48 +135,29 @@ function Hero({ c }: { c: C }) {
             </Link>
             <Link
               to="/about"
-              className="group inline-flex items-center gap-3 border border-[#0f6848]/20 bg-white/65 px-5 py-3.5 text-sm font-semibold text-[#0f6848] backdrop-blur-sm transition hover:border-[#0f6848] hover:bg-white active:scale-[0.97]"
+              className="group inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/70 hover:bg-white/15 active:scale-[0.97]"
             >
               Our story
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
+        </div>
 
-          <div className="mt-10 flex items-center gap-3 border-t border-[#0f6848]/15 pt-5 text-xs font-medium text-[#477763]">
+        <div className="mt-16 flex flex-col justify-between gap-6 border-t border-white/20 pt-5 text-xs text-white/70 md:flex-row md:items-end">
+          <a href="#about" className="group inline-flex items-center gap-3 font-bold uppercase tracking-[0.2em] text-[#cdeca7]">
+            <span className="grid size-9 place-items-center rounded-full border border-[#cdeca7]/50 transition group-hover:bg-[#cdeca7] group-hover:text-[#073b2b]"><ArrowDown className="size-4" /></span>
+            Discover more
+          </a>
+          <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
               {[childrenUnity, story1, story3].map((image, index) => (
-                <img key={image} src={image} alt="" className="size-8 rounded-full border-2 border-[#fbfbf7] object-cover" style={{ zIndex: 3 - index }} />
+                <img key={image} src={image} alt="" className="size-8 rounded-full border-2 border-[#073b2b] object-cover" style={{ zIndex: 3 - index }} />
               ))}
             </div>
             <span>{pv(c, "hero.trust_text", "Trusted by 3,200+ families across Ghana and beyond.")}</span>
           </div>
         </div>
-
-        <div className="relative mx-auto w-full max-w-2xl md:ml-auto">
-          <div className="relative border border-[#0f6848]/12 bg-white/60 p-3 shadow-[0_28px_80px_rgba(15,104,72,0.14)] backdrop-blur-sm sm:p-4">
-            <div className="absolute -left-6 top-10 hidden h-20 w-20 border-l border-t border-[#0f6848]/15 sm:block" />
-            <img
-              src={heroChildren}
-              alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
-              className="aspect-[1.12] w-full object-cover object-center"
-              loading="eager"
-            />
-            <div className="absolute -right-4 top-8 border border-[#0f6848]/10 bg-white px-4 py-3 shadow-[0_14px_36px_rgba(15,104,72,0.12)] sm:-right-7 sm:px-5 sm:py-4">
-              <div className="flex items-center gap-2 text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[#477763]"><Check className="size-3.5 text-[#0f9d73]" /> Full transparency</div>
-              <div className="mt-1 font-display text-lg font-semibold text-[#0f6848]">98% goes to programs</div>
-            </div>
-            <div className="absolute -bottom-7 left-4 border border-[#0f6848]/10 bg-white px-5 py-4 shadow-[0_14px_36px_rgba(15,104,72,0.12)] sm:-left-8 sm:px-6 sm:py-5">
-              <div className="text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[#477763]">Meals served</div>
-              <div className="mt-1 font-display text-3xl font-semibold leading-none text-[#0f6848]">148,720</div>
-              <div className="mt-3 h-1.5 w-32 bg-gradient-to-r from-[#0f6848] via-[#0f9d73] to-[#ff8a3d]" />
-            </div>
-          </div>
-        </div>
       </div>
-      <a href="#about" className="container-wide group flex items-center gap-3 pb-6 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#0f6848]">
-        <span className="grid size-9 place-items-center border border-[#0f6848]/25 transition group-hover:bg-[#0f6848] group-hover:text-white"><ArrowDown className="size-4" /></span>
-        Discover more
-      </a>
     </section>
   );
 }
