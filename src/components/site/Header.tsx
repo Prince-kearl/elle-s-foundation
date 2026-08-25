@@ -36,16 +36,16 @@ export function Header() {
       <div className="container-wide flex items-center justify-between gap-6 py-3.5 lg:py-4">
         <Logo orgName={settings?.org_name} tagline={settings?.tagline} />
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
+        <nav className="hidden shrink-0 items-center gap-1 lg:flex" aria-label="Primary navigation">
           {nav.map((item) => (
             <Link
               key={item.to}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
-              className="group relative px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[color:var(--color-ink)]/65 transition-colors hover:text-[color:var(--color-forest)]"
+              className="group relative whitespace-nowrap px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[color:var(--color-ink)]/65 transition-colors hover:text-[color:var(--color-forest)]"
               activeProps={{
                 className:
-                  "group relative px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[color:var(--color-forest)]",
+                  "group relative whitespace-nowrap px-3.5 py-2 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[color:var(--color-forest)]",
               }}
             >
               {item.label}
@@ -57,11 +57,11 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden shrink-0 items-center gap-3 lg:flex">
           <GlobalSearch />
           <Link
             to="/donate"
-            className="inline-flex items-center gap-2 bg-[color:var(--color-forest)] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[color:var(--color-earth)]"
+            className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap bg-[color:var(--color-forest)] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[color:var(--color-earth)]"
           >
             <HandHeart className="size-4" aria-hidden="true" />
             Support us
