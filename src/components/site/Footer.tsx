@@ -57,6 +57,7 @@ const linkGroups = [
 export function Footer() {
   const { data: c } = usePageContent("footer");
   const [email, setEmail] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
 
@@ -187,23 +188,25 @@ export function Footer() {
                   try {
                     const { error } = await supabase.from("newsletter_subscribers").insert({
                       email: normalizedEmail,
+                      whatsapp_number: whatsappNumber.trim() || null,
                       source: "website_footer",
                       status: "subscribed",
                     });
                     if (error && error.code !== "23505") {
                       toast.error(
-                        error.code === "42P01"
-                          ? "Newsletter signups are not configured yet. Please apply the Supabase migration."
+                        error.code === "42P01" || error.code === "42703"
+                          ? "Newsletter signups are not configured yet. Please apply all newsletter Supabase migrations."
                           : "We couldn't save your subscription. Please try again.",
                       );
                       return;
                     }
                     setEmail("");
+                    setWhatsappNumber("");
                     setSubscribed(true);
                     toast.success(
                       error?.code === "23505"
                         ? "You're already on the list."
-                        : "You're on the list. Thank you!",
+                        : "You're on the list. Your welcome message has been recorded.",
                     );
                   } catch {
                     toast.error("We couldn't reach the newsletter service. Please try again.");
@@ -246,12 +249,25 @@ export function Footer() {
                     )}
                   </button>
                 </div>
+                <input
+                  id="footer-whatsapp"
+                  type="tel"
+                  value={whatsappNumber}
+                  onChange={(event) => {
+                    setWhatsappNumber(event.target.value);
+                    setSubscribed(false);
+                  }}
+                  placeholder="WhatsApp number (optional)"
+                  aria-label="WhatsApp number for welcome message (optional)"
+                  autoComplete="tel"
+                  className="mt-2 w-full border border-white/10 bg-black/10 px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
+                />
                 <p
                   className="mt-2 min-h-4 text-[0.65rem] text-[color:var(--color-sand)]"
                   aria-live="polite"
                 >
                   {subscribed
-                    ? "Thanks — you’re subscribed to updates from Elle’s Foundation."
+                    ? "Thanks — your signup is recorded. Welcome updates are being prepared."
                     : ""}
                 </p>
               </form>

@@ -23,6 +23,7 @@ const siteItems: SearchItem[] = [
 const adminItems: SearchItem[] = [
   { label: "Dashboard", description: "Overview, metrics, and activity", to: "/admin", keywords: "dashboard overview metrics" },
   { label: "Events & RSVPs", description: "Create events and review registrations", to: "/admin/events", keywords: "events calendar rsvp registration" },
+  { label: "Newsletter subscribers", description: "Review, export, and manage newsletter signups", to: "/admin/newsletter", keywords: "newsletter subscribers email audience export whatsapp" },
   { label: "Programs", description: "Manage public programmes", to: "/admin/programs", keywords: "programs education health" },
   { label: "Stories", description: "Manage stories from the field", to: "/admin/stories", keywords: "stories content" },
   { label: "Contact messages", description: "Review incoming messages", to: "/admin/contacts", keywords: "contact messages inbox" },

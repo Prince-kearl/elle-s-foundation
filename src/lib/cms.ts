@@ -11,6 +11,8 @@ export type ContactSub = { id: string; name: string; email: string; interest: st
 export type DonationIntent = { id: string; amount: number; frequency: string; name: string | null; email: string | null; note: string | null; status: string; created_at: string };
 export type EventRecord = { id: string; title: string; event_type: string; description: string; event_date: string; start_time: string | null; end_time: string | null; location: string; status: "draft" | "published" | "archived"; visible: boolean; accent: string; position: number; created_at: string; updated_at: string };
 export type EventRsvp = { id: string; event_id: string; name: string; email: string; phone: string | null; guests: number; note: string | null; status: "pending" | "confirmed" | "attended" | "cancelled"; created_at: string; events?: { title: string; event_date: string } | null };
+export type NewsletterSubscriber = { id: string; email: string; whatsapp_number: string | null; source: string; status: "subscribed" | "unsubscribed"; created_at: string; updated_at: string };
+export type NewsletterConfirmationRecord = { id: string; subscriber_id: string; channel: "database" | "whatsapp"; status: "recorded" | "queued" | "sent" | "failed" | "needs_setup"; message: string; created_at: string; updated_at: string };
 export type SiteSettings = {
   id: number; org_name: string; tagline: string; logo_url: string | null;
   email: string; phone: string; address: string;
@@ -70,8 +72,7 @@ export const useSiteCopy = (section: string) =>
   });
 
 /* ---------- Admin hooks (all rows) ---------- */
-export const useAdminList = <T,>(table: string) =>
-  useQuery({ queryKey: ["a", table], queryFn: () => selectAll<T>(table) });
+export const useAdminList = <T,>(table: string, order = "position") => useQuery({ queryKey: ["a", table, order], queryFn: () => selectAll<T>(table, order) });
 
 export function useUpsert(table: string, invalidateKeys: string[][] = []) {
   const qc = useQueryClient();

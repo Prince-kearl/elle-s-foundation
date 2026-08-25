@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import {
   LayoutGrid, Sparkles, Users, MessageSquare, HelpCircle, ImageIcon, CalendarDays,
   Settings, LogOut, Bell, Menu, X, Inbox, HeartHandshake, User,
-  Heart, ShieldCheck, ChevronRight, Palette, FileText, HandHeart, UserCog, HardDrive,
+  Heart, ShieldCheck, ChevronRight, Palette, FileText, HandHeart, UserCog, HardDrive, Mail,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import logoAsset from "@/assets/brand/elles-foundation-mark.png";
@@ -16,6 +16,7 @@ const items = [
   { to: "/admin/stats", label: "Statistics", icon: ShieldCheck },
   { to: "/admin/programs", label: "Programs", icon: HeartHandshake },
   { to: "/admin/events", label: "Events & RSVPs", icon: CalendarDays },
+  { to: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
   { to: "/admin/stories", label: "Stories", icon: ImageIcon },
   { to: "/admin/team", label: "Team Members", icon: Users },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
