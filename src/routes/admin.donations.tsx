@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminCard, Badge } from "@/components/admin/AdminLayout";
 import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
 import type { DonationIntent } from "@/lib/cms";
-import { Trash2, Heart, TrendingUp } from "lucide-react";
+import { Download, Trash2, Heart, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { formatCurrency } from "@/lib/utils";
 
@@ -12,15 +12,34 @@ export const Route = createFileRoute("/admin/donations")({
 });
 
 function DonationsAdmin() {
-  const { data, isLoading } = useAdminList<DonationIntent>("donation_intents");
+  const { data, isLoading } = useAdminList<DonationIntent>("donation_intents", "created_at");
   const upsert = useUpsert("donation_intents");
   const del = useDelete("donation_intents");
   const rows = (data ?? []).slice().sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
   const total = rows.reduce((s, d) => s + Number(d.amount || 0), 0);
   const monthly = rows.filter((r) => r.frequency === "monthly").length;
 
+  function exportCsv() {
+    const headers = ["Name", "Email", "Mobile number", "Amount (GHS)", "Frequency", "Status", "Note", "Created at"];
+    const body = rows.map((r) => [r.name ?? "", r.email ?? "", r.phone ?? "", String(r.amount ?? ""), r.frequency, r.status, r.note ?? "", new Date(r.created_at).toISOString()]);
+    const csv = [headers, ...body].map((row) => row.map(csvEscape).join(",")).join("\\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `elles-foundation-donations-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    toast.success("Donation CSV exported");
+  }
+
   return (
     <AdminLayout title="Donations" subtitle="Donation intents captured from the donate page.">
+      <div className="mb-5 flex justify-end">
+        <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#0F6848] transition hover:border-[#0F6848] disabled:cursor-not-allowed disabled:opacity-50">
+          <Download className="size-4" /> Export CSV
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <AdminCard className="p-5">
           <div className="flex items-center gap-3">
@@ -53,6 +72,7 @@ function DonationsAdmin() {
               <thead className="border-b border-[#EEF0F3]">
                 <tr className="text-left text-[11px] uppercase tracking-wider text-[#6B7280]">
                   <th className="px-6 py-3">Donor</th>
+                  <th className="px-6 py-3">Mobile</th>
                   <th className="px-6 py-3">Amount</th>
                   <th className="px-6 py-3">Frequency</th>
                   <th className="px-6 py-3">Status</th>
@@ -67,6 +87,7 @@ function DonationsAdmin() {
                       <div className="font-semibold">{r.name ?? "Anonymous"}</div>
                       <div className="text-xs text-[#6B7280]">{r.email ?? "—"}</div>
                     </td>
+                    <td className="px-6 py-3 text-xs text-[#6B7280]">{r.phone ?? "—"}</td>
                     <td className="px-6 py-3 font-display text-lg text-primary">{formatCurrency(r.amount)}</td>
                     <td className="px-6 py-3"><Badge tone={r.frequency === "monthly" ? "brand" : "neutral"}>{r.frequency}</Badge></td>
                     <td className="px-6 py-3">
@@ -98,4 +119,8 @@ function DonationsAdmin() {
       </AdminCard>
     </AdminLayout>
   );
+}
+
+function csvEscape(value: string) {
+  return `"${value.replaceAll('"', '""')}"`;
 }
