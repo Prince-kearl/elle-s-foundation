@@ -17,7 +17,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import heroChildren from "@/assets/community/live/outreach-street-group.jpeg";
+import heroChildren from "@/assets/community/live/hero-community-water.svg";
 import childrenUnity from "@/assets/community/live/outreach-children.jpeg";
 import programCommunity from "@/assets/community/live/community-gathering.jpeg";
 import programEducation from "@/assets/community/live/community-supplies.jpeg";
