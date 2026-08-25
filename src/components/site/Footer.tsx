@@ -1,7 +1,46 @@
 import { Link } from "@tanstack/react-router";
-import { Logo } from "./Logo";
+import { ArrowUp, ArrowUpRight, Facebook, Instagram, Linkedin, Send, Twitter } from "lucide-react";
 import { usePageContent, pv } from "@/lib/page-content";
-import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Logo } from "./Logo";
+
+const linkGroups = [
+  {
+    title: "Organization",
+    links: [
+      { label: "About us", to: "/about" },
+      { label: "Our story", to: "/about#story" },
+      { label: "Focus areas", to: "/programs" },
+      { label: "Core programs", to: "/programs" },
+    ],
+  },
+  {
+    title: "Participation",
+    links: [
+      { label: "Upcoming events", to: "/#events" },
+      { label: "Stories from the field", to: "/programs#stories" },
+      { label: "Make a donation", to: "/donate" },
+      { label: "Volunteer with us", to: "/contact" },
+    ],
+  },
+  {
+    title: "Support & legal",
+    links: [
+      { label: "Frequently asked questions", to: "/#faqs" },
+      { label: "Contact Elle's Foundation", to: "/contact" },
+      { label: "Privacy policy", to: "/#privacy" },
+      { label: "Terms of use", to: "/#terms" },
+    ],
+  },
+  {
+    title: "Connect",
+    links: [
+      { label: "Contact us", to: "/contact" },
+      { label: "Our programs", to: "/programs" },
+      { label: "Events calendar", to: "/#events" },
+      { label: "Support the work", to: "/donate" },
+    ],
+  },
+];
 
 export function Footer() {
   const { data: c } = usePageContent("footer");
@@ -14,88 +53,165 @@ export function Footer() {
   ];
 
   return (
-    <footer className="mt-24 bg-[oklch(0.22_0.015_130)] text-[oklch(0.92_0.015_85)]">
-      {/* Stats strip */}
-      <div className="border-b border-white/10">
-        <div className="container-wide grid grid-cols-2 md:grid-cols-3 gap-8 py-10 text-center">
-          {[
-            [pv(c, "stats.value_1", "12,400+"), pv(c, "stats.label_1", "Children supported")],
-            [pv(c, "stats.value_2", "3,200"), pv(c, "stats.label_2", "Families assisted")],
-            [pv(c, "stats.value_3", "46"), pv(c, "stats.label_3", "Communities reached")],
-          ].map(([n, l]) => (
-
-            <div key={l}>
-              <div className="font-display text-3xl text-[color:var(--color-gold)]">{n}</div>
-              <div className="text-xs uppercase tracking-[0.22em] mt-1 opacity-70">{l}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="container-wide py-16 grid gap-12 lg:grid-cols-5">
-        <div className="lg:col-span-2">
-          <Logo tone="light" />
-          <p className="mt-6 max-w-sm text-sm leading-relaxed opacity-75">
-            {pv(c, "about.description", "Elle's Foundation is a community-focused nonprofit dedicated to improving lives through education, health, and community development — because every child deserves a chance.")}
-          </p>
-          <div className="flex gap-3 mt-6">
-            {socials.map(({ Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                target={href.startsWith("http") ? "_blank" : undefined}
-                rel="noreferrer"
-                className="size-9 rounded-full grid place-items-center border border-white/15 hover:border-[color:var(--color-gold)] hover:text-[color:var(--color-gold)] transition"
-              >
-                <Icon className="size-4" />
-              </a>
-            ))}
+    <footer
+      id="site-footer"
+      className="mt-24 bg-[color:var(--color-cream)] text-[color:var(--color-ink)]"
+    >
+      <section className="container-wide pb-14 pt-2 sm:pb-20 sm:pt-6">
+        <div className="relative overflow-hidden bg-[color:var(--color-ink)] px-6 py-9 text-white shadow-[0_18px_34px_-24px_rgba(8,75,53,0.7)] sm:px-10 sm:py-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-12">
+          <div
+            className="pointer-events-none absolute -right-12 -top-16 size-48 border-[20px] border-[color:var(--color-earth)]/15"
+            aria-hidden="true"
+          />
+          <div className="relative max-w-2xl">
+            <p className="mb-3 text-[0.64rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--color-sand)]">
+              Partner with Elle's Foundation
+            </p>
+            <h2 className="font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
+              {pv(c, "cta.title", "Want to host or sponsor a community programme?")}
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/70">
+              {pv(
+                c,
+                "cta.description",
+                "We partner with schools, community centres, and youth organisations to create practical programmes that restore dignity and open opportunity.",
+              )}
+            </p>
           </div>
+          <Link
+            to="/contact"
+            className="relative mt-7 inline-flex shrink-0 items-center justify-center gap-3 bg-[color:var(--color-gold)] px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white lg:mt-0"
+          >
+            Partner with us
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </Link>
         </div>
+      </section>
 
-        <div>
-          <h4 className="font-display text-lg text-white mb-4">Explore</h4>
-          <ul className="space-y-2.5 text-sm opacity-80">
-            <li><Link to="/about" className="hover:text-[color:var(--color-gold)]">About</Link></li>
-            <li><Link to="/programs" className="hover:text-[color:var(--color-gold)]">Programs</Link></li>
-            <li><Link to="/donate" className="hover:text-[color:var(--color-gold)]">Support us</Link></li>
-            <li><Link to="/contact" className="hover:text-[color:var(--color-gold)]">Contact</Link></li>
-          </ul>
-        </div>
+      <div className="bg-[color:var(--color-forest)] text-white">
+        <div className="container-wide">
+          <div className="flex flex-col gap-6 border-b border-white/10 py-9 sm:flex-row sm:items-center sm:justify-between">
+            <Logo tone="light" />
+            <div className="flex items-center gap-2" aria-label="Social links">
+              {socials.map(({ Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="grid size-9 place-items-center border border-white/15 text-white/70 transition hover:border-[color:var(--color-gold)] hover:bg-[color:var(--color-gold)] hover:text-[color:var(--color-ink)]"
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </div>
 
-        <div>
-          <h4 className="font-display text-lg text-white mb-4">Get in touch</h4>
-          <ul className="space-y-3 text-sm opacity-80">
-            <li className="flex gap-2"><Phone className="size-4 mt-0.5 shrink-0" /> {pv(c, "contact.phone", "+233 55 123 4567")}</li>
-            <li className="flex gap-2"><Mail className="size-4 mt-0.5 shrink-0" /> {pv(c, "contact.email", "info@ellefoundation.org")}</li>
-            <li className="flex gap-2"><MapPin className="size-4 mt-0.5 shrink-0" /> {pv(c, "contact.address", "Accra, Ghana")}</li>
-          </ul>
-        </div>
+          <div className="grid gap-10 py-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 lg:py-12">
+            {linkGroups.map((group) => (
+              <nav key={group.title} aria-label={group.title}>
+                <h3 className="border-b border-white/10 pb-3 font-display text-sm font-semibold text-white">
+                  {group.title}
+                </h3>
+                <ul className="mt-4 space-y-3 text-xs text-white/65">
+                  {group.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        to={link.to}
+                        className="transition-colors hover:text-[color:var(--color-gold)]"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
 
-        <div>
-          <h4 className="font-display text-lg text-white mb-4">{pv(c, "newsletter.title", "Newsletter")}</h4>
-          <p className="text-sm opacity-75 mb-3">{pv(c, "newsletter.description", "Stories of hope, delivered monthly.")}</p>
-          <form className="flex rounded-full bg-white/5 border border-white/15 overflow-hidden">
-            <input
-              type="email"
-              placeholder="Your email"
-              className="flex-1 bg-transparent px-4 py-2.5 text-sm outline-none placeholder:text-white/40"
-            />
-            <button className="px-4 bg-[color:var(--color-gold)] text-[color:var(--color-ink)] text-sm font-medium">
-              Join
-            </button>
-          </form>
-        </div>
-      </div>
+            <div>
+              <h3 className="border-b border-white/10 pb-3 font-display text-sm font-semibold text-white">
+                Make an impact
+              </h3>
+              <ul className="mt-4 space-y-3 text-xs text-white/65">
+                <li>
+                  <Link
+                    to="/donate"
+                    className="transition-colors hover:text-[color:var(--color-gold)]"
+                  >
+                    Support us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/contact"
+                    className="transition-colors hover:text-[color:var(--color-gold)]"
+                  >
+                    Volunteer with us
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="/#events"
+                    className="transition-colors hover:text-[color:var(--color-gold)]"
+                  >
+                    View events calendar
+                  </a>
+                </li>
+              </ul>
+              <form className="mt-7" onSubmit={(event) => event.preventDefault()}>
+                <label
+                  htmlFor="footer-email"
+                  className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/60"
+                >
+                  {pv(c, "newsletter.title", "Stay updated")}
+                </label>
+                <div className="mt-2 flex border border-white/10 bg-black/10">
+                  <input
+                    id="footer-email"
+                    type="email"
+                    placeholder="Your email..."
+                    aria-label="Email address for newsletter"
+                    className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Join the newsletter"
+                    className="grid size-10 shrink-0 place-items-center bg-[color:var(--color-gold)] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white"
+                  >
+                    <Send className="size-4" aria-hidden="true" />
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
 
-      <div className="border-t border-white/10">
-        <div className="container-wide flex flex-col md:flex-row justify-between gap-4 py-6 text-xs opacity-60">
-          <div>© {new Date().getFullYear()} {pv(c, "legal.copyright", "Elle's Foundation. All rights reserved.")}</div>
-          <div className="flex gap-5">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Transparency</a>
+          <div
+            id="privacy"
+            className="flex flex-col gap-5 border-t border-white/10 py-6 text-[0.66rem] text-white/55 lg:flex-row lg:items-center lg:justify-between"
+          >
+            <div>
+              © {new Date().getFullYear()}{" "}
+              {pv(c, "legal.copyright", "Elle's Foundation. All rights reserved.")}
+            </div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <a href="#privacy" className="transition-colors hover:text-white">
+                Privacy policy
+              </a>
+              <span aria-hidden="true">•</span>
+              <a id="terms" href="#terms" className="transition-colors hover:text-white">
+                Terms of use
+              </a>
+              <span aria-hidden="true">•</span>
+              <span className="text-[color:var(--color-gold)]">Community nonprofit · Ghana</span>
+            </div>
+            <a
+              href="#top"
+              className="inline-flex w-fit items-center gap-2 border border-white/15 px-3 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.14em] transition hover:border-[color:var(--color-gold)] hover:text-[color:var(--color-gold)]"
+            >
+              Back to top
+              <ArrowUp className="size-3" aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>
