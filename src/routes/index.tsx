@@ -126,15 +126,15 @@ function Hero({ c }: { c: C }) {
       <img
         src={heroChildren}
         alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
-        className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+        className="absolute inset-0 -z-20 h-full w-full object-cover object-[64%_center] sm:object-[64%_center] md:object-center"
         loading="eager"
       />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(4,48,34,0.94)_0%,rgba(4,48,34,0.74)_40%,rgba(4,48,34,0.18)_78%,rgba(4,48,34,0.35)_100%)]" />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(4,48,34,0.84)_0%,transparent_50%)]" />
 
-      <div className="container-wide relative flex w-full flex-col justify-between pb-8 pt-16 sm:pb-10 md:min-h-[calc(100svh-5rem)] md:pt-28">
-        <div className="max-w-4xl rise-in">
-          <div className="mb-7 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.24em] text-[#cdeca7]">
+      <div className="container-wide relative flex w-full flex-col items-center justify-between pb-8 pt-16 sm:pb-10 md:min-h-[calc(100svh-5rem)] md:items-start md:pt-28">
+        <div className="rise-in w-full max-w-4xl text-center md:text-left">
+          <div className="mb-7 flex items-center justify-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.24em] text-[#cdeca7] md:justify-start">
             <span className="size-2 rounded-full bg-[#ff8a3d]" />
             <span>{pv(c, "hero.eyebrow", "Elle's Foundation · Est. 2015")}</span>
           </div>
@@ -143,14 +143,14 @@ function Hero({ c }: { c: C }) {
             <br />
             <span className="text-[#ff8a3d]">{pv(c, "hero.title_line_2", "Restoring lives.")}</span>
           </h1>
-          <p className="mt-7 max-w-xl text-base leading-7 text-white/80 md:text-lg md:leading-8">
+          <p className="mx-auto mt-7 max-w-xl text-base leading-7 text-white/80 md:mx-0 md:text-lg md:leading-8">
             {pv(
               c,
               "hero.description",
               "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.",
             )}
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:justify-start">
             <a
               href={pv(c, "hero.cta_primary_href", "/donate")}
               className="hero-pill group inline-flex items-center gap-3 rounded-full bg-[#ff8a3d] px-5 py-3.5 text-sm font-bold text-[#073b2b] transition duration-200 hover:-translate-y-0.5 hover:bg-white active:scale-[0.97]"
