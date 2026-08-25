@@ -17,16 +17,16 @@ function toColor(hex: string | null | undefined): string | null {
 }
 
 export const BRAND_DEFAULTS: BrandValues = {
-  primary_color: "#44533D",
-  forest_color: "#566547",
-  cream_color: "#F5EFE5",
-  sand_color: "#E8DCC8",
-  earth_color: "#B48A58",
-  gold_color: "#C59B5C",
-  ink_color: "#2C2C2C",
-  background_color: "#FAF7F2",
-  heading_font: "Playfair Display",
-  body_font: "Inter",
+  primary_color: "#0F6848",
+  forest_color: "#084B35",
+  cream_color: "#F1FAE9",
+  sand_color: "#CDECA7",
+  earth_color: "#F26518",
+  gold_color: "#FF8A3D",
+  ink_color: "#124A3A",
+  background_color: "#FBFFF8",
+  heading_font: "DM Sans",
+  body_font: "Manrope",
   base_font_size: "16px",
   heading_scale: 1,
   body_scale: 1,
@@ -96,7 +96,7 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
   c("--ink", "ink_color");
   c("--background", "background_color");
   if (v.radius) vars["--radius"] = String(v.radius);
-  if (v.heading_font) vars["--font-display"] = `"${v.heading_font}", ui-serif, Georgia, serif`;
+  if (v.heading_font) vars["--font-display"] = `"${v.heading_font}", ui-sans-serif, system-ui, sans-serif`;
   if (v.body_font) vars["--font-sans"] = `"${v.body_font}", ui-sans-serif, system-ui, sans-serif`;
   if (v.heading_scale) vars["--heading-scale"] = String(v.heading_scale);
   if (v.body_scale) vars["--body-scale"] = String(v.body_scale);

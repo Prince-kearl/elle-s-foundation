@@ -70,7 +70,7 @@ function Hero({ c }: { c: C }) {
           <h1 className="mt-6 font-display text-5xl md:text-7xl font-semibold leading-[0.98] text-primary">
             {pv(c, "hero.title", "Feeding Hope.")}
             <br />
-            <span className="italic text-earth">{pv(c, "hero.title_accent", "Restoring Lives.")}</span>
+            <span className="text-earth">{pv(c, "hero.title_accent", "Restoring Lives.")}</span>
           </h1>
           <p className="mt-7 text-lg text-muted-foreground max-w-xl leading-relaxed">
             {pv(c, "hero.description", "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.")}
@@ -166,7 +166,7 @@ function About({ c }: { c: C }) {
           </div>
           <div className="absolute -bottom-8 -right-4 bg-card border border-border rounded-xl p-5 shadow-[var(--shadow-card)] max-w-xs">
             <Quote className="size-5 text-gold" />
-            <p className="font-display italic text-primary mt-2 leading-snug">
+            <p className="font-display text-primary mt-2 leading-snug">
               "{pv(c, "about.quote", "We feed hope, restore dignity, and empower lives.")}"
             </p>
           </div>
@@ -274,7 +274,7 @@ function Ofts({ c }: { c: C }) {
             <h2 className="font-display text-4xl md:text-5xl mt-5 leading-[1.05]">
               {pv(c, "ofts.title", "#OFTS")}
             </h2>
-            <p className="mt-3 text-lg italic opacity-90">
+            <p className="mt-3 text-lg opacity-90">
               {pv(c, "ofts.tagline", "Feeding Hope. Restoring Dignity.")}
             </p>
             <ul className="mt-8 space-y-6">
@@ -452,7 +452,7 @@ function Testimonials() {
       <div className="container-wide">
         <SectionHeading
           eyebrow="Voices"
-          title={<>Trusted by those we <span className="italic text-earth">serve</span> and serve with.</>}
+          title={<>Trusted by those we <span className="text-earth">serve</span> and serve with.</>}
         />
         <div className="grid md:grid-cols-3 gap-6">
           {t.map((x) => (
