@@ -4,10 +4,11 @@ import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
 import { usePublicPrograms } from "@/lib/cms";
-import c1 from "@/assets/community/community-1.jpeg.asset.json";
-import c4 from "@/assets/community/community-4.jpeg.asset.json";
-import c6 from "@/assets/community/community-6.jpeg.asset.json";
-import c8 from "@/assets/community/community-8.jpeg.asset.json";
+import programEducation from "@/assets/community/live/community-supplies.jpeg";
+import programHealth from "@/assets/community/live/family-support.jpeg";
+import programShelter from "@/assets/community/live/outreach-children.jpeg";
+import programCommunity from "@/assets/community/live/team-under-tree.jpeg";
+import outreachWelcome from "@/assets/community/live/outreach-welcome.mp4";
 import { GraduationCap, HeartPulse, Home, TreePine, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
@@ -29,18 +30,18 @@ export const Route = createFileRoute("/programs")({
 const ICONS: Record<string, any> = { GraduationCap, HeartPulse, Home, TreePine };
 
 const FALLBACK = [
-  { icon: "GraduationCap", title: "Education", description: "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.", image_url: c1.url, stat_value: "4,800", stat_label: "students supported" },
-  { icon: "HeartPulse", title: "Healthcare", description: "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.", image_url: c4.url, stat_value: "62", stat_label: "outreach clinics" },
-  { icon: "Home", title: "Shelter & Support", description: "Safe homes, family stabilization, and crisis support for the most vulnerable.", image_url: c6.url, stat_value: "940", stat_label: "families housed" },
-  { icon: "TreePine", title: "Community Development", description: "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.", image_url: c8.url, stat_value: "46", stat_label: "communities reached" },
+  { icon: "GraduationCap", title: "Education", description: "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.", image_url: programEducation, stat_value: "4,800", stat_label: "students supported" },
+  { icon: "HeartPulse", title: "Healthcare", description: "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.", image_url: programHealth, stat_value: "62", stat_label: "outreach clinics" },
+  { icon: "Home", title: "Shelter & Support", description: "Safe homes, family stabilization, and crisis support for the most vulnerable.", image_url: programShelter, stat_value: "940", stat_label: "families housed" },
+  { icon: "TreePine", title: "Community Development", description: "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.", image_url: programCommunity, stat_value: "46", stat_label: "communities reached" },
 ];
 
 function Programs() {
   const { data: c } = usePageContent("programs");
   const { data: dbPrograms } = usePublicPrograms();
   const programs = (dbPrograms && dbPrograms.length ? dbPrograms : FALLBACK) as any[];
-  const headerVideo = pv(c, "header.video");
-  const headerImage = pv(c, "header.image");
+  const headerVideo = pv(c, "header.video") || outreachWelcome;
+  const headerImage = pv(c, "header.image") || programEducation;
 
   return (
     <SiteLayout>
@@ -57,7 +58,7 @@ function Programs() {
         {headerVideo || headerImage ? (
           <div className="container-wide mt-10">
             <div className="rounded-2xl overflow-hidden aspect-[16/7] bg-black">
-              <Media video={headerVideo} src={headerImage} alt="Elle's Foundation programs" className="w-full h-full object-cover" />
+              <Media video={headerVideo} src={headerImage} poster={programEducation} alt="Elle's Foundation programs" className="w-full h-full object-cover" />
             </div>
           </div>
         ) : null}

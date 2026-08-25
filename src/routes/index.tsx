@@ -5,16 +5,18 @@ import { usePublicEvents, type EventRecord } from "@/lib/cms";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
-import heroChildren from "@/assets/hero-children.jpg";
-import childrenUnity from "@/assets/children-unity.jpg";
-import programCommunity from "@/assets/program-community.jpg";
-import programEducation from "@/assets/program-education.jpg";
-import programHealth from "@/assets/program-health.jpg";
-import programShelter from "@/assets/program-shelter.jpg";
-import story1 from "@/assets/story-1.jpg";
-import story2 from "@/assets/story-2.jpg";
-import story3 from "@/assets/story-3.jpg";
-import volunteer from "@/assets/volunteer.jpg";
+import { Media } from "@/components/site/Media";
+import heroChildren from "@/assets/community/live/outreach-street-group.jpeg";
+import outreachWelcome from "@/assets/community/live/outreach-welcome.mp4";
+import childrenUnity from "@/assets/community/live/outreach-children.jpeg";
+import programCommunity from "@/assets/community/live/community-gathering.jpeg";
+import programEducation from "@/assets/community/live/community-supplies.jpeg";
+import programHealth from "@/assets/community/live/family-support.jpeg";
+import programShelter from "@/assets/community/live/volunteer-team.jpeg";
+import story1 from "@/assets/community/live/outreach-street-group.jpeg";
+import story2 from "@/assets/community/live/child-community.jpeg";
+import story3 from "@/assets/community/live/team-under-tree.jpeg";
+import volunteer from "@/assets/community/live/community-team.jpeg";
 import operationFeedTheStreet from "@/assets/community/operation-feed-the-street-2025.jpeg";
 import {
   ArrowDown,
@@ -95,9 +97,11 @@ function Home() {
 function Hero({ c }: { c: C }) {
   return (
     <section className="relative isolate flex min-h-[calc(100svh-5rem)] items-end overflow-hidden bg-[#073b2b] text-white">
-      <img
+      <Media
+        video={outreachWelcome}
         src={heroChildren}
-        alt="Children smiling together during Elle's Foundation community outreach"
+        alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
+        poster={heroChildren}
         className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
         loading="eager"
       />
