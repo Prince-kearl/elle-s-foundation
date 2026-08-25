@@ -153,7 +153,7 @@ function Hero({ c }: { c: C }) {
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <a
               href={pv(c, "hero.cta_primary_href", "/donate")}
-              className="group inline-flex items-center gap-3 rounded-full bg-[#ff8a3d] px-5 py-3.5 text-sm font-bold text-[#073b2b] transition duration-200 hover:-translate-y-0.5 hover:bg-white active:scale-[0.97]"
+              className="hero-pill group inline-flex items-center gap-3 rounded-full bg-[#ff8a3d] px-5 py-3.5 text-sm font-bold text-[#073b2b] transition duration-200 hover:-translate-y-0.5 hover:bg-white active:scale-[0.97]"
             >
               <span className="grid size-7 place-items-center rounded-full bg-[#073b2b] text-[#ff8a3d]">
                 <Heart className="size-3.5 fill-current" />
@@ -163,7 +163,7 @@ function Hero({ c }: { c: C }) {
             </a>
             <a
               href={pv(c, "hero.cta_secondary_href", "/about")}
-              className="group inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/70 hover:bg-white/15 active:scale-[0.97]"
+              className="hero-pill group inline-flex items-center gap-3 rounded-full border border-white/30 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/70 hover:bg-white/15 active:scale-[0.97]"
             >
               {pv(c, "hero.cta_secondary_label", "Our story")}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
