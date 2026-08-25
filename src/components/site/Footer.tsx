@@ -1,6 +1,18 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUp, ArrowUpRight, Facebook, Instagram, Linkedin, Send, Twitter } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowUpRight,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Loader2,
+  Send,
+  Twitter,
+} from "lucide-react";
+import { toast } from "sonner";
 import { usePageContent, pv } from "@/lib/page-content";
+import { supabase } from "@/lib/supabase";
 import { Logo } from "./Logo";
 
 const linkGroups = [
@@ -44,6 +56,9 @@ const linkGroups = [
 
 export function Footer() {
   const { data: c } = usePageContent("footer");
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
 
   const socials = [
     { Icon: Facebook, href: pv(c, "social.facebook", "#"), label: "Facebook" },
@@ -159,7 +174,44 @@ export function Footer() {
                   </a>
                 </li>
               </ul>
-              <form className="mt-7" onSubmit={(event) => event.preventDefault()}>
+              <form
+                className="mt-7"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  const normalizedEmail = email.trim().toLowerCase();
+                  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+                    toast.error("Please enter a valid email address.");
+                    return;
+                  }
+                  setSubmitting(true);
+                  try {
+                    const { error } = await supabase.from("newsletter_subscribers").insert({
+                      email: normalizedEmail,
+                      source: "website_footer",
+                      status: "subscribed",
+                    });
+                    if (error && error.code !== "23505") {
+                      toast.error(
+                        error.code === "42P01"
+                          ? "Newsletter signups are not configured yet. Please apply the Supabase migration."
+                          : "We couldn't save your subscription. Please try again.",
+                      );
+                      return;
+                    }
+                    setEmail("");
+                    setSubscribed(true);
+                    toast.success(
+                      error?.code === "23505"
+                        ? "You're already on the list."
+                        : "You're on the list. Thank you!",
+                    );
+                  } catch {
+                    toast.error("We couldn't reach the newsletter service. Please try again.");
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }}
+              >
                 <label
                   htmlFor="footer-email"
                   className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/60"
@@ -170,18 +222,38 @@ export function Footer() {
                   <input
                     id="footer-email"
                     type="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      setSubscribed(false);
+                    }}
                     placeholder="Your email..."
                     aria-label="Email address for newsletter"
+                    autoComplete="email"
+                    required
                     className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
                   />
                   <button
                     type="submit"
-                    aria-label="Join the newsletter"
-                    className="grid size-10 shrink-0 place-items-center bg-[color:var(--color-gold)] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white"
+                    aria-label={submitting ? "Joining the newsletter" : "Join the newsletter"}
+                    disabled={submitting}
+                    className="grid size-10 shrink-0 place-items-center bg-[color:var(--color-gold)] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
                   >
-                    <Send className="size-4" aria-hidden="true" />
+                    {submitting ? (
+                      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <Send className="size-4" aria-hidden="true" />
+                    )}
                   </button>
                 </div>
+                <p
+                  className="mt-2 min-h-4 text-[0.65rem] text-[color:var(--color-sand)]"
+                  aria-live="polite"
+                >
+                  {subscribed
+                    ? "Thanks — you’re subscribed to updates from Elle’s Foundation."
+                    : ""}
+                </p>
               </form>
             </div>
           </div>
