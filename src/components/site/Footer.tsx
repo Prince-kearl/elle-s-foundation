@@ -92,19 +92,19 @@ export function Footer() {
       className="mt-24 bg-[color:var(--color-cream)] text-[color:var(--color-ink)]"
     >
       <section className="container-wide pb-14 pt-2 sm:pb-20 sm:pt-6">
-        <div className="relative overflow-hidden bg-[color:var(--color-ink)] px-6 py-9 text-white shadow-[0_18px_34px_-24px_rgba(8,75,53,0.7)] sm:px-10 sm:py-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-12">
+        <div className="relative overflow-hidden bg-[color:var(--color-ink)] px-5 py-8 text-white shadow-[0_18px_34px_-24px_rgba(8,75,53,0.7)] sm:px-10 sm:py-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-12">
           <div
             className="pointer-events-none absolute -right-12 -top-16 size-48 border-[20px] border-[color:var(--color-earth)]/15"
             aria-hidden="true"
           />
-          <div className="relative max-w-2xl">
+          <div className="relative w-full max-w-2xl text-center lg:text-left">
             <p className="mb-3 text-[0.64rem] font-semibold uppercase tracking-[0.24em] text-[color:var(--color-sand)]">
               Partner with Elle's Foundation
             </p>
             <h2 className="font-display text-2xl font-semibold leading-tight text-white sm:text-3xl">
               {pv(c, "cta.title", "Want to host or sponsor a community programme?")}
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/70">
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/70 lg:mx-0">
               {pv(
                 c,
                 "cta.description",
@@ -114,7 +114,7 @@ export function Footer() {
           </div>
           <Link
             to="/contact"
-            className="relative mt-7 inline-flex shrink-0 items-center justify-center gap-3 bg-[color:var(--color-gold)] px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white lg:mt-0"
+            className="relative mt-6 inline-flex w-full shrink-0 items-center justify-center gap-3 bg-[color:var(--color-gold)] px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white lg:mt-0 lg:w-fit"
           >
             Partner with us
             <ArrowUpRight className="size-4" aria-hidden="true" />
@@ -124,7 +124,7 @@ export function Footer() {
 
       <div className="bg-[color:var(--color-forest)] text-white">
         <div className="container-wide">
-          <div className="flex flex-col gap-6 border-b border-white/10 py-9 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col items-center gap-6 border-b border-white/10 py-8 text-center sm:flex-row sm:items-center sm:justify-between sm:py-9 sm:text-left">
             <Logo tone="light" orgName={settings?.org_name} tagline={settings?.tagline} />
             <div className="flex items-center gap-2" aria-label="Social links">
               {socials.map(({ Icon, href, label }) => (
@@ -142,7 +142,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid gap-10 py-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8 lg:py-12">
+          <div className="grid gap-8 py-8 text-center sm:grid-cols-2 sm:gap-10 sm:py-10 sm:text-left lg:grid-cols-5 lg:gap-8 lg:py-12">
             {linkGroups.map((group) => (
               <nav key={group.title} aria-label={group.title}>
                 <h3 className="border-b border-white/10 pb-3 font-display text-sm font-semibold text-white">
@@ -163,7 +163,7 @@ export function Footer() {
               </nav>
             ))}
 
-            <div>
+            <div className="w-full">
               <h3 className="border-b border-white/10 pb-3 font-display text-sm font-semibold text-white">
                 {settings?.newsletter_headline || pv(c, "newsletter.title", "Make an impact")}
               </h3>
@@ -235,11 +235,11 @@ export function Footer() {
               >
                 <label
                   htmlFor="footer-email"
-                  className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/60"
+                  className="block text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/60"
                 >
                   {pv(c, "newsletter.title", "Stay updated")}
                 </label>
-                <div className="mt-2 flex border border-white/10 bg-black/10">
+                <div className="mx-auto mt-2 flex w-full max-w-md border border-white/10 bg-black/10 lg:mx-0">
                   <input
                     id="footer-email"
                     type="email"
@@ -294,13 +294,13 @@ export function Footer() {
 
           <div
             id="privacy"
-            className="flex flex-col gap-5 border-t border-white/10 py-6 text-[0.66rem] text-white/55 lg:flex-row lg:items-center lg:justify-between"
+            className="flex flex-col items-center gap-5 border-t border-white/10 py-6 text-center text-[0.66rem] text-white/55 sm:items-start sm:text-left lg:flex-row lg:items-center lg:justify-between"
           >
             <div>
               © {new Date().getFullYear()}{" "}
               {pv(c, "legal.copyright", "Elle's Foundation. All rights reserved.")}
             </div>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:justify-start">
               <a href="#privacy" className="transition-colors hover:text-white">
                 Privacy policy
               </a>

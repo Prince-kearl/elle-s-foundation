@@ -76,6 +76,7 @@ export function Header() {
             onClick={() => setOpen((value) => !value)}
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
+            aria-controls="mobile-navigation"
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -83,8 +84,13 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="border-t border-white/10 bg-[color:var(--color-forest)] text-white lg:hidden">
-          <div className="container-wide flex flex-col gap-1 py-4">
+        <div
+          id="mobile-navigation"
+          role="navigation"
+          aria-label="Mobile navigation"
+          className="border-t border-white/10 bg-[color:var(--color-forest)] text-white shadow-[0_18px_30px_-24px_rgba(8,75,53,0.9)] lg:hidden"
+        >
+          <div className="container-wide flex flex-col gap-2 py-4">
             {nav.map((item) => (
               <Link
                 key={item.to}
@@ -103,7 +109,7 @@ export function Header() {
             <Link
               to="/donate"
               onClick={() => setOpen(false)}
-              className="mt-3 inline-flex items-center justify-center gap-2 bg-[color:var(--color-gold)] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-earth)] hover:text-white"
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--color-gold)] px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-earth)] hover:text-white"
             >
               <HandHeart className="size-4" aria-hidden="true" />
               Support us
