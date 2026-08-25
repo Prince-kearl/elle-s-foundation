@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { HandHeart, Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 import { GlobalSearch } from "./GlobalSearch";
+import { useSiteSettings } from "@/lib/cms";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -14,6 +15,7 @@ const nav = [
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { data: settings } = useSiteSettings();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -32,7 +34,7 @@ export function Header() {
       }`}
     >
       <div className="container-wide flex items-center justify-between gap-6 py-3.5 lg:py-4">
-        <Logo />
+        <Logo orgName={settings?.org_name} tagline={settings?.tagline} />
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
           {nav.map((item) => (

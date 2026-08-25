@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePageContent, pv } from "@/lib/page-content";
+import { useSiteSettings } from "@/lib/cms";
 import { supabase } from "@/lib/supabase";
 import { Logo } from "./Logo";
 
@@ -56,16 +57,33 @@ const linkGroups = [
 
 export function Footer() {
   const { data: c } = usePageContent("footer");
+  const { data: settings } = useSiteSettings();
   const [email, setEmail] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
 
   const socials = [
-    { Icon: Facebook, href: pv(c, "social.facebook", "#"), label: "Facebook" },
-    { Icon: Instagram, href: pv(c, "social.instagram", "#"), label: "Instagram" },
-    { Icon: Twitter, href: pv(c, "social.twitter", "#"), label: "Twitter" },
-    { Icon: Linkedin, href: pv(c, "social.linkedin", "#"), label: "LinkedIn" },
+    {
+      Icon: Facebook,
+      href: settings?.facebook_url || pv(c, "social.facebook", "#"),
+      label: "Facebook",
+    },
+    {
+      Icon: Instagram,
+      href: settings?.instagram_url || pv(c, "social.instagram", "#"),
+      label: "Instagram",
+    },
+    {
+      Icon: Twitter,
+      href: settings?.twitter_url || pv(c, "social.twitter", "#"),
+      label: "Twitter",
+    },
+    {
+      Icon: Linkedin,
+      href: settings?.linkedin_url || pv(c, "social.linkedin", "#"),
+      label: "LinkedIn",
+    },
   ];
 
   return (
@@ -107,7 +125,7 @@ export function Footer() {
       <div className="bg-[color:var(--color-forest)] text-white">
         <div className="container-wide">
           <div className="flex flex-col gap-6 border-b border-white/10 py-9 sm:flex-row sm:items-center sm:justify-between">
-            <Logo tone="light" />
+            <Logo tone="light" orgName={settings?.org_name} tagline={settings?.tagline} />
             <div className="flex items-center gap-2" aria-label="Social links">
               {socials.map(({ Icon, href, label }) => (
                 <a
@@ -147,7 +165,7 @@ export function Footer() {
 
             <div>
               <h3 className="border-b border-white/10 pb-3 font-display text-sm font-semibold text-white">
-                Make an impact
+                {settings?.newsletter_headline || pv(c, "newsletter.title", "Make an impact")}
               </h3>
               <ul className="mt-4 space-y-3 text-xs text-white/65">
                 <li>

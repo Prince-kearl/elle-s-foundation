@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
-import { usePublicPrograms } from "@/lib/cms";
+import { usePublicPrograms, usePublicStats, type Stat } from "@/lib/cms";
 import programEducation from "@/assets/community/live/community-supplies.jpeg";
 import programHealth from "@/assets/community/live/family-support.jpeg";
 import programShelter from "@/assets/community/live/outreach-children.jpeg";
@@ -14,9 +14,17 @@ export const Route = createFileRoute("/programs")({
   head: () => ({
     meta: [
       { title: "Programs — Elle's Foundation" },
-      { name: "description", content: "Education, healthcare, shelter, and community development programs restoring dignity across communities." },
+      {
+        name: "description",
+        content:
+          "Education, healthcare, shelter, and community development programs restoring dignity across communities.",
+      },
       { property: "og:title", content: "Our Programs — Elle's Foundation" },
-      { property: "og:description", content: "Four focused pillars, one shared belief — lasting change begins with people, not projects." },
+      {
+        property: "og:description",
+        content:
+          "Four focused pillars, one shared belief — lasting change begins with people, not projects.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "/programs" },
@@ -29,16 +37,56 @@ export const Route = createFileRoute("/programs")({
 const ICONS: Record<string, any> = { GraduationCap, HeartPulse, Home, TreePine };
 
 const FALLBACK = [
-  { icon: "GraduationCap", title: "Education", description: "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.", image_url: programEducation, stat_value: "4,800", stat_label: "students supported" },
-  { icon: "HeartPulse", title: "Healthcare", description: "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.", image_url: programHealth, stat_value: "62", stat_label: "outreach clinics" },
-  { icon: "Home", title: "Shelter & Support", description: "Safe homes, family stabilization, and crisis support for the most vulnerable.", image_url: programShelter, stat_value: "940", stat_label: "families housed" },
-  { icon: "TreePine", title: "Community Development", description: "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.", image_url: programCommunity, stat_value: "46", stat_label: "communities reached" },
+  {
+    icon: "GraduationCap",
+    title: "Education",
+    description:
+      "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.",
+    image_url: programEducation,
+    stat_value: "4,800",
+    stat_label: "students supported",
+  },
+  {
+    icon: "HeartPulse",
+    title: "Healthcare",
+    description:
+      "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.",
+    image_url: programHealth,
+    stat_value: "62",
+    stat_label: "outreach clinics",
+  },
+  {
+    icon: "Home",
+    title: "Shelter & Support",
+    description: "Safe homes, family stabilization, and crisis support for the most vulnerable.",
+    image_url: programShelter,
+    stat_value: "940",
+    stat_label: "families housed",
+  },
+  {
+    icon: "TreePine",
+    title: "Community Development",
+    description:
+      "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.",
+    image_url: programCommunity,
+    stat_value: "46",
+    stat_label: "communities reached",
+  },
 ];
 
 function Programs() {
   const { data: c } = usePageContent("programs");
   const { data: dbPrograms } = usePublicPrograms();
+  const { data: dbStats } = usePublicStats();
   const programs = (dbPrograms && dbPrograms.length ? dbPrograms : FALLBACK) as any[];
+  const impactStats = dbStats?.length
+    ? dbStats
+    : ([
+        { value: "148K", label: "Meals served" },
+        { value: "4,800", label: "Students enrolled" },
+        { value: "62", label: "Clinics run" },
+        { value: "940", label: "Families housed" },
+      ] as Pick<Stat, "value" | "label">[]);
   const headerImage = pv(c, "header.image") || programEducation;
 
   return (
@@ -50,13 +98,21 @@ function Programs() {
             {pv(c, "header.title", "Four pillars. One promise.")}
           </h1>
           <p className="mt-6 text-lg text-muted-foreground">
-            {pv(c, "header.description", "Every program we run is designed with the community, delivered by local teams, and measured by the change it creates in real lives.")}
+            {pv(
+              c,
+              "header.description",
+              "Every program we run is designed with the community, delivered by local teams, and measured by the change it creates in real lives.",
+            )}
           </p>
         </div>
         {headerImage ? (
           <div className="container-wide mt-10">
             <div className="rounded-2xl overflow-hidden aspect-[16/7] bg-black">
-              <Media src={headerImage} alt="Elle's Foundation programs" className="w-full h-full object-cover" />
+              <Media
+                src={headerImage}
+                alt="Elle's Foundation programs"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         ) : null}
@@ -67,7 +123,10 @@ function Programs() {
           {programs.map((p, idx) => {
             const Icon = ICONS[p.icon] ?? GraduationCap;
             return (
-              <div key={p.id ?? p.title} className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}>
+              <div
+                key={p.id ?? p.title}
+                className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}
+              >
                 <div className="rounded-2xl overflow-hidden aspect-[5/4] bg-secondary">
                   <Media
                     src={p.image_url || FALLBACK[idx % FALLBACK.length].image_url}
@@ -79,16 +138,25 @@ function Programs() {
                   <div className="size-12 rounded-xl bg-primary/10 grid place-items-center text-primary">
                     <Icon className="size-6" />
                   </div>
-                  <h2 className="font-display text-4xl mt-5 text-primary leading-tight">{p.title}</h2>
-                  <p className="text-muted-foreground mt-4 text-lg leading-relaxed">{p.description}</p>
+                  <h2 className="font-display text-4xl mt-5 text-primary leading-tight">
+                    {p.title}
+                  </h2>
+                  <p className="text-muted-foreground mt-4 text-lg leading-relaxed">
+                    {p.description}
+                  </p>
                   <div className="mt-6 flex items-center gap-6">
                     {p.stat_value ? (
                       <div>
                         <div className="font-display text-3xl text-primary">{p.stat_value}</div>
-                        <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{p.stat_label}</div>
+                        <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">
+                          {p.stat_label}
+                        </div>
                       </div>
                     ) : null}
-                    <Link to="/donate" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium">
+                    <Link
+                      to="/donate"
+                      className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-3 text-sm font-medium"
+                    >
                       Support this program <ArrowRight className="size-4" />
                     </Link>
                   </div>
@@ -106,15 +174,12 @@ function Programs() {
             title={pv(c, "impact.title", "Measured in lives, not slides.")}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {[
-              ["148K", "Meals served"],
-              ["4,800", "Students enrolled"],
-              ["62", "Clinics run"],
-              ["940", "Families housed"],
-            ].map(([n, l]) => (
+            {impactStats.map(({ value: n, label: l }) => (
               <div key={l} className="soft-card p-6 text-center">
                 <div className="font-display text-4xl text-primary">{n}</div>
-                <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{l}</div>
+                <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">
+                  {l}
+                </div>
               </div>
             ))}
           </div>
