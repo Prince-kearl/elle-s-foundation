@@ -32,7 +32,7 @@ export function Logo({
           {orgName}
         </div>
         <div
-          className="mt-0.5 whitespace-nowrap text-[0.62rem] uppercase tracking-[0.28em]"
+          className="mt-0.5 whitespace-nowrap text-[0.38rem] uppercase tracking-[0em]"
           style={{ color: subColor }}
         >
           {tagline}
