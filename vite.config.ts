@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    server: {
+      allowedHosts: ["8080-ilmdespiwdcheebpjqq40-d3856a22.us3.manus.computer"],
+    },
+  },
 });

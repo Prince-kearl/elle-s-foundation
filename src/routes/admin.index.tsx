@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminLayout, AdminCard, Badge } from "@/components/admin/AdminLayout";
 import { useAdminList } from "@/lib/cms";
-import type { Program, Story, TeamMember, ContactSub, DonationIntent, Faq, Testimonial } from "@/lib/cms";
-import { HeartHandshake, Users, MessageSquare, Inbox, Heart, HelpCircle, ImageIcon, TrendingUp } from "lucide-react";
+import type { Program, Story, TeamMember, ContactSub, DonationIntent, Faq, Testimonial, EventRecord, EventRsvp } from "@/lib/cms";
+import { HeartHandshake, Users, MessageSquare, Inbox, Heart, HelpCircle, ImageIcon, TrendingUp, CalendarDays, ClipboardList } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { formatCurrency } from "@/lib/utils";
@@ -21,12 +21,16 @@ function Dashboard() {
   const faqs = useAdminList<Faq>("faqs");
   const contacts = useAdminList<ContactSub>("contact_submissions");
   const donations = useAdminList<DonationIntent>("donation_intents");
+  const events = useAdminList<EventRecord>("events");
+  const rsvps = useAdminList<EventRsvp>("event_rsvps");
 
   const stats = [
     { label: "Programs", value: programs.data?.length ?? 0, icon: HeartHandshake, tone: "bg-emerald-50 text-emerald-600" },
     { label: "Stories", value: stories.data?.length ?? 0, icon: ImageIcon, tone: "bg-blue-50 text-blue-600" },
     { label: "Team Members", value: team.data?.length ?? 0, icon: Users, tone: "bg-purple-50 text-purple-600" },
     { label: "Testimonials", value: testimonials.data?.length ?? 0, icon: MessageSquare, tone: "bg-amber-50 text-amber-600" },
+    { label: "Upcoming Events", value: (events.data ?? []).filter((event) => event.status === "published" && event.visible).length, icon: CalendarDays, tone: "bg-orange-50 text-orange-600" },
+    { label: "Event RSVPs", value: rsvps.data?.length ?? 0, icon: ClipboardList, tone: "bg-cyan-50 text-cyan-600" },
   ];
   const inbox = [
     { label: "New Messages", value: contacts.data?.filter((c) => !c.handled).length ?? 0, sub: `${contacts.data?.length ?? 0} total`, icon: Inbox, to: "/admin/contacts" as const },
@@ -54,7 +58,7 @@ function Dashboard() {
 
   return (
     <AdminLayout title="Dashboard Overview" subtitle="Welcome back to your command center">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
         {stats.map((s) => (
           <AdminCard key={s.label} className="p-5 flex items-center gap-4">
             <div className={`size-12 rounded-xl grid place-items-center ${s.tone}`}>

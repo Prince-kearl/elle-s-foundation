@@ -1,11 +1,13 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import {
-  LayoutGrid, Sparkles, Users, MessageSquare, HelpCircle, ImageIcon,
+  LayoutGrid, Sparkles, Users, MessageSquare, HelpCircle, ImageIcon, CalendarDays,
   Settings, LogOut, Bell, Menu, X, Inbox, HeartHandshake, User,
   Heart, ShieldCheck, ChevronRight, Palette, FileText, HandHeart, UserCog, HardDrive,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import logoAsset from "@/assets/brand/elles-foundation-mark.png";
+import { GlobalSearch } from "@/components/site/GlobalSearch";
 
 const items = [
   { to: "/admin", label: "Dashboard", icon: LayoutGrid, end: true },
@@ -13,6 +15,7 @@ const items = [
   { to: "/admin/hero", label: "Hero Section", icon: Sparkles },
   { to: "/admin/stats", label: "Statistics", icon: ShieldCheck },
   { to: "/admin/programs", label: "Programs", icon: HeartHandshake },
+  { to: "/admin/events", label: "Events & RSVPs", icon: CalendarDays },
   { to: "/admin/stories", label: "Stories", icon: ImageIcon },
   { to: "/admin/team", label: "Team Members", icon: Users },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
@@ -38,20 +41,18 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
   const { user, signOut, role } = useAuth();
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex text-[#111827]">
+    <div className="admin-shell min-h-screen bg-[#fbfff8] flex text-[#124a3a]">
       {/* Sidebar */}
       <aside
-        className={`fixed lg:sticky top-0 z-40 h-screen w-64 bg-white border-r border-[#EEF0F3] flex flex-col transition-transform ${
+        className={`fixed lg:sticky top-0 z-40 h-screen w-64 bg-[#084b35] border-r border-[#0f6848] flex flex-col transition-transform ${
           open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="h-20 px-6 flex items-center gap-2 border-b border-[#EEF0F3]">
-          <div className="size-8 rounded-lg bg-primary text-white grid place-items-center">
-            <Heart className="size-4" fill="currentColor" />
-          </div>
-          <span className="font-display text-xl font-semibold text-primary">Elle CMS</span>
+        <div className="h-20 px-5 flex items-center gap-3 border-b border-white/10">
+          <div className="grid size-9 place-items-center"><img src={logoAsset} alt="" className="size-8 brightness-0 invert" /></div>
+          <span className="font-display text-xl font-semibold text-white">Elle CMS</span>
         </div>
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           {items.map((item) => {
             const { to, label, icon: Icon } = item;
             const end = "end" in item ? item.end : false;
@@ -61,10 +62,10 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
                 key={to}
                 to={to}
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
+                className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition ${
                   active
-                    ? "bg-gradient-to-r from-primary to-forest text-white shadow-sm"
-                    : "text-[#4B5563] hover:bg-[#F5EFE5]/70 hover:text-primary"
+                    ? "bg-[#cdeca7] text-[#084b35] shadow-none"
+                    : "text-white/75 hover:bg-[#0f6848] hover:text-white"
                 }`}
               >
                 <Icon className="size-4" />
@@ -73,10 +74,10 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
             );
           })}
         </nav>
-        <div className="p-4 border-t border-[#EEF0F3]">
+        <div className="p-4 border-t border-white/10">
           <button
             onClick={async () => { await signOut(); nav({ to: "/auth" }); }}
-            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm text-[#4B5563] hover:bg-red-50 hover:text-red-600"
+            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-white/75 hover:bg-red-500/20 hover:text-white"
           >
             <LogOut className="size-4" /> Sign out
           </button>
@@ -85,36 +86,37 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
 
       {/* Content */}
       <div className="flex-1 min-w-0 flex flex-col">
-        <header className="h-20 bg-white border-b border-[#EEF0F3] px-4 md:px-8 flex items-center justify-between sticky top-0 z-30">
+        <header className="h-20 bg-[#f1fae9] border-b border-[#c5dfb6] px-4 md:px-8 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button className="lg:hidden p-2" onClick={() => setOpen((v) => !v)}>
               {open ? <X className="size-5" /> : <Menu className="size-5" />}
             </button>
-            <Link to="/" className="hidden md:flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-primary">
+            <Link to="/" className="hidden md:flex items-center gap-1.5 text-xs text-[#6b8076] hover:text-[#f26518]">
               View site <ChevronRight className="size-3" />
             </Link>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <GlobalSearch scope="admin" />
             <div className="relative">
-            <button aria-label="Open notifications" onClick={() => setAlertsOpen((value) => !value)} className="relative p-2 rounded-lg hover:bg-[#F5EFE5]">
+            <button aria-label="Open notifications" onClick={() => setAlertsOpen((value) => !value)} className="relative p-2 hover:bg-[#cdeca7]">
               <Bell className="size-5 text-[#4B5563]" />
               <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
             </button>
-            {alertsOpen && <div className="absolute right-0 top-12 w-72 rounded-lg border border-[#E5E7EB] bg-white p-4 shadow-xl">
+            {alertsOpen && <div className="absolute right-0 top-12 w-72 border border-[#c5dfb6] bg-white p-4 shadow-xl">
               <div className="font-semibold text-sm">Notifications</div>
               <p className="mt-2 text-xs text-[#6B7280]">New messages, donations, scheduled publications, and system notices appear here.</p>
               <Link to="/admin" onClick={() => setAlertsOpen(false)} className="mt-3 inline-block text-xs font-semibold text-primary">View activity</Link>
             </div>}
             </div>
             <div className="relative">
-            <button aria-label="Open profile menu" onClick={() => setProfileOpen((value) => !value)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#F5EFE5]">
+            <button aria-label="Open profile menu" onClick={() => setProfileOpen((value) => !value)} className="flex items-center gap-2 px-3 py-1.5 bg-[#cdeca7]">
               <span className="text-xs font-semibold uppercase tracking-wider text-primary">{role ?? "user"}</span>
               <span className="text-xs text-[#4B5563] hidden sm:inline max-w-[140px] truncate">{user?.email}</span>
-              <div className="size-7 rounded-full bg-gradient-to-br from-primary to-earth text-white grid place-items-center text-xs font-semibold">
+              <div className="size-7 bg-[#f26518] text-white grid place-items-center text-xs font-semibold">
                 {user?.email?.[0]?.toUpperCase() ?? "?"}
               </div>
             </button>
-            {profileOpen && <div className="absolute right-0 top-12 w-52 rounded-lg border border-[#E5E7EB] bg-white py-2 shadow-xl">
+            {profileOpen && <div className="absolute right-0 top-12 w-52 border border-[#c5dfb6] bg-white py-2 shadow-xl">
               <Link to="/admin/profile" onClick={() => setProfileOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-[#F5EFE5]"><User className="size-4" /> My profile</Link>
               <button onClick={async () => { await signOut(); nav({ to: "/auth" }); }} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"><LogOut className="size-4" /> Sign out</button>
             </div>}
@@ -122,7 +124,7 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-8">
+        <main className="flex-1 p-4 md:p-8 bg-[#fbfff8]">
           <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
             <div>
               <h1 className="font-display text-3xl text-[#111827]">{title}</h1>
@@ -139,7 +141,7 @@ export function AdminLayout({ children, title, subtitle, action }: { children: R
 
 export function AdminCard({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`bg-white border border-[#EEF0F3] rounded-lg shadow-[0_1px_2px_rgba(16,24,40,0.04)] ${className}`}>
+    <div className={`bg-white border border-[#dfe6e1] shadow-[0_1px_2px_rgba(16,24,40,0.04)] ${className}`}>
       {children}
     </div>
   );
@@ -151,7 +153,7 @@ export function PrimaryButton({ children, onClick, type = "button", disabled, cl
       type={type}
       disabled={disabled}
       onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-forest text-white px-4 py-2.5 text-sm font-medium hover:opacity-95 disabled:opacity-60 transition ${className}`}
+      className={`inline-flex items-center gap-2 bg-[#0b4a5a] text-white px-4 py-2.5 text-sm font-medium hover:bg-[#073b4b] disabled:opacity-60 transition ${className}`}
     >
       {children}
     </button>
@@ -162,7 +164,7 @@ export function GhostButton({ children, onClick, className = "" }: { children: R
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white text-[#4B5563] px-4 py-2 text-sm font-medium hover:bg-[#F9FAFB] transition ${className}`}
+      className={`inline-flex items-center gap-2 border border-[#cdd9d2] bg-white text-[#0b4a5a] px-4 py-2 text-sm font-medium hover:bg-[#eef7f0] transition ${className}`}
     >
       {children}
     </button>
@@ -182,7 +184,7 @@ export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}
-      className={`w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition ${props.className ?? ""}`}
+      className={`w-full border border-[#cdd9d2] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-[#f26518] focus:ring-2 focus:ring-[#f26518]/15 transition ${props.className ?? ""}`}
     />
   );
 }
@@ -191,7 +193,7 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
   return (
     <textarea
       {...props}
-      className={`w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition ${props.className ?? ""}`}
+      className={`w-full border border-[#cdd9d2] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-[#f26518] focus:ring-2 focus:ring-[#f26518]/15 transition ${props.className ?? ""}`}
     />
   );
 }
@@ -215,5 +217,5 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
     warn: "bg-amber-50 text-amber-700",
     brand: "bg-[#F5EFE5] text-primary",
   };
-  return <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${map[tone]}`}>{children}</span>;
+  return <span className={`inline-flex items-center px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider ${map[tone]}`}>{children}</span>;
 }

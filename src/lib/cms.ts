@@ -9,6 +9,8 @@ export type Testimonial = { id: string; quote: string; name: string; role: strin
 export type Faq = { id: string; question: string; answer: string; position: number; visible: boolean };
 export type ContactSub = { id: string; name: string; email: string; interest: string | null; message: string; handled: boolean; created_at: string };
 export type DonationIntent = { id: string; amount: number; frequency: string; name: string | null; email: string | null; note: string | null; status: string; created_at: string };
+export type EventRecord = { id: string; title: string; event_type: string; description: string; event_date: string; start_time: string | null; end_time: string | null; location: string; status: "draft" | "published" | "archived"; visible: boolean; accent: string; position: number; created_at: string; updated_at: string };
+export type EventRsvp = { id: string; event_id: string; name: string; email: string; phone: string | null; guests: number; note: string | null; status: "pending" | "confirmed" | "attended" | "cancelled"; created_at: string; events?: { title: string; event_date: string } | null };
 export type SiteSettings = {
   id: number; org_name: string; tagline: string; logo_url: string | null;
   email: string; phone: string; address: string;
@@ -36,6 +38,14 @@ export const usePublicStories = () => useQuery({ queryKey: ["p:stories"], queryF
 export const usePublicTeam = () => useQuery({ queryKey: ["p:team"], queryFn: () => selectVisible<TeamMember>("team_members") });
 export const usePublicTestimonials = () => useQuery({ queryKey: ["p:testimonials"], queryFn: () => selectVisible<Testimonial>("testimonials") });
 export const usePublicFaqs = () => useQuery({ queryKey: ["p:faqs"], queryFn: () => selectVisible<Faq>("faqs") });
+export const usePublicEvents = () => useQuery({
+  queryKey: ["p:events"],
+  queryFn: async () => {
+    const { data, error } = await supabase.from("events").select("*").eq("visible", true).eq("status", "published").gte("event_date", new Date().toISOString().slice(0, 10)).order("event_date", { ascending: true }).order("start_time", { ascending: true }).limit(8);
+    if (error) throw error;
+    return (data ?? []) as EventRecord[];
+  },
+});
 
 export const useSiteSettings = () =>
   useQuery({

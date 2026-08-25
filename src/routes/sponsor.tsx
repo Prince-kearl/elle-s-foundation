@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
@@ -11,6 +11,9 @@ import { usePageContent, pv } from "@/lib/page-content";
 const ICONS: Record<string, any> = { GraduationCap, Utensils, Home, TreePine, HandHeart, Heart };
 
 export const Route = createFileRoute("/sponsor")({
+  beforeLoad: () => {
+    throw redirect({ to: "/donate" });
+  },
   head: () => ({
     meta: [
       { title: "Sponsor — Elle's Foundation" },

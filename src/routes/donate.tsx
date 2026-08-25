@@ -135,11 +135,11 @@ function Donate() {
 
           <div className="space-y-4">
             <div className="soft-card p-6">
-              <h4 className="font-display text-xl text-primary">Prefer to sponsor?</h4>
-              <p className="text-sm text-muted-foreground mt-2">Fund a specific program tier — a child's education, a family's meals, a community well.</p>
-              <Link to="/sponsor" className="mt-4 inline-flex rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:bg-forest transition">
-                Browse sponsorships
-              </Link>
+              <h4 className="font-display text-xl text-primary">Choose your impact</h4>
+              <p className="text-sm text-muted-foreground mt-2">Every gift supports a child, a family, or a community through practical, lasting programs.</p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-secondary px-4 py-2 text-sm font-medium text-primary">
+                One simple way to support
+              </div>
             </div>
             {[
               ["Transparent", "Independently audited every year — see the numbers on our impact page."],

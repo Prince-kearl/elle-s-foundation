@@ -1,14 +1,13 @@
-import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
-import { Menu, X, Heart, HandHeart } from "lucide-react";
+import { HandHeart, Menu, X } from "lucide-react";
+import { GlobalSearch } from "./GlobalSearch";
 
 const nav = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/programs", label: "Programs" },
-  { to: "/sponsor", label: "Sponsor" },
-  { to: "/donate", label: "Donate" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -26,73 +25,63 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/85 backdrop-blur-md border-b border-border/70"
-          : "bg-transparent"
+        scrolled ? "border-b border-border/70 bg-background/90 backdrop-blur-md" : "bg-transparent"
       }`}
     >
       <div className="container-wide flex items-center justify-between py-4">
         <Logo />
-        <nav className="hidden lg:flex items-center gap-1">
-          {nav.map((n) => (
+        <nav className="hidden items-center gap-1 lg:flex">
+          {nav.map((item) => (
             <Link
-              key={n.to}
-              to={n.to}
-              className="px-4 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors relative"
+              key={item.to}
+              to={item.to}
+              className="relative px-4 py-2 text-sm font-medium text-foreground/70 transition-colors hover:text-primary"
               activeProps={{ className: "text-primary" }}
             >
-              {n.label}
+              {item.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden items-center gap-3 lg:flex">
+          <GlobalSearch />
           <Link
-            to="/sponsor"
-            className="inline-flex items-center gap-2 rounded-lg border border-primary/30 text-primary px-4 py-2.5 text-sm font-medium hover:bg-secondary transition"
-          >
-            <HandHeart className="size-4" /> Sponsor
-          </Link>
-          <Link
-            to="/donate"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-forest transition-all shadow-[var(--shadow-soft)]"
-          >
-            <Heart className="size-4" /> Donate
+          to="/donate"
+          className="hidden items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:bg-forest active:scale-[0.97] lg:inline-flex"
+        >
+          <HandHeart className="size-4" /> Support us
           </Link>
         </div>
-        <button
-          className="lg:hidden p-2 text-foreground"
-          onClick={() => setOpen((v) => !v)}
+        <div className="flex items-center gap-2 lg:hidden">
+          <GlobalSearch />
+          <button
+          className="p-2 text-foreground"
+          onClick={() => setOpen((value) => !value)}
           aria-label="Toggle menu"
+          aria-expanded={open}
         >
-          {open ? <X className="size-6" /> : <Menu className="size-6" />}
-        </button>
+            {open ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+        </div>
       </div>
       {open && (
-        <div className="lg:hidden border-t border-border/60 bg-background">
-          <div className="container-wide flex flex-col py-4 gap-1">
-            {nav.map((n) => (
+        <div className="border-t border-border/60 bg-background lg:hidden">
+          <div className="container-wide flex flex-col gap-1 py-4">
+            {nav.map((item) => (
               <Link
-                key={n.to}
-                to={n.to}
+                key={item.to}
+                to={item.to}
                 onClick={() => setOpen(false)}
-                className="px-3 py-3 rounded-lg text-foreground/80 hover:bg-secondary"
+                className="px-3 py-3 text-foreground/80 hover:bg-secondary"
               >
-                {n.label}
+                {item.label}
               </Link>
             ))}
             <Link
-              to="/sponsor"
-              onClick={() => setOpen(false)}
-              className="mt-2 inline-flex justify-center rounded-lg border border-primary/30 text-primary px-5 py-3 text-sm font-medium"
-            >
-              Sponsor
-            </Link>
-            <Link
               to="/donate"
               onClick={() => setOpen(false)}
-              className="inline-flex justify-center rounded-lg bg-primary text-primary-foreground px-5 py-3 text-sm font-medium"
+              className="mt-2 inline-flex items-center justify-center gap-2 bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
             >
-              Donate
+              <HandHeart className="size-4" /> Support us
             </Link>
           </div>
         </div>

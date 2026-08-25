@@ -9,67 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SponsorRouteImport } from './routes/sponsor'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ProgramsRouteImport } from './routes/programs'
-import { Route as DonateRouteImport } from './routes/donate'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DonateRouteImport } from './routes/donate'
+import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SponsorRouteImport } from './routes/sponsor'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
-import { Route as AdminTeamRouteImport } from './routes/admin.team'
-import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
-import { Route as AdminStorageRouteImport } from './routes/admin.storage'
-import { Route as AdminStatsRouteImport } from './routes/admin.stats'
-import { Route as AdminSponsorshipsRouteImport } from './routes/admin.sponsorships'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
-import { Route as AdminProgramsRouteImport } from './routes/admin.programs'
-import { Route as AdminProfileRouteImport } from './routes/admin.profile'
-import { Route as AdminPagesRouteImport } from './routes/admin.pages'
-import { Route as AdminMediaRouteImport } from './routes/admin.media'
-import { Route as AdminHeroRouteImport } from './routes/admin.hero'
-import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
-import { Route as AdminDonationsRouteImport } from './routes/admin.donations'
-import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 import { Route as AdminBrandRouteImport } from './routes/admin.brand'
+import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
+import { Route as AdminDonationsRouteImport } from './routes/admin.donations'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
+import { Route as AdminHeroRouteImport } from './routes/admin.hero'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
+import { Route as AdminPagesRouteImport } from './routes/admin.pages'
+import { Route as AdminProfileRouteImport } from './routes/admin.profile'
+import { Route as AdminProgramsRouteImport } from './routes/admin.programs'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSponsorshipsRouteImport } from './routes/admin.sponsorships'
+import { Route as AdminStatsRouteImport } from './routes/admin.stats'
+import { Route as AdminStorageRouteImport } from './routes/admin.storage'
+import { Route as AdminStoriesRouteImport } from './routes/admin.stories'
+import { Route as AdminTeamRouteImport } from './routes/admin.team'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 
-const SponsorRoute = SponsorRouteImport.update({
-  id: '/sponsor',
-  path: '/sponsor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgramsRoute = ProgramsRouteImport.update({
-  id: '/programs',
-  path: '/programs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateRoute = DonateRouteImport.update({
-  id: '/donate',
-  path: '/donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -77,9 +48,39 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateRoute = DonateRouteImport.update({
+  id: '/donate',
+  path: '/donate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SponsorRoute = SponsorRouteImport.update({
+  id: '/sponsor',
+  path: '/sponsor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -87,79 +88,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
-  id: '/testimonials',
-  path: '/testimonials',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTeamRoute = AdminTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStoriesRoute = AdminStoriesRouteImport.update({
-  id: '/stories',
-  path: '/stories',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStorageRoute = AdminStorageRouteImport.update({
-  id: '/storage',
-  path: '/storage',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminStatsRoute = AdminStatsRouteImport.update({
-  id: '/stats',
-  path: '/stats',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSponsorshipsRoute = AdminSponsorshipsRouteImport.update({
-  id: '/sponsorships',
-  path: '/sponsorships',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProgramsRoute = AdminProgramsRouteImport.update({
-  id: '/programs',
-  path: '/programs',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProfileRoute = AdminProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPagesRoute = AdminPagesRouteImport.update({
-  id: '/pages',
-  path: '/pages',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminMediaRoute = AdminMediaRouteImport.update({
-  id: '/media',
-  path: '/media',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminHeroRoute = AdminHeroRouteImport.update({
-  id: '/hero',
-  path: '/hero',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFaqsRoute = AdminFaqsRouteImport.update({
-  id: '/faqs',
-  path: '/faqs',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDonationsRoute = AdminDonationsRouteImport.update({
-  id: '/donations',
-  path: '/donations',
+const AdminBrandRoute = AdminBrandRouteImport.update({
+  id: '/brand',
+  path: '/brand',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminContactsRoute = AdminContactsRouteImport.update({
@@ -167,9 +98,84 @@ const AdminContactsRoute = AdminContactsRouteImport.update({
   path: '/contacts',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminBrandRoute = AdminBrandRouteImport.update({
-  id: '/brand',
-  path: '/brand',
+const AdminDonationsRoute = AdminDonationsRouteImport.update({
+  id: '/donations',
+  path: '/donations',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaqsRoute = AdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHeroRoute = AdminHeroRouteImport.update({
+  id: '/hero',
+  path: '/hero',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPagesRoute = AdminPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProgramsRoute = AdminProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSponsorshipsRoute = AdminSponsorshipsRouteImport.update({
+  id: '/sponsorships',
+  path: '/sponsorships',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStatsRoute = AdminStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStorageRoute = AdminStorageRouteImport.update({
+  id: '/storage',
+  path: '/storage',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStoriesRoute = AdminStoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTeamRoute = AdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/hero': typeof AdminHeroRoute
   '/admin/media': typeof AdminMediaRoute
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/hero': typeof AdminHeroRoute
   '/admin/media': typeof AdminMediaRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
+  '/admin/events': typeof AdminEventsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/hero': typeof AdminHeroRoute
   '/admin/media': typeof AdminMediaRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
+    | '/admin/events'
     | '/admin/faqs'
     | '/admin/hero'
     | '/admin/media'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
+    | '/admin/events'
     | '/admin/faqs'
     | '/admin/hero'
     | '/admin/media'
@@ -332,6 +343,7 @@ export interface FileRouteTypes {
     | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
+    | '/admin/events'
     | '/admin/faqs'
     | '/admin/hero'
     | '/admin/media'
@@ -363,53 +375,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sponsor': {
-      id: '/sponsor'
-      path: '/sponsor'
-      fullPath: '/sponsor'
-      preLoaderRoute: typeof SponsorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programs': {
-      id: '/programs'
-      path: '/programs'
-      fullPath: '/programs'
-      preLoaderRoute: typeof ProgramsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/donate': {
-      id: '/donate'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -419,11 +389,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsor': {
+      id: '/sponsor'
+      path: '/sponsor'
+      fullPath: '/sponsor'
+      preLoaderRoute: typeof SponsorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -433,109 +445,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/testimonials': {
-      id: '/admin/testimonials'
-      path: '/testimonials'
-      fullPath: '/admin/testimonials'
-      preLoaderRoute: typeof AdminTestimonialsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/team': {
-      id: '/admin/team'
-      path: '/team'
-      fullPath: '/admin/team'
-      preLoaderRoute: typeof AdminTeamRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/stories': {
-      id: '/admin/stories'
-      path: '/stories'
-      fullPath: '/admin/stories'
-      preLoaderRoute: typeof AdminStoriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/storage': {
-      id: '/admin/storage'
-      path: '/storage'
-      fullPath: '/admin/storage'
-      preLoaderRoute: typeof AdminStorageRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/stats': {
-      id: '/admin/stats'
-      path: '/stats'
-      fullPath: '/admin/stats'
-      preLoaderRoute: typeof AdminStatsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/sponsorships': {
-      id: '/admin/sponsorships'
-      path: '/sponsorships'
-      fullPath: '/admin/sponsorships'
-      preLoaderRoute: typeof AdminSponsorshipsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/programs': {
-      id: '/admin/programs'
-      path: '/programs'
-      fullPath: '/admin/programs'
-      preLoaderRoute: typeof AdminProgramsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/profile': {
-      id: '/admin/profile'
-      path: '/profile'
-      fullPath: '/admin/profile'
-      preLoaderRoute: typeof AdminProfileRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pages': {
-      id: '/admin/pages'
-      path: '/pages'
-      fullPath: '/admin/pages'
-      preLoaderRoute: typeof AdminPagesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/media': {
-      id: '/admin/media'
-      path: '/media'
-      fullPath: '/admin/media'
-      preLoaderRoute: typeof AdminMediaRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/hero': {
-      id: '/admin/hero'
-      path: '/hero'
-      fullPath: '/admin/hero'
-      preLoaderRoute: typeof AdminHeroRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/faqs': {
-      id: '/admin/faqs'
-      path: '/faqs'
-      fullPath: '/admin/faqs'
-      preLoaderRoute: typeof AdminFaqsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/donations': {
-      id: '/admin/donations'
-      path: '/donations'
-      fullPath: '/admin/donations'
-      preLoaderRoute: typeof AdminDonationsRouteImport
+    '/admin/brand': {
+      id: '/admin/brand'
+      path: '/brand'
+      fullPath: '/admin/brand'
+      preLoaderRoute: typeof AdminBrandRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/contacts': {
@@ -545,11 +459,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContactsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/brand': {
-      id: '/admin/brand'
-      path: '/brand'
-      fullPath: '/admin/brand'
-      preLoaderRoute: typeof AdminBrandRouteImport
+    '/admin/donations': {
+      id: '/admin/donations'
+      path: '/donations'
+      fullPath: '/admin/donations'
+      preLoaderRoute: typeof AdminDonationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faqs': {
+      id: '/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AdminFaqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/hero': {
+      id: '/admin/hero'
+      path: '/hero'
+      fullPath: '/admin/hero'
+      preLoaderRoute: typeof AdminHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pages': {
+      id: '/admin/pages'
+      path: '/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AdminPagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/programs': {
+      id: '/admin/programs'
+      path: '/programs'
+      fullPath: '/admin/programs'
+      preLoaderRoute: typeof AdminProgramsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sponsorships': {
+      id: '/admin/sponsorships'
+      path: '/sponsorships'
+      fullPath: '/admin/sponsorships'
+      preLoaderRoute: typeof AdminSponsorshipsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stats': {
+      id: '/admin/stats'
+      path: '/stats'
+      fullPath: '/admin/stats'
+      preLoaderRoute: typeof AdminStatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/storage': {
+      id: '/admin/storage'
+      path: '/storage'
+      fullPath: '/admin/storage'
+      preLoaderRoute: typeof AdminStorageRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stories': {
+      id: '/admin/stories'
+      path: '/stories'
+      fullPath: '/admin/stories'
+      preLoaderRoute: typeof AdminStoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/team': {
+      id: '/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AdminTeamRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
   }
@@ -559,6 +578,7 @@ interface AdminRouteChildren {
   AdminBrandRoute: typeof AdminBrandRoute
   AdminContactsRoute: typeof AdminContactsRoute
   AdminDonationsRoute: typeof AdminDonationsRoute
+  AdminEventsRoute: typeof AdminEventsRoute
   AdminFaqsRoute: typeof AdminFaqsRoute
   AdminHeroRoute: typeof AdminHeroRoute
   AdminMediaRoute: typeof AdminMediaRoute
@@ -580,6 +600,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBrandRoute: AdminBrandRoute,
   AdminContactsRoute: AdminContactsRoute,
   AdminDonationsRoute: AdminDonationsRoute,
+  AdminEventsRoute: AdminEventsRoute,
   AdminFaqsRoute: AdminFaqsRoute,
   AdminHeroRoute: AdminHeroRoute,
   AdminMediaRoute: AdminMediaRoute,

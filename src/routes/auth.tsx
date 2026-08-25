@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Heart, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import logoAsset from "@/assets/brand/elles-foundation-mark.png";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
@@ -43,10 +44,8 @@ function AuthPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-[#F5EFE5]">
       <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-primary via-forest to-earth text-white">
-        <Link to="/" className="flex items-center gap-2 font-display text-2xl">
-          <div className="size-9 rounded-lg bg-white/15 grid place-items-center">
-            <Heart className="size-4" fill="currentColor" />
-          </div>
+        <Link to="/" className="flex items-center gap-3 font-display text-2xl">
+          <span className="grid size-10 place-items-center"><img src={logoAsset} alt="" className="size-9 brightness-0 invert" /></span>
           Elle's Foundation
         </Link>
         <div>

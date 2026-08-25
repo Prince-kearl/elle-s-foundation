@@ -59,8 +59,7 @@ export function Footer() {
           <ul className="space-y-2.5 text-sm opacity-80">
             <li><Link to="/about" className="hover:text-[color:var(--color-gold)]">About</Link></li>
             <li><Link to="/programs" className="hover:text-[color:var(--color-gold)]">Programs</Link></li>
-            <li><Link to="/sponsor" className="hover:text-[color:var(--color-gold)]">Sponsor</Link></li>
-            <li><Link to="/donate" className="hover:text-[color:var(--color-gold)]">Donate</Link></li>
+            <li><Link to="/donate" className="hover:text-[color:var(--color-gold)]">Support us</Link></li>
             <li><Link to="/contact" className="hover:text-[color:var(--color-gold)]">Contact</Link></li>
           </ul>
         </div>

@@ -45,7 +45,7 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0rem;
 
   /* Flyer palette: lime green, forest green, orange, coral, and white */
   --primary: #0f6848;
@@ -75,8 +75,8 @@
   --input: #c5dfb6;
   --ring: var(--earth);
 
-  --shadow-soft: 0 12px 40px -20px rgb(15 104 72 / 30%);
-  --shadow-card: 0 5px 24px -12px rgb(15 104 72 / 22%);
+  --shadow-soft: 0 10px 24px -18px rgb(15 104 72 / 35%);
+  --shadow-card: 0 8px 22px -18px rgb(15 104 72 / 28%);
 
   /* Brand-editable typography & spacing tokens */
   --heading-scale: 1;
@@ -123,7 +123,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
+  border-radius: 0;
   background: color-mix(in oklab, var(--primary) 8%, transparent);
   color: var(--primary);
   font-size: 0.7rem;
@@ -135,14 +135,15 @@
 @utility soft-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   box-shadow: var(--shadow-card);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 @utility soft-card-hover {
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 50px -24px oklch(0.36 0.03 130 / 0.3);
+      &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--primary) 42%, var(--border));
+    box-shadow: 0 18px 36px -24px oklch(0.36 0.03 130 / 0.36);
   }
 }
 
@@ -185,6 +186,26 @@
   animation: brush-fade 0.8s ease-out both;
 }
 
+/* Sharp interface treatment: cards, buttons, fields, and pills use clean corners. */
+.soft-card,
+button[class*="rounded-"],
+a[class*="rounded-"],
+input[class*="rounded-"],
+textarea[class*="rounded-"],
+select[class*="rounded-"] {
+  border-radius: 0 !important;
+}
+
+button,
+a[class*="bg-"] {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+button:active,
+a[class*="bg-"]:active {
+  transform: scale(0.98);
+}
+
 /* Unlayered: brand typography scale — wins over Tailwind utilities */
 h1, h2, h3, h4, .font-display {
   zoom: var(--heading-scale, 1);
@@ -195,4 +216,34 @@ body p, body li, body blockquote {
 }
 body p, body li {
   line-height: var(--brand-line-height, 1.6);
+}
+
+/* Admin portal: crisp dashboard surfaces and controls. */
+.admin-shell .rounded-lg,
+.admin-shell .rounded-xl,
+.admin-shell .rounded-2xl,
+.admin-shell .rounded-full {
+  border-radius: 0 !important;
+}
+
+.admin-shell input,
+.admin-shell textarea,
+.admin-shell select,
+.admin-shell button {
+  border-radius: 0;
+}
+
+/* Keep content scrollable while removing visible scrollbar chrome. */
+html,
+body,
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
