@@ -20,7 +20,10 @@ export function publicUrl(path: string) {
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
-export async function uploadMedia(file: File, folder = "general"): Promise<{ url: string; path: string; kind: MediaKind }> {
+export async function uploadMedia(
+  file: File,
+  folder = "general",
+): Promise<{ url: string; path: string; kind: MediaKind }> {
   const kind = kindOf(file);
   const allowed = kind === "video" ? VIDEO_TYPES : IMAGE_TYPES;
   if (!allowed.includes(file.type)) {
@@ -31,7 +34,10 @@ export async function uploadMedia(file: File, folder = "general"): Promise<{ url
     );
   }
   const max = kind === "video" ? MAX_VIDEO : MAX_IMAGE;
-  if (file.size > max) throw new Error(`${kind === "video" ? "Video" : "Image"} must be under ${max / 1024 / 1024}MB.`);
+  if (file.size > max)
+    throw new Error(
+      `${kind === "video" ? "Video" : "Image"} must be under ${max / 1024 / 1024}MB.`,
+    );
 
   const ext = file.name.split(".").pop()?.toLowerCase() || (kind === "video" ? "mp4" : "jpg");
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
@@ -41,7 +47,14 @@ export async function uploadMedia(file: File, folder = "general"): Promise<{ url
     upsert: false,
     contentType: file.type,
   });
-  if (error) throw error;
+  if (error) {
+    if (/bucket not found|does not exist/i.test(error.message ?? "")) {
+      throw new Error(
+        'Supabase Storage bucket "media" is missing. Run supabase/migrations/20260826_media_storage_bucket.sql in the Supabase SQL Editor, then try again.',
+      );
+    }
+    throw error;
+  }
   const url = publicUrl(path);
 
   const { data: user } = await supabase.auth.getUser();
