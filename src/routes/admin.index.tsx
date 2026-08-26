@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminCard, Badge } from "@/components/admin/AdminLayout";
 import { useAdminList } from "@/lib/cms";
 import type { Program, Story, TeamMember, ContactSub, DonationIntent, Faq, Testimonial, EventRecord, EventRsvp } from "@/lib/cms";
@@ -7,13 +9,44 @@ import { Link } from "@tanstack/react-router";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { formatCurrency } from "@/lib/utils";
 import { Download } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Dashboard — Elle's Foundation Admin" }, { name: "robots", content: "noindex" }] }),
   component: Dashboard,
 });
 
+const DASHBOARD_TABLES = [
+  "programs",
+  "stories",
+  "team_members",
+  "testimonials",
+  "faqs",
+  "contact_submissions",
+  "donation_intents",
+  "events",
+  "event_rsvps",
+] as const;
+
 function Dashboard() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const channel = supabase.channel("admin-dashboard-metrics");
+    DASHBOARD_TABLES.forEach((table) => {
+      channel.on(
+        "postgres_changes",
+        { event: "*", schema: "public", table },
+        () => void queryClient.invalidateQueries({ queryKey: ["a", table] }),
+      );
+    });
+    channel.subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   const programs = useAdminList<Program>("programs");
   const stories = useAdminList<Story>("stories");
   const team = useAdminList<TeamMember>("team_members");

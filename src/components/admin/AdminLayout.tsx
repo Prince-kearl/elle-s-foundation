@@ -37,10 +37,17 @@ type AdminNotification = {
   label: string;
   detail: string;
   to: string;
+  unread: boolean;
+};
+
+type AdminNotificationState = {
+  notifications: AdminNotification[];
+  unreadCount: number;
 };
 
 function useAdminNotifications() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   useEffect(() => {
     const channel = supabase
@@ -48,74 +55,72 @@ function useAdminNotifications() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "contact_submissions" },
-        () => {
-          void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
-        },
+        () => void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] }),
       )
-      .on("postgres_changes", { event: "*", schema: "public", table: "donation_intents" }, () => {
-        void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
-      })
-      .on("postgres_changes", { event: "*", schema: "public", table: "event_rsvps" }, () => {
-        void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
-      })
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "donation_intents" },
+        () => void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "event_rsvps" },
+        () => void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] }),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "admin_notification_reads", filter: `user_id=eq.${user?.id ?? ""}` },
+        () => void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] }),
+      )
       .subscribe();
 
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [queryClient]);
+  }, [queryClient, user?.id]);
 
-  return useQuery({
-    queryKey: ["admin-notifications"],
+  const query = useQuery<AdminNotificationState>({
+    queryKey: ["admin-notifications", user?.id],
+    enabled: Boolean(user?.id),
     queryFn: async () => {
+      if (!user?.id) return { notifications: [], unreadCount: 0 };
       const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      const [contacts, donations, rsvps] = await Promise.all([
-        supabase
-          .from("contact_submissions")
-          .select("id", { count: "exact", head: true })
-          .eq("handled", false),
-        supabase
-          .from("donation_intents")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", since),
-        supabase
-          .from("event_rsvps")
-          .select("id", { count: "exact", head: true })
-          .gte("created_at", since),
+      const [contacts, donations, rsvps, reads] = await Promise.all([
+        supabase.from("contact_submissions").select("id,created_at", { count: "exact" }).eq("handled", false).order("created_at", { ascending: false }).limit(100),
+        supabase.from("donation_intents").select("id,created_at", { count: "exact" }).gte("created_at", since).order("created_at", { ascending: false }).limit(100),
+        supabase.from("event_rsvps").select("id,created_at", { count: "exact" }).gte("created_at", since).order("created_at", { ascending: false }).limit(100),
+        supabase.from("admin_notification_reads").select("notification_key,read_at").eq("user_id", user.id),
       ]);
-
-      const notifications: AdminNotification[] = [];
-      if (!contacts.error && (contacts.count ?? 0) > 0) {
-        notifications.push({
-          id: "contacts",
-          label: "New contact messages",
-          detail: `${contacts.count} message${contacts.count === 1 ? "" : "s"} need attention`,
-          to: "/admin/contacts",
-        });
-      }
-      if (!donations.error && (donations.count ?? 0) > 0) {
-        notifications.push({
-          id: "donations",
-          label: "Recent donation activity",
-          detail: `${donations.count} donation${donations.count === 1 ? "" : "s"} in the last 7 days`,
-          to: "/admin/donations",
-        });
-      }
-      if (!rsvps.error && (rsvps.count ?? 0) > 0) {
-        notifications.push({
-          id: "rsvps",
-          label: "New event RSVPs",
-          detail: `${rsvps.count} RSVP${rsvps.count === 1 ? "" : "s"} in the last 7 days`,
-          to: "/admin/events",
-        });
-      }
-
-      return notifications;
+      const readAt = new Map((reads.data ?? []).map((row) => [row.notification_key, row.read_at]));
+      const definitions = [
+        { id: "contacts", label: "New contact messages", count: contacts.count ?? 0, latest: contacts.data?.[0]?.created_at, to: "/admin/contacts", noun: "message" },
+        { id: "donations", label: "Recent donation activity", count: donations.count ?? 0, latest: donations.data?.[0]?.created_at, to: "/admin/donations", noun: "donation" },
+        { id: "rsvps", label: "New event RSVPs", count: rsvps.count ?? 0, latest: rsvps.data?.[0]?.created_at, to: "/admin/events", noun: "RSVP" },
+      ];
+      const notifications = definitions.filter((item) => item.count > 0).map((item) => ({
+        id: item.id,
+        label: item.label,
+        detail: `${item.count} ${item.noun}${item.count === 1 ? "" : "s"}${item.id === "contacts" ? " need attention" : " in the last 7 days"}`,
+        to: item.to,
+        unread: !readAt.get(item.id) || (!!item.latest && new Date(readAt.get(item.id)!).getTime() < new Date(item.latest).getTime()),
+      }));
+      return { notifications, unreadCount: notifications.filter((item) => item.unread).length };
     },
     refetchInterval: 30_000,
     staleTime: 10_000,
     refetchOnWindowFocus: true,
   });
+
+  const markRead = async (notificationKey: string) => {
+    if (!user?.id) return;
+    await supabase.from("admin_notification_reads").upsert(
+      { user_id: user.id, notification_key: notificationKey, read_at: new Date().toISOString() },
+      { onConflict: "user_id,notification_key" },
+    );
+    await queryClient.invalidateQueries({ queryKey: ["admin-notifications", user.id] });
+  };
+
+  return { ...query, notifications: query.data?.notifications ?? [], unreadCount: query.data?.unreadCount ?? 0, markRead };
 }
 
 const items = [
@@ -159,7 +164,7 @@ export function AdminLayout({
   const path = useRouterState({ select: (s) => s.location.pathname });
   const nav = useNavigate();
   const { user, signOut, role } = useAuth();
-  const { data: notifications = [], isLoading: notificationsLoading } = useAdminNotifications();
+  const { notifications, unreadCount, isLoading: notificationsLoading, markRead } = useAdminNotifications();
 
   return (
     <div className="admin-shell min-h-screen bg-background flex text-foreground">
@@ -228,13 +233,13 @@ export function AdminLayout({
             <GlobalSearch scope="admin" />
             <div className="relative">
               <button
-                aria-label={`Open notifications${notifications.length ? ` (${notifications.length} unread)` : ""}`}
+                aria-label={`Open notifications${unreadCount ? ` (${unreadCount} unread)` : ""}`}
                 aria-expanded={alertsOpen}
                 onClick={() => setAlertsOpen((value) => !value)}
                 className="relative p-2 transition hover:bg-sand"
               >
                 <Bell className="size-5 text-muted-foreground" />
-                {(notifications.length > 0 || notificationsLoading) && (
+                {(unreadCount > 0 || notificationsLoading) && (
                   <span className="absolute right-1 top-1 size-2 rounded-full bg-earth" />
                 )}
               </button>
@@ -244,9 +249,11 @@ export function AdminLayout({
                     <div>
                       <div className="text-sm font-semibold text-foreground">Notifications</div>
                       <div className="mt-0.5 text-[0.68rem] text-muted-foreground">
-                        {notifications.length
-                          ? `${notifications.length} item${notifications.length === 1 ? "" : "s"} need attention`
-                          : "You're all caught up"}
+                        {unreadCount
+                          ? `${unreadCount} unread item${unreadCount === 1 ? "" : "s"}`
+                          : notifications.length
+                            ? "No unread items"
+                            : "You're all caught up"}
                       </div>
                     </div>
                     <Bell className="size-4 text-earth" />
@@ -261,14 +268,15 @@ export function AdminLayout({
                         <Link
                           key={notification.id}
                           to={notification.to}
-                          onClick={() => setAlertsOpen(false)}
-                          className="flex items-start gap-3 px-4 py-3 transition hover:bg-muted"
+                          onClick={() => {
+                            void markRead(notification.id);
+                            setAlertsOpen(false);
+                          }}
+                          className={`flex items-start gap-3 px-4 py-3 transition hover:bg-muted ${notification.unread ? "bg-earth/5" : "opacity-75"}`}
                         >
-                          <span className="mt-1 size-2 shrink-0 rounded-full bg-earth" />
+                          <span className={`mt-1 size-2 shrink-0 rounded-full ${notification.unread ? "bg-earth" : "bg-muted-foreground/30"}`} />
                           <span className="min-w-0">
-                            <span className="block text-sm font-semibold text-foreground">
-                              {notification.label}
-                            </span>
+                            <span className={`block text-sm text-foreground ${notification.unread ? "font-semibold" : "font-medium"}`}>{notification.label}</span>
                             <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">
                               {notification.detail}
                             </span>
