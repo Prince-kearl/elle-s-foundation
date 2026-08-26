@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { Loader2 } from "lucide-react";
+import { ArrowUpRight, LockKeyhole, Loader2, Mail } from "lucide-react";
 import logoAsset from "@/assets/brand/elles-foundation-mark.png";
 import { toast } from "sonner";
 
@@ -32,79 +32,151 @@ function AuthPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const res = mode === "signin"
-      ? await signIn(email, password)
-      : await signUp(email, password, fullName);
+    const res =
+      mode === "signin" ? await signIn(email, password) : await signUp(email, password, fullName);
     setSubmitting(false);
     if (res.error) return toast.error(res.error);
-    if (mode === "signup") toast.success("Account created. Check your email to confirm, then sign in.");
+    if (mode === "signup")
+      toast.success("Account created. Check your email to confirm, then sign in.");
     else toast.success("Signed in");
   };
 
+  const isSignIn = mode === "signin";
+
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-[#F5EFE5]">
-      <div className="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-primary via-forest to-earth text-white">
-        <Link to="/" className="flex items-center gap-3 font-display text-2xl">
-          <span className="grid size-10 place-items-center"><img src={logoAsset} alt="" className="size-9 brightness-0 invert" /></span>
-          Elle's Foundation
-        </Link>
-        <div>
-          <h2 className="font-display text-4xl leading-tight">Manage every part of your site.</h2>
-          <p className="mt-4 text-white/75 max-w-md">Update content, review submissions, and shape the story you share with the world — no code required.</p>
-        </div>
-        <p className="text-xs text-white/50">© {new Date().getFullYear()} Elle's Foundation CMS</p>
-      </div>
-
-      <div className="flex items-center justify-center p-6 md:p-12">
-        <div className="w-full max-w-md">
-          <h1 className="font-display text-3xl text-primary">
-            {mode === "signin" ? "Welcome back" : "Create admin account"}
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#073B2B] px-4 py-10 text-[#124A3A] sm:px-6">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 18% 20%, rgba(241,250,233,0.12) 0 1px, transparent 1px), radial-gradient(circle at 78% 74%, rgba(241,250,233,0.10) 0 1px, transparent 1px)",
+          backgroundSize: "34px 34px, 47px 47px",
+        }}
+      />
+      <div className="relative w-full max-w-[430px] border border-white/10 bg-[#FBFFF8] shadow-[0_28px_80px_-28px_rgba(0,0,0,0.7)]">
+        <div className="border-b border-[#124A3A]/10 px-7 pb-6 pt-7 sm:px-9 sm:pt-9">
+          <Link
+            to="/"
+            className="mb-8 inline-flex items-center gap-3"
+            aria-label="Back to Elle's Foundation website"
+          >
+            <span className="grid size-11 place-items-center border border-[#D9A88E]/60 bg-[#F7E8DC]">
+              <img src={logoAsset} alt="" className="size-9 object-contain" />
+            </span>
+            <span className="font-display text-xl font-semibold tracking-[-0.03em] text-[#084B35]">
+              Elle's Foundation
+            </span>
+          </Link>
+          <div className="mb-3 flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#D9A88E]">
+            <span className="size-2 rounded-full bg-[#D9A88E]" /> Protected workspace
+          </div>
+          <h1 className="font-display text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#084B35] sm:text-[2.15rem]">
+            {isSignIn ? "Admin sign in" : "Create admin account"}
           </h1>
-          <p className="text-sm text-[#6B7280] mt-1">
-            {mode === "signin" ? "Sign in to your CMS dashboard." : "The first person to sign up becomes super admin."}
+          <p className="mt-3 max-w-sm text-sm leading-6 text-[#5C7067]">
+            {isSignIn
+              ? "Enter your email and password to manage programmes, stories, media, and site content."
+              : "Create an account to access Elle's Foundation content management workspace."}
           </p>
+        </div>
 
-          <form onSubmit={submit} className="mt-8 space-y-4">
+        <div className="px-7 pb-7 pt-6 sm:px-9 sm:pb-9">
+          <form onSubmit={submit} className="space-y-5">
             {mode === "signup" && (
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Full name</label>
-                <input value={fullName} onChange={(e) => setFullName(e.target.value)} required className="mt-1.5 w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" />
-              </div>
+              <label className="block">
+                <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#124A3A]">
+                  Full name
+                </span>
+                <input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                  autoComplete="name"
+                  className="h-12 w-full border border-[#C9D8CE] bg-white px-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[#0F6848] focus:ring-2 focus:ring-[#D9A88E]/30"
+                  placeholder="Your full name"
+                />
+              </label>
             )}
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="mt-1.5 w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" />
-            </div>
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="mt-1.5 w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/15" />
-            </div>
 
-            <button disabled={submitting} className="w-full rounded-lg bg-gradient-to-r from-primary to-forest text-white px-4 py-3 text-sm font-medium hover:opacity-95 disabled:opacity-60 flex items-center justify-center gap-2">
+            <label className="block">
+              <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#124A3A]">
+                Email address
+              </span>
+              <span className="relative block">
+                <Mail
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#6D8278]"
+                />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                  className="h-12 w-full border border-[#C9D8CE] bg-white pl-10 pr-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[#0F6848] focus:ring-2 focus:ring-[#D9A88E]/30"
+                  placeholder="you@example.com"
+                />
+              </span>
+            </label>
+
+            <label className="block">
+              <span className="mb-2 block text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[#124A3A]">
+                Password
+              </span>
+              <span className="relative block">
+                <LockKeyhole
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#6D8278]"
+                />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  autoComplete={isSignIn ? "current-password" : "new-password"}
+                  className="h-12 w-full border border-[#C9D8CE] bg-white pl-10 pr-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[#0F6848] focus:ring-2 focus:ring-[#D9A88E]/30"
+                  placeholder="Enter your password"
+                />
+              </span>
+            </label>
+
+            <button
+              disabled={submitting}
+              className="flex h-12 w-full items-center justify-center gap-2 bg-[#0F6848] px-4 text-sm font-bold text-white transition hover:bg-[#084B35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9A88E] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            >
               {submitting && <Loader2 className="size-4 animate-spin" />}
-              {mode === "signin" ? "Sign in" : "Create account"}
+              {isSignIn ? "Sign in" : "Create account"}
+              {!submitting && <ArrowUpRight className="size-4" />}
             </button>
           </form>
 
           <button
-            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="mt-6 text-sm text-primary hover:underline"
+            type="button"
+            onClick={() => setMode(isSignIn ? "signup" : "signin")}
+            className="mt-5 text-sm font-semibold text-[#0F6848] underline-offset-4 transition hover:text-[#D9A88E] hover:underline"
           >
-            {mode === "signin" ? "No account yet? Sign up →" : "Already have an account? Sign in →"}
+            {isSignIn ? "No account yet? Create one →" : "Already have an account? Sign in →"}
           </button>
 
           {user && !isAdmin && (
-            <div className="mt-6 p-4 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800">
-              You're signed in as <b>{user.email}</b> but you don't have admin access.
-              Ask a super admin to grant you the <b>admin</b> role in Supabase (<code>user_roles</code> table).
+            <div className="mt-5 border border-[#E5B8A0] bg-[#F7E8DC] p-4 text-sm leading-6 text-[#7C3E2D]">
+              You're signed in as <b>{user.email}</b> but you don't have admin access. Ask a super
+              admin to grant you the <b>admin</b> role in Supabase.
             </div>
           )}
 
-          <div className="mt-8 pt-6 border-t border-[#EEF0F3] text-xs text-[#6B7280]">
-            <Link to="/" className="hover:text-primary">← Back to website</Link>
+          <div className="mt-7 border-t border-[#124A3A]/10 pt-5 text-xs text-[#6D8278]">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1 font-semibold transition hover:text-[#0F6848]"
+            >
+              ← Back to website
+            </Link>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
