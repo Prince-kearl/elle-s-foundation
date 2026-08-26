@@ -1,4 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import {
   LayoutGrid,
@@ -29,6 +30,67 @@ import {
 import { useAuth } from "@/lib/auth";
 import logoAsset from "@/assets/brand/elles-foundation-mark.png";
 import { GlobalSearch } from "@/components/site/GlobalSearch";
+import { supabase } from "@/lib/supabase";
+
+type AdminNotification = {
+  id: string;
+  label: string;
+  detail: string;
+  to: string;
+};
+
+function useAdminNotifications() {
+  return useQuery({
+    queryKey: ["admin-notifications"],
+    queryFn: async () => {
+      const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const [contacts, donations, rsvps] = await Promise.all([
+        supabase
+          .from("contact_submissions")
+          .select("id", { count: "exact", head: true })
+          .eq("handled", false),
+        supabase
+          .from("donation_intents")
+          .select("id", { count: "exact", head: true })
+          .gte("created_at", since),
+        supabase
+          .from("event_rsvps")
+          .select("id", { count: "exact", head: true })
+          .gte("created_at", since),
+      ]);
+
+      const notifications: AdminNotification[] = [];
+      if (!contacts.error && (contacts.count ?? 0) > 0) {
+        notifications.push({
+          id: "contacts",
+          label: "New contact messages",
+          detail: `${contacts.count} message${contacts.count === 1 ? "" : "s"} need attention`,
+          to: "/admin/contacts",
+        });
+      }
+      if (!donations.error && (donations.count ?? 0) > 0) {
+        notifications.push({
+          id: "donations",
+          label: "Recent donation activity",
+          detail: `${donations.count} donation${donations.count === 1 ? "" : "s"} in the last 7 days`,
+          to: "/admin/donations",
+        });
+      }
+      if (!rsvps.error && (rsvps.count ?? 0) > 0) {
+        notifications.push({
+          id: "rsvps",
+          label: "New event RSVPs",
+          detail: `${rsvps.count} RSVP${rsvps.count === 1 ? "" : "s"} in the last 7 days`,
+          to: "/admin/events",
+        });
+      }
+
+      return notifications;
+    },
+    refetchInterval: 30_000,
+    staleTime: 10_000,
+  });
+}
 
 const items = [
   { to: "/admin", label: "Dashboard", icon: LayoutGrid, end: true },
@@ -71,6 +133,7 @@ export function AdminLayout({
   const path = useRouterState({ select: (s) => s.location.pathname });
   const nav = useNavigate();
   const { user, signOut, role } = useAuth();
+  const { data: notifications = [], isLoading: notificationsLoading } = useAdminNotifications();
 
   return (
     <div className="admin-shell min-h-screen bg-background flex text-foreground">
@@ -139,25 +202,66 @@ export function AdminLayout({
             <GlobalSearch scope="admin" />
             <div className="relative">
               <button
-                aria-label="Open notifications"
+                aria-label={`Open notifications${notifications.length ? ` (${notifications.length} unread)` : ""}`}
+                aria-expanded={alertsOpen}
                 onClick={() => setAlertsOpen((value) => !value)}
-                className="relative p-2 hover:bg-sand"
+                className="relative p-2 transition hover:bg-sand"
               >
                 <Bell className="size-5 text-muted-foreground" />
-                <span className="absolute top-1 right-1 size-2 rounded-full bg-primary" />
+                {(notifications.length > 0 || notificationsLoading) && (
+                  <span className="absolute right-1 top-1 size-2 rounded-full bg-earth" />
+                )}
               </button>
               {alertsOpen && (
-                <div className="absolute right-0 top-12 w-72 border border-border bg-card p-4 shadow-xl">
-                  <div className="font-semibold text-sm">Notifications</div>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    New messages, donations, scheduled publications, and system notices appear here.
-                  </p>
+                <div className="absolute right-0 top-12 z-50 w-[min(22rem,calc(100vw-2rem))] border border-border bg-card shadow-xl">
+                  <div className="flex items-center justify-between border-b border-border px-4 py-3">
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">Notifications</div>
+                      <div className="mt-0.5 text-[0.68rem] text-muted-foreground">
+                        {notifications.length
+                          ? `${notifications.length} item${notifications.length === 1 ? "" : "s"} need attention`
+                          : "You're all caught up"}
+                      </div>
+                    </div>
+                    <Bell className="size-4 text-earth" />
+                  </div>
+                  {notificationsLoading ? (
+                    <div className="px-4 py-6 text-center text-xs text-muted-foreground">
+                      Checking recent activity…
+                    </div>
+                  ) : notifications.length ? (
+                    <div className="divide-y divide-border">
+                      {notifications.map((notification) => (
+                        <Link
+                          key={notification.id}
+                          to={notification.to}
+                          onClick={() => setAlertsOpen(false)}
+                          className="flex items-start gap-3 px-4 py-3 transition hover:bg-muted"
+                        >
+                          <span className="mt-1 size-2 shrink-0 rounded-full bg-earth" />
+                          <span className="min-w-0">
+                            <span className="block text-sm font-semibold text-foreground">
+                              {notification.label}
+                            </span>
+                            <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">
+                              {notification.detail}
+                            </span>
+                          </span>
+                          <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="px-4 py-6 text-center text-xs text-muted-foreground">
+                      No new contact, donation, or RSVP activity in the last 7 days.
+                    </div>
+                  )}
                   <Link
                     to="/admin"
                     onClick={() => setAlertsOpen(false)}
-                    className="mt-3 inline-block text-xs font-semibold text-primary"
+                    className="block border-t border-border px-4 py-3 text-xs font-semibold text-primary transition hover:bg-muted"
                   >
-                    View activity
+                    View dashboard activity
                   </Link>
                 </div>
               )}
