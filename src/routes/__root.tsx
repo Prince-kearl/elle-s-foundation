@@ -80,10 +80,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#44533D" },
+      { name: "theme-color", content: "#0F6848" },
+      {
+        title: "Elle's Foundation — Feeding Hope. Restoring Lives.",
+      },
+      {
+        name: "description",
+        content: "Elle's Foundation builds stronger communities with dignity, care, and hope.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Elle's Foundation" },
+      { property: "og:title", content: "Elle's Foundation — Feeding Hope. Restoring Lives." },
+      {
+        property: "og:description",
+        content: "Elle's Foundation builds stronger communities with dignity, care, and hope.",
+      },
+      { property: "og:url", content: "https://elles-foundation.vercel.app/" },
+      { property: "og:image", content: "https://elles-foundation.vercel.app/social-preview.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      {
+        property: "og:image:alt",
+        content: "Elle's Foundation community team building stronger communities",
+      },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Elle's Foundation — Feeding Hope. Restoring Lives." },
+      {
+        name: "twitter:description",
+        content: "Elle's Foundation builds stronger communities with dignity, care, and hope.",
+      },
+      { name: "twitter:image", content: "https://elles-foundation.vercel.app/social-preview.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
