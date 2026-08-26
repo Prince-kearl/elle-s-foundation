@@ -123,28 +123,50 @@ function useAdminNotifications() {
   return { ...query, notifications: query.data?.notifications ?? [], unreadCount: query.data?.unreadCount ?? 0, markRead };
 }
 
-const items = [
-  { to: "/admin", label: "Dashboard", icon: LayoutGrid, end: true },
-  { to: "/admin/pages", label: "Pages", icon: FileText },
-  { to: "/admin/hero", label: "Hero Section", icon: Sparkles },
-  { to: "/admin/stats", label: "Statistics", icon: ShieldCheck },
-  { to: "/admin/programs", label: "Programs", icon: HeartHandshake },
-  { to: "/admin/events", label: "Events & RSVPs", icon: CalendarDays },
-  { to: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
-  { to: "/admin/stories", label: "Stories", icon: ImageIcon },
-  { to: "/admin/team", label: "Team Members", icon: Users },
-  { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
-  { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
-  { to: "/admin/sponsorships", label: "Sponsorships", icon: HandHeart },
-  { to: "/admin/media", label: "Media Library", icon: ImageIcon },
-  { to: "/admin/storage", label: "Storage & Health", icon: HardDrive },
-  { to: "/admin/brand", label: "Brand & Theme", icon: Palette },
-
-  { to: "/admin/users", label: "Users", icon: UserCog },
-  { to: "/admin/contacts", label: "Contact Messages", icon: Inbox, badge: "contact" as const },
-  { to: "/admin/donations", label: "Donations", icon: Heart, badge: "donation" as const },
-  { to: "/admin/settings", label: "Site Settings", icon: Settings },
-  { to: "/admin/profile", label: "My Profile", icon: User },
+const navSections = [
+  {
+    label: "Overview",
+    items: [{ to: "/admin", label: "Dashboard", icon: LayoutGrid, end: true }],
+  },
+  {
+    label: "Site Content",
+    items: [
+      { to: "/admin/pages", label: "Pages", icon: FileText },
+      { to: "/admin/hero", label: "Hero Section", icon: Sparkles },
+      { to: "/admin/stats", label: "Statistics", icon: ShieldCheck },
+      { to: "/admin/programs", label: "Programs", icon: HeartHandshake },
+      { to: "/admin/events", label: "Events & RSVPs", icon: CalendarDays },
+      { to: "/admin/stories", label: "Stories", icon: ImageIcon },
+      { to: "/admin/team", label: "Team Members", icon: Users },
+      { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
+      { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
+    ],
+  },
+  {
+    label: "Community & Engagement",
+    items: [
+      { to: "/admin/sponsorships", label: "Sponsorships", icon: HandHeart },
+      { to: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
+      { to: "/admin/contacts", label: "Contact Messages", icon: Inbox, badge: "contact" as const },
+      { to: "/admin/donations", label: "Donations", icon: Heart, badge: "donation" as const },
+    ],
+  },
+  {
+    label: "Media & Appearance",
+    items: [
+      { to: "/admin/media", label: "Media Library", icon: ImageIcon },
+      { to: "/admin/storage", label: "Storage & Health", icon: HardDrive },
+      { to: "/admin/brand", label: "Brand & Theme", icon: Palette },
+      { to: "/admin/settings", label: "Site Settings", icon: Settings },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { to: "/admin/users", label: "Users", icon: UserCog },
+      { to: "/admin/profile", label: "My Profile", icon: User },
+    ],
+  },
 ] as const;
 
 export function AdminLayout({
@@ -180,27 +202,39 @@ export function AdminLayout({
           </div>
           <span className="font-display text-xl font-semibold text-white">Elle CMS</span>
         </div>
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {items.map((item) => {
-            const { to, label, icon: Icon } = item;
-            const end = "end" in item ? item.end : false;
-            const active = end ? path === to : path.startsWith(to);
-            return (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition ${
-                  active
-                    ? "bg-sand text-forest shadow-none"
-                    : "text-primary-foreground/75 hover:bg-primary hover:text-primary-foreground"
-                }`}
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-5">
+          {navSections.map((section) => (
+            <section key={section.label} aria-labelledby={`admin-nav-${section.label.toLowerCase().replaceAll(" ", "-")}`}>
+              <h2
+                id={`admin-nav-${section.label.toLowerCase().replaceAll(" ", "-")}`}
+                className="px-3 pb-2 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-white/40"
               >
-                <Icon className="size-4" />
-                <span className="flex-1">{label}</span>
-              </Link>
-            );
-          })}
+                {section.label}
+              </h2>
+              <div className="space-y-1">
+                {section.items.map((item) => {
+                  const { to, label, icon: Icon } = item;
+                  const end = "end" in item ? item.end : false;
+                  const active = end ? path === to : path.startsWith(to);
+                  return (
+                    <Link
+                      key={to}
+                      to={to}
+                      onClick={() => setOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition ${
+                        active
+                          ? "bg-sand text-forest shadow-none"
+                          : "text-primary-foreground/75 hover:bg-primary hover:text-primary-foreground"
+                      }`}
+                    >
+                      <Icon className="size-4 shrink-0" />
+                      <span className="flex-1">{label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
         </nav>
         <div className="p-4 border-t border-white/10">
           <button
