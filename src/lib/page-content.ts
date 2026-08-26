@@ -8,7 +8,9 @@ export type PageContentMap = Record<string, string>;
  * Live-synced: admin saves invalidate ["page_content", page].
  */
 export function usePageContent(page: string) {
-  const preview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("preview") === "1";
+  const preview =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("preview") === "1";
   return useQuery({
     queryKey: ["page_content", page, preview ? "preview" : "published"],
     queryFn: async (): Promise<PageContentMap> => {
@@ -23,7 +25,10 @@ export function usePageContent(page: string) {
       });
       return map;
     },
-    staleTime: 15_000,
+    // Published media/content must become visible immediately after an admin publishes.
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 }
 

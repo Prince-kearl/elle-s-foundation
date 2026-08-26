@@ -199,6 +199,16 @@ type CmsMediaState = {
   missingTable: boolean;
 };
 
+type PublishRow = {
+  id: string;
+  value: string;
+  draft_value: string;
+  status: "published";
+  published_at: string;
+  publish_at: null;
+  updated_at: string;
+};
+
 function isMissingPageContentTable(error: unknown) {
   const typedError = error as { code?: string; message?: string } | null;
   const message = String(typedError?.message ?? error ?? "");
@@ -336,11 +346,51 @@ function MediaAdmin() {
     }
     setPublishing(true);
     try {
-      const pages = [...new Set(shownSlots.map((slot) => slot.page))];
-      for (const page of pages) {
-        const { error } = await supabase.rpc("publish_page", { _page: page, _publish_at: null });
-        if (error) throw error;
+      const now = new Date().toISOString();
+      const publishRows = shownSlots
+        .flatMap<PublishRow | null>((slot) => {
+          const imageRow = rows.find(
+            (row) => row.page === slot.page && row.section === slot.section && row.key === slot.key,
+          );
+          const altRow = rows.find(
+            (row) =>
+              row.page === slot.page &&
+              row.section === slot.section &&
+              row.key === `${slot.key}_alt`,
+          );
+          return [
+            imageRow?.id
+              ? {
+                  id: imageRow.id,
+                  value: drafts[slot.id] ?? slot.defaultUrl,
+                  draft_value: drafts[slot.id] ?? slot.defaultUrl,
+                  status: "published",
+                  published_at: now,
+                  publish_at: null,
+                  updated_at: now,
+                }
+              : null,
+            altRow?.id
+              ? {
+                  id: altRow.id,
+                  value: alts[slot.id] ?? slot.alt,
+                  draft_value: alts[slot.id] ?? slot.alt,
+                  status: "published",
+                  published_at: now,
+                  publish_at: null,
+                  updated_at: now,
+                }
+              : null,
+          ];
+        })
+        .filter((row): row is PublishRow => row !== null);
+      if (!publishRows.length) {
+        throw new Error("Save at least one image slot before publishing changes.");
       }
+      const { error } = await supabase
+        .from("page_content")
+        .upsert(publishRows, { onConflict: "id" });
+      if (error) throw error;
       await Promise.all([
         qc.invalidateQueries({ queryKey: ["page_content"] }),
         qc.invalidateQueries({ queryKey: ["a", "page_content", "media-slots"] }),
