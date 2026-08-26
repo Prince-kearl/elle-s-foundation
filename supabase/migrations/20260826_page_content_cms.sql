@@ -49,6 +49,14 @@ drop policy if exists "page_content staff read" on public.page_content;
 create policy "page_content staff read" on public.page_content
   for select to authenticated
   using (public.has_role(auth.uid(), 'admin') or public.has_role(auth.uid(), 'editor'));
+drop policy if exists "page_content published public read" on public.page_content;
+create policy "page_content published public read" on public.page_content
+  for select to anon, authenticated
+  using (
+    status = 'published'
+    and (published_at is null or published_at <= now())
+    and (unpublish_at is null or unpublish_at > now())
+  );
 drop policy if exists "page_content staff write" on public.page_content;
 create policy "page_content staff write" on public.page_content
   for all to authenticated

@@ -14,10 +14,12 @@ export function usePageContent(page: string) {
   return useQuery({
     queryKey: ["page_content", page, preview ? "preview" : "published"],
     queryFn: async (): Promise<PageContentMap> => {
-      const { data, error } = await supabase
-        .from(preview ? "page_content" : "published_page_content")
+      let query = supabase
+        .from("page_content")
         .select(preview ? "section,key,value,draft_value,status" : "section,key,value")
         .eq("page", page);
+      if (!preview) query = query.eq("status", "published");
+      const { data, error } = await query;
       if (error) throw error;
       const map: PageContentMap = {};
       (data ?? []).forEach((r: any) => {
