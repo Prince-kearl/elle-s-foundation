@@ -223,7 +223,6 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
   const stats = (records ?? []).map((record, index) => ({
     value: record.value,
     label: record.label,
-    note: "Updated from the foundation CMS",
     Icon: icons[index % icons.length],
     tone: tones[index % tones.length],
   }));
@@ -241,7 +240,7 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
         </div>
         {stats.length ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map(({ value, label, note, Icon, tone }) => (
+            {stats.map(({ value, label, Icon, tone }) => (
             <div
               key={label}
               className="soft-card border-t-4 bg-white p-5"
@@ -265,9 +264,6 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
                 >
                   <Icon className="size-4" />
                 </span>
-              </div>
-              <div className="mt-5 border-t border-[#0f6848]/10 pt-3 text-xs font-medium text-[#477763]">
-                ↗ {note}
               </div>
             </div>
             ))}
