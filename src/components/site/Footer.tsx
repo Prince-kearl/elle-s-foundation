@@ -205,17 +205,32 @@ export function Footer() {
                   }
                   setSubmitting(true);
                   try {
-                    const { error } = await supabase.from("newsletter_subscribers").insert({
+                    const payload = {
                       email: normalizedEmail,
                       whatsapp_number: whatsappNumber.trim() || null,
                       source: "website_footer",
-                      status: "subscribed",
-                    });
+                      status: "subscribed" as const,
+                    };
+                    let { error } = await supabase.from("newsletter_subscribers").insert(payload);
+
+                    // Keep email-only subscriptions working if production has the base
+                    // newsletter migration but not the optional WhatsApp-column migration.
+                    if (error?.code === "42703") {
+                      const fallback = await supabase.from("newsletter_subscribers").insert({
+                        email: normalizedEmail,
+                        source: "website_footer",
+                        status: "subscribed" as const,
+                      });
+                      error = fallback.error;
+                    }
+
                     if (error && error.code !== "23505") {
                       toast.error(
                         error.code === "42P01" || error.code === "42703"
-                          ? "Newsletter signups are not configured yet. Please apply all newsletter Supabase migrations."
-                          : "We couldn't save your subscription. Please try again.",
+                          ? "Newsletter signups are not configured yet. Please apply the newsletter Supabase migrations."
+                          : error.code === "42501"
+                            ? "Newsletter signups are not permitted yet. Please check the Supabase public insert policy."
+                            : "We couldn't save your subscription. Please try again.",
                       );
                       return;
                     }
