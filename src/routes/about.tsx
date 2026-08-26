@@ -5,7 +5,6 @@ import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
 import { usePublicTeam } from "@/lib/cms";
 import aboutHero from "@/assets/community/live/outreach-children.jpeg";
-import aboutCta from "@/assets/community/live/community-gathering.jpeg";
 import { ArrowRight, Heart } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
@@ -158,31 +157,24 @@ function About() {
 
       <section className="section-y-sm">
         <div className="container-wide">
-          <div className="rounded-2xl overflow-hidden relative">
-            <Media
-              src={pv(c, "cta.image", aboutCta)}
-              alt="Community gathering"
-              className="w-full h-[380px] object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/85 to-primary/40 grid place-items-center text-center px-6">
-              <div>
-                <h3 className="font-display text-4xl md:text-5xl text-white leading-tight max-w-2xl mx-auto">
-                  {pv(c, "cta.title", "Walk with us into the next decade.")}
-                </h3>
-                <div className="mt-6 flex flex-wrap gap-3 justify-center">
-                  <Link
-                    to="/donate"
-                    className="inline-flex items-center gap-2 rounded-full bg-gold text-ink px-6 py-3 font-medium"
-                  >
-                    <Heart className="size-4" /> Donate
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/30 text-white px-6 py-3 font-medium"
-                  >
-                    Contact us <ArrowRight className="size-4" />
-                  </Link>
-                </div>
+          <div className="grid min-h-[380px] place-items-center overflow-hidden rounded-2xl bg-primary px-6 py-16 text-center">
+            <div>
+              <h3 className="font-display text-4xl md:text-5xl text-white leading-tight max-w-2xl mx-auto">
+                {pv(c, "cta.title", "Walk with us into the next decade.")}
+              </h3>
+              <div className="mt-6 flex flex-wrap gap-3 justify-center">
+                <Link
+                  to="/donate"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold text-ink px-6 py-3 font-medium"
+                >
+                  <Heart className="size-4" /> Donate
+                </Link>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 rounded-full bg-white/15 border border-white/30 text-white px-6 py-3 font-medium"
+                >
+                  Contact us <ArrowRight className="size-4" />
+                </Link>
               </div>
             </div>
           </div>
