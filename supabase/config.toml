@@ -1,2 +1,5 @@
 [functions.send-whatsapp-welcome]
 verify_jwt = false
+
+[functions.send-rsvp-confirmation]
+verify_jwt = false

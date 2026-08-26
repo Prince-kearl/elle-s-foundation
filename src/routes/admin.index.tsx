@@ -26,6 +26,7 @@ const DASHBOARD_TABLES = [
   "donation_intents",
   "events",
   "event_rsvps",
+  "rsvp_email_confirmations",
 ] as const;
 
 function Dashboard() {

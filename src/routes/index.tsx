@@ -491,7 +491,9 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
   async function submit(eventForm: React.FormEvent) {
     eventForm.preventDefault();
     setSubmitting(true);
+    const rsvpId = crypto.randomUUID();
     const { error } = await supabase.from("event_rsvps").insert({
+      id: rsvpId,
       event_id: event.id,
       name,
       email,
@@ -504,8 +506,14 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
       toast.error(error.message);
       return;
     }
+
+    // Email delivery is deliberately non-blocking: the RSVP is already saved,
+    // while the Edge Function records and attempts the confirmation separately.
+    void supabase.functions.invoke("send-rsvp-confirmation", {
+      body: { rsvp_id: rsvpId },
+    });
     setSubmitted(true);
-    toast.success("Your RSVP has been received.");
+    toast.success("Your RSVP has been received. A confirmation email is on its way.");
   }
 
   return (

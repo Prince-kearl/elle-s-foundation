@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { CalendarDays, Check, ClipboardList, MapPin, Pencil, Plus, Trash2, Users } from "lucide-react";
+import { CalendarDays, Check, ClipboardList, MailCheck, MapPin, Pencil, Plus, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { AdminCard, AdminLayout, Badge, GhostButton, PrimaryButton, TextArea, TextInput } from "@/components/admin/AdminLayout";
-import { useAdminList, useDelete, useUpsert, type EventRecord, type EventRsvp } from "@/lib/cms";
+import { useAdminList, useDelete, useUpsert, type EventRecord, type EventRsvp, type RsvpEmailConfirmation } from "@/lib/cms";
 
 export const Route = createFileRoute("/admin/events")({
   head: () => ({ meta: [{ title: "Events & RSVPs — Admin" }, { name: "robots", content: "noindex" }] }),
@@ -27,6 +27,7 @@ const emptyEvent: Partial<EventRecord> = {
 function EventsAdmin() {
   const { data: events, isLoading: eventsLoading } = useAdminList<EventRecord>("events");
   const { data: rsvps, isLoading: rsvpsLoading } = useAdminList<EventRsvp>("event_rsvps");
+  const { data: emailConfirmations } = useAdminList<RsvpEmailConfirmation>("rsvp_email_confirmations", "created_at");
   const upsertEvent = useUpsert("events", [["p:events"]]);
   const deleteEvent = useDelete("events", [["p:events"]]);
   const upsertRsvp = useUpsert("event_rsvps");
@@ -36,6 +37,8 @@ function EventsAdmin() {
   const published = orderedEvents.filter((event) => event.status === "published" && event.visible);
   const pendingRsvps = (rsvps ?? []).filter((rsvp) => rsvp.status === "pending");
   const totalGuests = (rsvps ?? []).filter((rsvp) => rsvp.status !== "cancelled").reduce((sum, rsvp) => sum + Number(rsvp.guests || 1), 0);
+  const failedEmailConfirmations = (emailConfirmations ?? []).filter((record) => record.status === "failed" || record.status === "needs_setup").length;
+  const confirmationByRsvp = new Map((emailConfirmations ?? []).map((record) => [record.rsvp_id, record]));
 
   async function saveEvent(event: Partial<EventRecord>) {
     try {
@@ -54,6 +57,7 @@ function EventsAdmin() {
         <Metric icon={Check} label="Published" value={published.length} tone="green" />
         <Metric icon={ClipboardList} label="Pending RSVPs" value={pendingRsvps.length} tone="orange" />
         <Metric icon={Users} label="Guests registered" value={totalGuests} tone="blue" />
+        <Metric icon={MailCheck} label="Email issues" value={failedEmailConfirmations} tone="orange" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
@@ -78,7 +82,7 @@ function EventsAdmin() {
             <div className="divide-y divide-[#e3e8e4]">
               {[...(rsvps ?? [])].sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at)).slice(0, 8).map((rsvp) => {
                 const event = events?.find((item) => item.id === rsvp.event_id);
-                return <div key={rsvp.id} className="p-5"><div className="flex items-start justify-between gap-3"><div><div className="font-semibold text-[#0b4a5a]">{rsvp.name}</div><a href={`mailto:${rsvp.email}`} className="text-xs text-[#0f6848] hover:underline">{rsvp.email}</a></div><Badge tone={rsvp.status === "confirmed" || rsvp.status === "attended" ? "success" : rsvp.status === "cancelled" ? "neutral" : "warn"}>{rsvp.status}</Badge></div><div className="mt-3 text-xs font-semibold text-[#477763]">{event?.title ?? "Event"} · {rsvp.guests} {rsvp.guests === 1 ? "guest" : "guests"}</div>{rsvp.note && <p className="mt-2 text-sm leading-6 text-[#5c756a]">{rsvp.note}</p>}<div className="mt-4 flex items-center justify-between gap-3"><span className="text-[0.65rem] uppercase tracking-[0.12em] text-[#8aa096]">{new Date(rsvp.created_at).toLocaleString()}</span><select value={rsvp.status} onChange={async (e) => { await upsertRsvp.mutateAsync({ id: rsvp.id, status: e.target.value }); toast.success("RSVP status updated"); }} className="border border-[#0b4a5a]/15 bg-white px-2 py-1.5 text-xs font-semibold text-[#0b4a5a] outline-none"><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="attended">Attended</option><option value="cancelled">Cancelled</option></select></div></div>;
+                return <div key={rsvp.id} className="p-5"><div className="flex items-start justify-between gap-3"><div><div className="font-semibold text-[#0b4a5a]">{rsvp.name}</div><a href={`mailto:${rsvp.email}`} className="text-xs text-[#0f6848] hover:underline">{rsvp.email}</a></div><Badge tone={rsvp.status === "confirmed" || rsvp.status === "attended" ? "success" : rsvp.status === "cancelled" ? "neutral" : "warn"}>{rsvp.status}</Badge></div><div className="mt-3 text-xs font-semibold text-[#477763]">{event?.title ?? "Event"} · {rsvp.guests} {rsvp.guests === 1 ? "guest" : "guests"}</div>{rsvp.note && <p className="mt-2 text-sm leading-6 text-[#5c756a]">{rsvp.note}</p>}<div className="mt-3 flex items-center justify-between gap-3"><span className="text-[0.65rem] uppercase tracking-[0.12em] text-[#8aa096]">{new Date(rsvp.created_at).toLocaleString()}</span>{(() => { const confirmation = confirmationByRsvp.get(rsvp.id); return confirmation ? <Badge tone={confirmation.status === "sent" ? "success" : confirmation.status === "failed" || confirmation.status === "needs_setup" ? "warn" : "neutral"}>Email: {confirmation.status.replace("_", " ")}</Badge> : <span className="text-[0.65rem] text-[#8aa096]">Email pending</span>; })()}<select value={rsvp.status} onChange={async (e) => { await upsertRsvp.mutateAsync({ id: rsvp.id, status: e.target.value }); toast.success("RSVP status updated"); }} className="border border-[#0b4a5a]/15 bg-white px-2 py-1.5 text-xs font-semibold text-[#0b4a5a] outline-none"><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="attended">Attended</option><option value="cancelled">Cancelled</option></select></div></div>;
               })}
             </div>
           )}
