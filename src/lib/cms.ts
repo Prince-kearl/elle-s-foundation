@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "./supabase";
 
@@ -48,6 +49,45 @@ export const usePublicEvents = () => useQuery({
     return (data ?? []) as EventRecord[];
   },
 });
+
+const PUBLIC_REALTIME_TABLES = [
+  { table: "stats", keys: [["p:stats"]] },
+  { table: "programs", keys: [["p:programs"]] },
+  { table: "stories", keys: [["p:stories"]] },
+  { table: "team_members", keys: [["p:team"]] },
+  { table: "testimonials", keys: [["p:testimonials"]] },
+  { table: "faqs", keys: [["p:faqs"]] },
+  { table: "events", keys: [["p:events"]] },
+  { table: "page_content", keys: [["page_content"]] },
+  { table: "site_content", keys: [["site_copy"]] },
+  { table: "site_settings", keys: [["site_settings"]] },
+  { table: "brand_settings", keys: [["brand"]] },
+  { table: "page_brand", keys: [["page_brand"]] },
+  { table: "published_media", keys: [["page_content"], ["media_library"]] },
+] as const;
+
+/** Keeps every mounted public page synchronized with admin CMS changes. */
+export function usePublicCmsRealtime() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const channel = supabase.channel("public-cms-sync");
+    PUBLIC_REALTIME_TABLES.forEach(({ table, keys }) => {
+      channel.on(
+        "postgres_changes",
+        { event: "*", schema: "public", table },
+        () => {
+          keys.forEach((key) => void queryClient.invalidateQueries({ queryKey: key }));
+        },
+      );
+    });
+    channel.subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+}
 
 export const useSiteSettings = () =>
   useQuery({
