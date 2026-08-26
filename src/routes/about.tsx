@@ -39,24 +39,15 @@ const milestones = [
   ["2026", "82 completed projects — and just getting started."],
 ];
 
-const team = [
-  { n: "Elle Mensah", r: "Founder & Executive Director", avatar: null, bio: null },
-  { n: "Samuel Osei", r: "Director of Programs", avatar: null, bio: null },
-  { n: "Ama Owusu", r: "Head of Community Health", avatar: null, bio: null },
-  { n: "Joseph Kamau", r: "Partnerships Lead", avatar: null, bio: null },
-];
-
 function About() {
   const { data: c } = usePageContent("about");
   const { data: liveTeam } = usePublicTeam();
-  const people = liveTeam?.length
-    ? liveTeam.map((member) => ({
-        n: member.name,
-        r: member.role,
-        avatar: member.avatar_url,
-        bio: member.bio,
-      }))
-    : team;
+  const people = (liveTeam ?? []).map((member) => ({
+    n: member.name,
+    r: member.role,
+    avatar: member.avatar_url,
+    bio: member.bio,
+  }));
   return (
     <SiteLayout>
       <section className="pt-14 section-y-sm">
@@ -131,8 +122,9 @@ function About() {
               </>
             }
           />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {people.map((p) => (
+          {people.length ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {people.map((p) => (
               <div key={p.n} className="soft-card p-6 text-center">
                 <div className="size-20 mx-auto overflow-hidden rounded-full bg-secondary grid place-items-center font-display text-2xl text-primary">
                   {p.avatar ? (
@@ -150,8 +142,13 @@ function About() {
                   <p className="mt-3 text-xs leading-5 text-muted-foreground">{p.bio}</p>
                 ) : null}
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="border border-dashed border-border px-5 py-8 text-sm text-muted-foreground">
+              Leadership profiles will appear here once they are published in the foundation CMS.
+            </div>
+          )}
         </div>
       </section>
 
