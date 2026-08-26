@@ -482,9 +482,9 @@ function PastEvent() {
       <div className="container-wide grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
         <div className="relative overflow-hidden border border-[#cdeca7]/20 bg-[#0f6848]">
           <img
-            src={operationFeedTheStreet}
-            alt="Operation Feed the Street event flyer from 8 June 2025"
-            className="mx-auto max-h-[34rem] w-full object-contain"
+            src={heroChildren}
+            alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
+            className="mx-auto h-full max-h-[34rem] min-h-[20rem] w-full object-cover object-[64%_center]"
             loading="lazy"
           />
         </div>

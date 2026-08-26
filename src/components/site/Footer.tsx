@@ -194,6 +194,7 @@ export function Footer() {
                 </li>
               </ul>
               <form
+                id="footer-newsletter-form"
                 className="mt-7"
                 onSubmit={async (event) => {
                   event.preventDefault();
@@ -267,19 +268,30 @@ export function Footer() {
                     )}
                   </button>
                 </div>
-                <input
-                  id="footer-whatsapp"
-                  type="tel"
-                  value={whatsappNumber}
-                  onChange={(event) => {
-                    setWhatsappNumber(event.target.value);
-                    setSubscribed(false);
-                  }}
-                  placeholder="WhatsApp number (optional)"
-                  aria-label="WhatsApp number for welcome message (optional)"
-                  autoComplete="tel"
-                  className="mt-2 w-full border border-white/10 bg-black/10 px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
-                />
+                <div className="mt-2 flex w-full border border-white/10 bg-black/10">
+                  <input
+                    id="footer-whatsapp"
+                    type="tel"
+                    value={whatsappNumber}
+                    onChange={(event) => {
+                      setWhatsappNumber(event.target.value);
+                      setSubscribed(false);
+                    }}
+                    placeholder="WhatsApp number (optional)"
+                    aria-label="WhatsApp number for welcome message (optional)"
+                    autoComplete="tel"
+                    className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Send WhatsApp welcome request"
+                    disabled={submitting}
+                    className="inline-flex shrink-0 items-center gap-2 bg-[color:var(--color-gold)] px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
+                  >
+                    <Send className="size-3.5" aria-hidden="true" />
+                    <span>Send</span>
+                  </button>
+                </div>
                 <p
                   className="mt-2 min-h-4 text-[0.65rem] text-[color:var(--color-sand)]"
                   aria-live="polite"
