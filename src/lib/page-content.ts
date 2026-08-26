@@ -39,6 +39,16 @@ export function pv(map: PageContentMap | undefined, key: string, fallback = ""):
   return v && v.trim() !== "" ? v : fallback;
 }
 
+/** Resolve CMS image values while ignoring stale build-generated asset paths. */
+export function publicImageValue(
+  map: PageContentMap | undefined,
+  key: string,
+  fallback: string,
+): string {
+  const value = pv(map, key, fallback).trim();
+  return value.startsWith("/assets/") ? fallback : value;
+}
+
 /** Convenience hook returning a resolver function bound to a page. */
 export function usePageText(page: string) {
   const { data } = usePageContent(page);

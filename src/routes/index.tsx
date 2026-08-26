@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { usePageContent, pv } from "@/lib/page-content";
+import { publicImageValue, pv, usePageContent } from "@/lib/page-content";
 import { useSiteCopy } from "@/lib/cms";
 import {
   usePublicEvents,
@@ -488,7 +488,7 @@ function PastEvent({ c }: { c: C }) {
   const [imageFailed, setImageFailed] = useState(false);
   const image = imageFailed
     ? operationFeedTheStreet
-    : pv(c, "past_event.image", operationFeedTheStreet);
+    : publicImageValue(c, "past_event.image", operationFeedTheStreet);
   return (
     <section className="border-b border-[#0f6848]/10 bg-[#073b2b] py-12 text-white md:py-16">
       <div className="container-wide grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
@@ -1039,7 +1039,7 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
 
 function Mission({ c }: { c: C }) {
   const [imageFailed, setImageFailed] = useState(false);
-  const image = imageFailed ? volunteer : pv(c, "volunteer.image", volunteer);
+  const image = imageFailed ? volunteer : publicImageValue(c, "volunteer.image", volunteer);
   const checks = [
     "Meals and clean water",
     "Support for children",
