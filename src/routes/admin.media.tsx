@@ -327,7 +327,7 @@ function MediaAdmin() {
         { onConflict: "page,section,key" },
       );
       if (error) throw error;
-      await qc.invalidateQueries({ queryKey: ["a", "page_content", "media-slots"] });
+      await qc.refetchQueries({ queryKey: ["a", "page_content", "media-slots"] });
       await qc.invalidateQueries({ queryKey: ["page_content", slot.page] });
       toast.success(`${slot.label} saved as a draft`);
     } catch (error: any) {
@@ -346,13 +346,19 @@ function MediaAdmin() {
     }
     setPublishing(true);
     try {
+      const { data: freshRows, error: refreshError } = await supabase
+        .from("page_content")
+        .select("*")
+        .in("page", [...new Set(SLOT_DEFINITIONS.map((slot) => slot.page))]);
+      if (refreshError) throw refreshError;
+      const currentRows = (freshRows ?? []) as ContentRow[];
       const now = new Date().toISOString();
       const publishRows = shownSlots
         .flatMap<PublishRow | null>((slot) => {
-          const imageRow = rows.find(
+          const imageRow = currentRows.find(
             (row) => row.page === slot.page && row.section === slot.section && row.key === slot.key,
           );
-          const altRow = rows.find(
+          const altRow = currentRows.find(
             (row) =>
               row.page === slot.page &&
               row.section === slot.section &&
