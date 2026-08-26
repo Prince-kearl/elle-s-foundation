@@ -139,13 +139,15 @@ function Hero({ c }: { c: C }) {
       <div className="container-wide relative flex w-full flex-col items-center justify-between pb-8 pt-16 sm:pb-10 md:min-h-[calc(100svh-5rem)] md:items-start md:pt-28">
         <div className="rise-in w-full max-w-4xl text-center md:text-left">
           <div className="mb-7 flex items-center justify-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.24em] text-[#cdeca7] md:justify-start">
-            <span className="size-2 rounded-full bg-[#ff8a3d]" />
+            <span className="size-2 rounded-full bg-[var(--gold)]" />
             <span>{pv(c, "hero.eyebrow", "Elle's Foundation · Est. 2015")}</span>
           </div>
           <h1 className="max-w-4xl font-display text-[3.3rem] font-semibold leading-[0.94] tracking-[-0.065em] text-white sm:text-[5.5rem] md:text-[7.1rem] lg:text-[8.5rem]">
             {pv(c, "hero.title_line_1", "Feeding hope.")}
             <br />
-            <span className="text-[#ff8a3d]">{pv(c, "hero.title_line_2", "Restoring lives.")}</span>
+            <span className="text-[var(--gold)]">
+              {pv(c, "hero.title_line_2", "Restoring lives.")}
+            </span>
           </h1>
           <p className="mx-auto mt-7 max-w-xl text-base leading-7 text-white/80 md:mx-0 md:text-lg md:leading-8">
             {pv(
@@ -157,9 +159,9 @@ function Hero({ c }: { c: C }) {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:justify-start">
             <a
               href={pv(c, "hero.cta_primary_href", "/donate")}
-              className="hero-pill group inline-flex items-center gap-3 rounded-full bg-[#ff8a3d] px-5 py-3.5 text-sm font-bold text-[#073b2b] transition duration-200 hover:-translate-y-0.5 hover:bg-white active:scale-[0.97]"
+              className="hero-pill group inline-flex items-center gap-3 rounded-full bg-[var(--gold)] px-5 py-3.5 text-sm font-bold text-[#073b2b] transition duration-200 hover:-translate-y-0.5 hover:bg-white active:scale-[0.97]"
             >
-              <span className="grid size-7 place-items-center rounded-full bg-[#073b2b] text-[#ff8a3d]">
+              <span className="grid size-7 place-items-center rounded-full bg-[#073b2b] text-[var(--gold)]">
                 <Heart className="size-3.5 fill-current" />
               </span>
               {pv(c, "hero.cta_primary_label", pv(c, "hero.cta_primary", "Support us"))}
@@ -222,7 +224,7 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
       label: "Children supported",
       note: "Across Ghana and beyond",
       Icon: Users,
-      tone: "#ff8a3d",
+      tone: "var(--gold)",
     },
     {
       value: "3,200",
@@ -236,7 +238,7 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
       label: "Meals served",
       note: "Meals and clean water",
       Icon: HeartPulse,
-      tone: "#f26518",
+      tone: "var(--earth)",
     },
     {
       value: "82",
@@ -246,7 +248,7 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
       tone: "#1b86b8",
     },
   ];
-  const tones = ["#ff8a3d", "#0f9d73", "#f26518", "#1b86b8"];
+  const tones = ["var(--gold)", "#0f9d73", "var(--earth)", "#1b86b8"];
   const icons = [Users, HandHeart, HeartPulse, Check];
   const stats = records?.length
     ? records.map((record, index) => ({
@@ -287,7 +289,10 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
                 </div>
                 <span
                   className="grid size-9 place-items-center"
-                  style={{ backgroundColor: `${tone}18`, color: tone }}
+                  style={{
+                    backgroundColor: `color-mix(in srgb, ${tone} 10%, transparent)`,
+                    color: tone,
+                  }}
                 >
                   <Icon className="size-4" />
                 </span>
@@ -317,7 +322,7 @@ function UpcomingEvents() {
       detail:
         "A day dedicated to bringing smiles, spreading love, and creating meaningful moments.",
       status: "Confirmed",
-      accent: "#ff8a3d",
+      accent: "var(--gold)",
     },
     {
       id: "wellbeing-day",
@@ -381,8 +386,8 @@ function UpcomingEvents() {
       <div className="container-wide">
         <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <div className="mb-4 flex items-center gap-3 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#f26518]">
-              <span className="size-2 bg-[#ff8a3d]" /> Community calendar
+            <div className="mb-4 flex items-center gap-3 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[var(--earth)]">
+              <span className="size-2 bg-[var(--gold)]" /> Community calendar
             </div>
             <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-[#073b2b] md:text-6xl">
               Show up for what matters.
@@ -403,7 +408,7 @@ function UpcomingEvents() {
                 </div>
                 <div className="mt-2 font-display text-2xl">{monthLabel}</div>
               </div>
-              <CalendarDays className="size-5 text-[#ff8a3d]" />
+              <CalendarDays className="size-5 text-[var(--gold)]" />
             </div>
             <div className="mt-5 grid grid-cols-7 gap-y-3 text-center text-[0.62rem]">
               {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
@@ -414,14 +419,14 @@ function UpcomingEvents() {
               {calendarDays.map((day, index) => (
                 <span
                   key={`${day}-${index}`}
-                  className={`mx-auto grid size-7 place-items-center ${day === highlightedDay ? "bg-[#ff8a3d] font-bold text-[#073b2b]" : "text-white/75"}`}
+                  className={`mx-auto grid size-7 place-items-center ${day === highlightedDay ? "bg-[var(--gold)] font-bold text-[#073b2b]" : "text-white/75"}`}
                 >
                   {day}
                 </span>
               ))}
             </div>
             <div className="mt-6 flex items-center gap-2 border-t border-white/15 pt-4 text-xs text-white/60">
-              <span className="size-2 bg-[#ff8a3d]" /> {events[0]?.day} {events[0]?.month} ·{" "}
+              <span className="size-2 bg-[var(--gold)]" /> {events[0]?.day} {events[0]?.month} ·{" "}
               {events[0]?.title}
             </div>
           </div>
@@ -438,7 +443,7 @@ function UpcomingEvents() {
                     <div className="font-display text-2xl font-semibold leading-none text-[#073b2b]">
                       {event.day}
                     </div>
-                    <div className="mt-1 text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[#f26518]">
+                    <div className="mt-1 text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
                       {event.month}
                     </div>
                   </div>
@@ -468,7 +473,7 @@ function UpcomingEvents() {
                   <button
                     type="button"
                     onClick={() => setSelectedEvent(event)}
-                    className="group/link mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#0f6848] transition hover:text-[#f26518]"
+                    className="group/link mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#0f6848] transition hover:text-[var(--earth)]"
                   >
                     RSVP now{" "}
                     <ArrowUpRight className="size-4 transition-transform group-hover/link:translate-x-0.5" />
@@ -507,7 +512,7 @@ function PastEvent({ c }: { c: C }) {
         </div>
         <div className="max-w-2xl">
           <div className="mb-4 flex items-center gap-3 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#cdeca7]">
-            <span className="size-2 bg-[#ff8a3d]" /> Field archive · 08 June 2025
+            <span className="size-2 bg-[var(--gold)]" /> Field archive · 08 June 2025
           </div>
           <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-white md:text-6xl">
             Operation Feed the Street.
@@ -523,7 +528,7 @@ function PastEvent({ c }: { c: C }) {
               ["03", "Restore", "Dignity through action"],
             ].map(([number, label, detail]) => (
               <div key={number} className="border-t border-[#cdeca7]/25 pt-3">
-                <div className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#ff8a3d]">
+                <div className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[var(--gold)]">
                   {number}
                 </div>
                 <div className="mt-2 font-display text-xl text-white">{label}</div>
@@ -531,7 +536,7 @@ function PastEvent({ c }: { c: C }) {
               </div>
             ))}
           </div>
-          <p className="mt-8 border-l-2 border-[#ff8a3d] pl-4 text-sm font-semibold text-[#cdeca7]">
+          <p className="mt-8 border-l-2 border-[var(--gold)] pl-4 text-sm font-semibold text-[#cdeca7]">
             Past event archive · Operation Feed the Street (#OFTS)
           </p>
         </div>
@@ -583,7 +588,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
       >
         <div className="flex items-start justify-between border-b border-[#0f6848]/10 p-6">
           <div>
-            <div className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[#f26518]">
+            <div className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[var(--earth)]">
               Community RSVP
             </div>
             <h3 id="rsvp-title" className="mt-2 font-display text-3xl font-semibold text-[#073b2b]">
@@ -625,7 +630,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[#f26518]"
+                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[var(--earth)]"
                 placeholder="Your name"
               />
             </label>
@@ -636,7 +641,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[#f26518]"
+                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[var(--earth)]"
                 placeholder="you@example.com"
               />
             </label>
@@ -645,7 +650,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
               <input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[#f26518]"
+                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[var(--earth)]"
                 placeholder="+233 ..."
               />
             </label>
@@ -658,7 +663,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
                 type="number"
                 value={guests}
                 onChange={(e) => setGuests(Number(e.target.value))}
-                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[#f26518]"
+                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[var(--earth)]"
               />
             </label>
             <label className="text-xs font-bold uppercase tracking-[0.14em] text-[#477763] sm:col-span-2">
@@ -667,7 +672,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={3}
-                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[#f26518]"
+                className="mt-2 w-full border border-[#0f6848]/20 px-3 py-3 text-sm font-normal normal-case tracking-normal outline-none focus:border-[var(--earth)]"
                 placeholder="Anything we should know?"
               />
             </label>
@@ -678,7 +683,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
               <button
                 disabled={submitting}
                 type="submit"
-                className="bg-[#f26518] px-5 py-3 text-sm font-bold text-white disabled:opacity-60"
+                className="bg-[var(--earth)] px-5 py-3 text-sm font-bold text-white disabled:opacity-60"
               >
                 {submitting ? "Sending…" : "Confirm RSVP"}
               </button>
@@ -704,7 +709,7 @@ function About({ c, stats }: { c: C; stats?: Stat[] }) {
     <section id="about" className="section-y bg-[#fbfff8]">
       <div className="container-wide grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-24">
         <div className="relative">
-          <div className="absolute -left-5 -top-5 size-24 rounded-full border border-[#ff8a3d]/50" />
+          <div className="absolute -left-5 -top-5 size-24 rounded-full border border-[var(--gold)]/50" />
           <div className="relative aspect-[0.95] overflow-hidden rounded-[1.35rem] sm:aspect-[1.05]">
             <img
               src={pv(c, "about.image", childrenUnity)}
@@ -728,8 +733,8 @@ function About({ c, stats }: { c: C; stats?: Stat[] }) {
           </div>
         </div>
         <div className="max-w-2xl">
-          <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[#f26518]">
-            <span className="size-2 rounded-full bg-[#ff8a3d]" />{" "}
+          <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[var(--earth)]">
+            <span className="size-2 rounded-full bg-[var(--gold)]" />{" "}
             {pv(c, "about.eyebrow", "About Elle's Foundation")}
           </div>
           <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-[#0f6848] md:text-6xl">
@@ -756,10 +761,10 @@ function About({ c, stats }: { c: C; stats?: Stat[] }) {
           </div>
           <Link
             to="/about"
-            className="group mt-8 inline-flex items-center gap-3 text-sm font-bold text-[#0f6848] transition hover:text-[#f26518]"
+            className="group mt-8 inline-flex items-center gap-3 text-sm font-bold text-[#0f6848] transition hover:text-[var(--earth)]"
           >
             Learn more about our story{" "}
-            <span className="grid size-8 place-items-center rounded-full border border-[#0f6848]/20 transition group-hover:border-[#f26518] group-hover:bg-[#f1fae9]">
+            <span className="grid size-8 place-items-center rounded-full border border-[#0f6848]/20 transition group-hover:border-[var(--earth)] group-hover:bg-[#f1fae9]">
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </Link>
@@ -794,7 +799,7 @@ function Opportunity() {
         <div className="mb-14 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
             <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[#cdeca7]">
-              <span className="size-2 rounded-full bg-[#ff8a3d]" /> The opportunity
+              <span className="size-2 rounded-full bg-[var(--gold)]" /> The opportunity
             </div>
             <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] md:text-6xl">
               What becomes possible when people have a place to begin?
@@ -811,7 +816,7 @@ function Opportunity() {
               key={number}
               className="border-b border-white/15 py-7 md:border-b-0 md:border-r md:px-7 md:first:pl-0 md:last:border-r-0 md:last:pr-0"
             >
-              <div className="font-display text-4xl text-[#ff8a3d]">{number}</div>
+              <div className="font-display text-4xl text-[var(--gold)]">{number}</div>
               <h3 className="mt-6 font-display text-2xl font-semibold">{title}</h3>
               <p className="mt-3 max-w-xs text-sm leading-6 text-white/65">{text}</p>
             </div>
@@ -885,8 +890,8 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
       <div className="container-wide">
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[#f26518]">
-              <span className="size-2 rounded-full bg-[#ff8a3d]" /> Our programs
+            <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[var(--earth)]">
+              <span className="size-2 rounded-full bg-[var(--gold)]" /> Our programs
             </div>
             <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-[#0f6848] md:text-6xl">
               Practical support. Lasting change.
@@ -894,10 +899,10 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
           </div>
           <Link
             to="/programs"
-            className="group inline-flex items-center gap-3 text-sm font-bold text-[#0f6848] hover:text-[#f26518]"
+            className="group inline-flex items-center gap-3 text-sm font-bold text-[#0f6848] hover:text-[var(--earth)]"
           >
             Explore all programs{" "}
-            <span className="grid size-9 place-items-center rounded-full border border-[#0f6848]/20 transition group-hover:border-[#f26518] group-hover:bg-[#f1fae9]">
+            <span className="grid size-9 place-items-center rounded-full border border-[#0f6848]/20 transition group-hover:border-[var(--earth)] group-hover:bg-[#f1fae9]">
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </Link>
@@ -920,13 +925,13 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
                   <span className="rounded-full bg-white/90 px-3 py-1.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#0f6848]">
                     {number}
                   </span>
-                  <span className="grid size-9 place-items-center rounded-full bg-[#ff8a3d] text-[#073b2b] opacity-0 transition group-hover:opacity-100">
+                  <span className="grid size-9 place-items-center rounded-full bg-[var(--gold)] text-[#073b2b] opacity-0 transition group-hover:opacity-100">
                     <ArrowUpRight className="size-4" />
                   </span>
                 </div>
               </div>
               <div className="p-6">
-                <div className="flex items-center gap-2 text-[0.6rem] font-bold uppercase tracking-[0.13em] text-[#f26518]">
+                <div className="flex items-center gap-2 text-[0.6rem] font-bold uppercase tracking-[0.13em] text-[var(--earth)]">
                   <Icon className="size-4" /> {label}
                 </div>
                 <h3 className="mt-3 font-display text-2xl font-semibold leading-tight text-[#0f6848]">
@@ -986,8 +991,8 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
       <div className="container-wide">
         <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">
-            <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[#f26518]">
-              <span className="size-2 rounded-full bg-[#ff8a3d]" /> Stories from the field
+            <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[var(--earth)]">
+              <span className="size-2 rounded-full bg-[var(--gold)]" /> Stories from the field
             </div>
             <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-[#0f6848] md:text-6xl">
               {pv(c, "stories.title", "Real people. Real change.")}
@@ -995,10 +1000,10 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
           </div>
           <Link
             to="/programs"
-            className="group inline-flex items-center gap-3 text-sm font-bold text-[#0f6848] hover:text-[#f26518]"
+            className="group inline-flex items-center gap-3 text-sm font-bold text-[#0f6848] hover:text-[var(--earth)]"
           >
             Read all stories{" "}
-            <span className="grid size-9 place-items-center rounded-full border border-[#0f6848]/20 transition group-hover:border-[#f26518] group-hover:bg-white">
+            <span className="grid size-9 place-items-center rounded-full border border-[#0f6848]/20 transition group-hover:border-[var(--earth)] group-hover:bg-white">
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </span>
           </Link>
@@ -1014,14 +1019,14 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                   loading="lazy"
                 />
                 <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-xl bg-white/90 px-4 py-3 backdrop-blur-md">
-                  <span className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#f26518]">
+                  <span className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
                     {tag}
                   </span>
                   <ArrowUpRight className="size-4 text-[#0f6848]" />
                 </div>
               </div>
               <div className="mt-6 max-w-sm">
-                <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f26518]">
+                <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
                   {tag}
                 </div>
                 <h3 className="font-display text-2xl font-semibold leading-tight text-[#0f6848]">
@@ -1051,7 +1056,7 @@ function Mission({ c }: { c: C }) {
     <section className="section-y bg-[#fbfff8]">
       <div className="container-wide grid items-center gap-10 overflow-hidden rounded-[1.5rem] bg-[#f6dfc9] p-6 md:p-10 lg:grid-cols-[0.95fr_1.05fr] lg:p-12">
         <div className="relative order-2 lg:order-1">
-          <div className="absolute -left-5 -top-5 size-20 rounded-full border border-[#f26518]/40" />
+          <div className="absolute -left-5 -top-5 size-20 rounded-full border border-[var(--earth)]/40" />
           <div className="relative aspect-[1.12] overflow-hidden rounded-[1.15rem]">
             <img
               src={image}
@@ -1078,12 +1083,12 @@ function Mission({ c }: { c: C }) {
           </div>
         </div>
         <div className="order-1 max-w-xl lg:order-2 lg:pl-8">
-          <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[#f26518]">
-            <span className="size-2 rounded-full bg-[#ff8a3d]" />{" "}
+          <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[var(--earth)]">
+            <span className="size-2 rounded-full bg-[var(--gold)]" />{" "}
             {pv(c, "ofts.eyebrow", "Operation Feed the Street")}
           </div>
           <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-[#0f6848] md:text-6xl">
-            Small acts. Shared table. <span className="text-[#f26518]">Lasting dignity.</span>
+            Small acts. Shared table. <span className="text-[var(--earth)]">Lasting dignity.</span>
           </h2>
           <p className="mt-6 text-base leading-8 text-[#477763] md:text-lg">
             {pv(
@@ -1110,7 +1115,7 @@ function Mission({ c }: { c: C }) {
               to="/donate"
               className="inline-flex items-center gap-2 rounded-full bg-[#0f6848] px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#084b35] active:scale-[0.97]"
             >
-              <Heart className="size-4 fill-current text-[#ff8a3d]" /> Support us
+              <Heart className="size-4 fill-current text-[var(--gold)]" /> Support us
             </Link>
             <Link
               to="/contact"
@@ -1153,7 +1158,7 @@ function Testimonials({ records }: { records?: Testimonial[] }) {
         <div className="mb-12 flex items-end justify-between gap-6">
           <div className="max-w-2xl">
             <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[#cdeca7]">
-              <span className="size-2 rounded-full bg-[#ff8a3d]" /> Voices
+              <span className="size-2 rounded-full bg-[var(--gold)]" /> Voices
             </div>
             <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] md:text-6xl">
               Trusted by those we serve and serve with.
@@ -1167,7 +1172,7 @@ function Testimonials({ records }: { records?: Testimonial[] }) {
               key={name}
               className="rounded-[1.15rem] border border-white/10 bg-white/[0.07] p-7 transition hover:-translate-y-1 hover:bg-white/10 md:p-8"
             >
-              <div className="flex gap-1 text-[#ff8a3d]">
+              <div className="flex gap-1 text-[var(--gold)]">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <Star key={index} className="size-3.5 fill-current" />
                 ))}
@@ -1189,7 +1194,7 @@ function CTA({ c }: { c: C }) {
   return (
     <section className="section-y-sm bg-[#fbfff8]">
       <div className="container-wide">
-        <div className="relative overflow-hidden rounded-[1.5rem] bg-[#ff8a3d] px-7 py-12 text-[#073b2b] md:px-14 md:py-16">
+        <div className="relative overflow-hidden rounded-[1.5rem] bg-[var(--gold)] px-7 py-12 text-[#073b2b] md:px-14 md:py-16">
           <div className="absolute -right-24 -top-32 size-96 rounded-full border border-[#073b2b]/15" />
           <div className="absolute -right-5 -top-12 size-64 rounded-full border border-[#073b2b]/15" />
           <div className="relative grid items-end gap-10 lg:grid-cols-[1.2fr_0.8fr]">
@@ -1213,7 +1218,7 @@ function CTA({ c }: { c: C }) {
                 to="/donate"
                 className="inline-flex items-center gap-2 rounded-full bg-[#073b2b] px-6 py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#084b35] active:scale-[0.97]"
               >
-                <Heart className="size-4 fill-current text-[#ff8a3d]" /> Support us
+                <Heart className="size-4 fill-current text-[var(--gold)]" /> Support us
               </Link>
               <Link
                 to="/contact"
