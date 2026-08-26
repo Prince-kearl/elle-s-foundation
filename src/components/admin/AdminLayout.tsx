@@ -129,6 +129,15 @@ const navSections = [
     items: [{ to: "/admin", label: "Dashboard", icon: LayoutGrid, end: true }],
   },
   {
+    label: "Community & Engagement",
+    items: [
+      { to: "/admin/sponsorships", label: "Sponsorships", icon: HandHeart },
+      { to: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
+      { to: "/admin/contacts", label: "Contact Messages", icon: Inbox, badge: "contact" as const },
+      { to: "/admin/donations", label: "Donations", icon: Heart, badge: "donation" as const },
+    ],
+  },
+  {
     label: "Site Content",
     items: [
       { to: "/admin/pages", label: "Pages", icon: FileText },
@@ -140,15 +149,6 @@ const navSections = [
       { to: "/admin/team", label: "Team Members", icon: Users },
       { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
       { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
-    ],
-  },
-  {
-    label: "Community & Engagement",
-    items: [
-      { to: "/admin/sponsorships", label: "Sponsorships", icon: HandHeart },
-      { to: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
-      { to: "/admin/contacts", label: "Contact Messages", icon: Inbox, badge: "contact" as const },
-      { to: "/admin/donations", label: "Donations", icon: Heart, badge: "donation" as const },
     ],
   },
   {
