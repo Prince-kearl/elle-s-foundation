@@ -403,7 +403,7 @@ function UpcomingEvents() {
                   <button
                     type="button"
                     onClick={() => setSelectedEvent(event)}
-                    className="group/link mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#0f6848] transition hover:text-[var(--earth)]"
+                    className="group/link mt-0 inline-flex items-center gap-2 border border-[#0f6848]/20 bg-[var(--gold)] px-4 py-2.5 text-sm font-bold text-[#073b2b] shadow-sm transition hover:border-[#073b2b] hover:bg-[#073b2b] hover:text-white sm:mt-3"
                   >
                     RSVP now{" "}
                     <ArrowUpRight className="size-4 transition-transform group-hover/link:translate-x-0.5" />
