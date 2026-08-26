@@ -41,7 +41,11 @@ export function useBrand() {
   return useQuery({
     queryKey: ["brand"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("brand_settings").select("*").eq("id", 1).maybeSingle();
+      const { data, error } = await supabase
+        .from("brand_settings")
+        .select("*")
+        .eq("id", 1)
+        .maybeSingle();
       if (error) throw error;
       return (data as BrandValues) ?? BRAND_DEFAULTS;
     },
@@ -54,7 +58,11 @@ export function usePageBrand(page?: string) {
     queryKey: ["page_brand", page],
     enabled: !!page,
     queryFn: async () => {
-      const { data, error } = await supabase.from("page_brand").select("*").eq("page", page!).maybeSingle();
+      const { data, error } = await supabase
+        .from("page_brand")
+        .select("*")
+        .eq("page", page!)
+        .maybeSingle();
       if (error) throw error;
       return (data as BrandValues) ?? null;
     },
@@ -70,7 +78,10 @@ export function pageKeyFromPath(path: string): string {
 }
 
 /** Merge global brand with an enabled per-page override. */
-export function mergeBrand(global: BrandValues | undefined, page: BrandValues | null | undefined): BrandValues {
+export function mergeBrand(
+  global: BrandValues | undefined,
+  page: BrandValues | null | undefined,
+): BrandValues {
   const base = { ...BRAND_DEFAULTS, ...(global ?? {}) };
   if (!page || !page.enabled) return base;
   const out = { ...base };
@@ -96,7 +107,8 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
   c("--ink", "ink_color");
   c("--background", "background_color");
   if (v.radius) vars["--radius"] = String(v.radius);
-  if (v.heading_font) vars["--font-display"] = `"${v.heading_font}", ui-sans-serif, system-ui, sans-serif`;
+  if (v.heading_font)
+    vars["--font-display"] = `"${v.heading_font}", ui-sans-serif, system-ui, sans-serif`;
   if (v.body_font) vars["--font-sans"] = `"${v.body_font}", ui-sans-serif, system-ui, sans-serif`;
   if (v.heading_scale) vars["--heading-scale"] = String(v.heading_scale);
   if (v.body_scale) vars["--body-scale"] = String(v.body_scale);
