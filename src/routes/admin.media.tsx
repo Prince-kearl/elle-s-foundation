@@ -251,8 +251,8 @@ function MediaAdmin() {
         (row) =>
           row.page === slot.page && row.section === slot.section && row.key === `${slot.key}_alt`,
       );
-      nextDrafts[slot.id] = imageRow?.draft_value ?? imageRow?.value ?? slot.defaultUrl;
-      nextAlts[slot.id] = altRow?.draft_value ?? altRow?.value ?? slot.alt;
+      nextDrafts[slot.id] = imageRow?.draft_value || imageRow?.value || slot.defaultUrl;
+      nextAlts[slot.id] = altRow?.draft_value || altRow?.value || slot.alt;
     });
     setDrafts(nextDrafts);
     setAlts(nextAlts);
