@@ -36,57 +36,12 @@ export const Route = createFileRoute("/programs")({
 
 const ICONS: Record<string, any> = { GraduationCap, HeartPulse, Home, TreePine };
 
-const FALLBACK = [
-  {
-    icon: "GraduationCap",
-    title: "Education",
-    description:
-      "Scholarships, learning centers, teacher training, and school-feeding programs that keep children in the classroom.",
-    image_url: programEducation,
-    stat_value: "4,800",
-    stat_label: "students supported",
-  },
-  {
-    icon: "HeartPulse",
-    title: "Healthcare",
-    description:
-      "Mobile clinics, maternal care, vaccinations, and clean water access across rural communities.",
-    image_url: programHealth,
-    stat_value: "62",
-    stat_label: "outreach clinics",
-  },
-  {
-    icon: "Home",
-    title: "Shelter & Support",
-    description: "Safe homes, family stabilization, and crisis support for the most vulnerable.",
-    image_url: programShelter,
-    stat_value: "940",
-    stat_label: "families housed",
-  },
-  {
-    icon: "TreePine",
-    title: "Community Development",
-    description:
-      "Skills training, small-business grants, and infrastructure that unlock long-term prosperity.",
-    image_url: programCommunity,
-    stat_value: "46",
-    stat_label: "communities reached",
-  },
-];
-
 function Programs() {
   const { data: c } = usePageContent("programs");
   const { data: dbPrograms } = usePublicPrograms();
   const { data: dbStats } = usePublicStats();
-  const programs = (dbPrograms && dbPrograms.length ? dbPrograms : FALLBACK) as any[];
-  const impactStats = dbStats?.length
-    ? dbStats
-    : ([
-        { value: "148K", label: "Meals served" },
-        { value: "4,800", label: "Students enrolled" },
-        { value: "62", label: "Clinics run" },
-        { value: "940", label: "Families housed" },
-      ] as Pick<Stat, "value" | "label">[]);
+  const programs = (dbPrograms ?? []) as any[];
+  const impactStats = dbStats ?? [];
   const headerImage = pv(c, "header.image") || programEducation;
 
   return (
@@ -120,7 +75,7 @@ function Programs() {
 
       <section className="section-y-sm">
         <div className="container-wide space-y-20">
-          {programs.map((p, idx) => {
+          {programs.length ? programs.map((p, idx) => {
             const Icon = ICONS[p.icon] ?? GraduationCap;
             return (
               <div
@@ -129,7 +84,7 @@ function Programs() {
               >
                 <div className="rounded-2xl overflow-hidden aspect-[5/4] bg-secondary">
                   <Media
-                    src={p.image_url || FALLBACK[idx % FALLBACK.length].image_url}
+                    src={p.image_url || ""}
                     alt={p.title}
                     className="w-full h-full object-cover"
                   />
@@ -163,7 +118,11 @@ function Programs() {
                 </div>
               </div>
             );
-          })}
+          }) : (
+            <div className="border border-dashed border-border px-5 py-8 text-sm text-muted-foreground">
+              Programs will appear here once they are published in the foundation CMS.
+            </div>
+          )}
         </div>
       </section>
 
@@ -173,16 +132,22 @@ function Programs() {
             eyebrow="Impact"
             title={pv(c, "impact.title", "Measured in lives, not slides.")}
           />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {impactStats.map(({ value: n, label: l }) => (
+          {impactStats.length ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {impactStats.map(({ value: n, label: l }) => (
               <div key={l} className="soft-card p-6 text-center">
                 <div className="font-display text-4xl text-primary">{n}</div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">
                   {l}
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="border border-dashed border-border px-5 py-8 text-sm text-muted-foreground">
+              Impact metrics will appear here once they are published in the foundation CMS.
+            </div>
+          )}
         </div>
       </section>
     </SiteLayout>

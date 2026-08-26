@@ -113,7 +113,7 @@ function Home() {
       <Opportunity />
       <Programs records={programs} c={c} />
       <FieldStories c={c} records={stories} />
-      <Mission c={c} />
+      <Mission c={c} stats={stats} />
       <Testimonials records={testimonials} />
       <CTA c={c} />
     </SiteLayout>
@@ -218,47 +218,15 @@ function Hero({ c }: { c: C }) {
 }
 
 function ImpactStrip({ records }: { records?: Stat[] }) {
-  const fallback = [
-    {
-      value: "12,400+",
-      label: "Children supported",
-      note: "Across Ghana and beyond",
-      Icon: Users,
-      tone: "var(--gold)",
-    },
-    {
-      value: "3,200",
-      label: "Families assisted",
-      note: "Through practical support",
-      Icon: HandHeart,
-      tone: "#0f9d73",
-    },
-    {
-      value: "148K",
-      label: "Meals served",
-      note: "Meals and clean water",
-      Icon: HeartPulse,
-      tone: "var(--earth)",
-    },
-    {
-      value: "82",
-      label: "Projects completed",
-      note: "Community-led progress",
-      Icon: Check,
-      tone: "#1b86b8",
-    },
-  ];
   const tones = ["var(--gold)", "#0f9d73", "var(--earth)", "#1b86b8"];
   const icons = [Users, HandHeart, HeartPulse, Check];
-  const stats = records?.length
-    ? records.map((record, index) => ({
-        value: record.value,
-        label: record.label,
-        note: "Updated from the foundation CMS",
-        Icon: icons[index % icons.length],
-        tone: tones[index % tones.length],
-      }))
-    : fallback;
+  const stats = (records ?? []).map((record, index) => ({
+    value: record.value,
+    label: record.label,
+    note: "Updated from the foundation CMS",
+    Icon: icons[index % icons.length],
+    tone: tones[index % tones.length],
+  }));
 
   return (
     <section className="border-b border-[#0f6848]/10 bg-[#f1fae9] py-8 md:py-10">
@@ -271,8 +239,9 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
             <span className="size-2 bg-[#0f9d73]" /> Live programme totals
           </div>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map(({ value, label, note, Icon, tone }) => (
+        {stats.length ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map(({ value, label, note, Icon, tone }) => (
             <div
               key={label}
               className="soft-card border-t-4 bg-white p-5"
@@ -301,8 +270,13 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
                 ↗ {note}
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-[#0f6848]/20 bg-white/70 px-5 py-8 text-sm text-[#477763]">
+            Impact metrics will appear here once they are published in the foundation CMS.
+          </div>
+        )}
       </div>
     </section>
   );
@@ -311,46 +285,7 @@ function ImpactStrip({ records }: { records?: Stat[] }) {
 function UpcomingEvents() {
   const { data: liveEvents } = usePublicEvents();
   const [selectedEvent, setSelectedEvent] = useState<HomepageEvent | null>(null);
-  const fallbackEvents: HomepageEvent[] = [
-    {
-      id: "smile-project",
-      day: "27",
-      month: "SEP",
-      type: "Featured community event",
-      title: "The Smile Project",
-      meta: "Dzowulu Special School · 27 Sep 2026",
-      detail:
-        "A day dedicated to bringing smiles, spreading love, and creating meaningful moments.",
-      status: "Confirmed",
-      accent: "var(--gold)",
-    },
-    {
-      id: "wellbeing-day",
-      day: "05",
-      month: "OCT",
-      type: "Health & connection",
-      title: "Community wellbeing day",
-      meta: "Location to be announced",
-      detail:
-        "Practical conversations, check-ins, and shared support for families in our community.",
-      status: "Coming soon",
-      accent: "#0f9d73",
-    },
-    {
-      id: "learning-circle",
-      day: "18",
-      month: "OCT",
-      type: "Education & mentorship",
-      title: "Community learning circle",
-      meta: "Location to be announced",
-      detail:
-        "A space for young people, mentors, and families to learn, connect, and grow together.",
-      status: "Coming soon",
-      accent: "#1b86b8",
-    },
-  ];
-  const events: HomepageEvent[] = liveEvents?.length
-    ? liveEvents.map((event: EventRecord) => {
+  const events: HomepageEvent[] = (liveEvents ?? []).map((event: EventRecord) => {
         const date = new Date(`${event.event_date}T00:00:00`);
         return {
           id: event.id,
@@ -363,11 +298,10 @@ function UpcomingEvents() {
           status: event.status === "published" ? "Confirmed" : "Coming soon",
           accent: event.accent,
         };
-      })
-    : fallbackEvents;
-  const calendarDate = liveEvents?.length
+      });
+  const calendarDate = liveEvents?.[0]
     ? new Date(`${liveEvents[0].event_date}T00:00:00`)
-    : new Date("2026-09-01T00:00:00");
+    : new Date();
   const monthLabel = calendarDate.toLocaleDateString("en-GH", { month: "long", year: "numeric" });
   const daysInMonth = new Date(
     calendarDate.getFullYear(),
@@ -432,7 +366,7 @@ function UpcomingEvents() {
           </div>
 
           <div className="grid gap-3">
-            {events.map((event) => (
+            {events.length ? events.map((event) => (
               <article
                 key={event.id}
                 className="soft-card group grid gap-5 border-l-4 bg-white p-5 transition hover:-translate-y-0.5 sm:grid-cols-[5rem_1fr_auto] sm:items-center"
@@ -480,7 +414,11 @@ function UpcomingEvents() {
                   </button>
                 </div>
               </article>
-            ))}
+            )) : (
+              <div className="border border-dashed border-[#0f6848]/20 bg-white/70 px-5 py-8 text-sm text-[#477763]">
+                Upcoming events will appear here once they are published in the foundation CMS.
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -696,14 +634,7 @@ function RsvpModal({ event, onClose }: { event: HomepageEvent; onClose: () => vo
 }
 
 function About({ c, stats }: { c: C; stats?: Stat[] }) {
-  const impactStats = stats?.length
-    ? stats.slice(0, 4)
-    : [
-        { value: "12,400+", label: "Children supported" },
-        { value: "82", label: "Projects completed" },
-        { value: "98%", label: "To direct programs" },
-        { value: "148K", label: "Meals served" },
-      ];
+  const impactStats = (stats ?? []).slice(0, 4);
 
   return (
     <section id="about" className="section-y bg-[#fbfff8]">
@@ -828,40 +759,6 @@ function Opportunity() {
 }
 
 function Programs({ records, c }: { records?: Program[]; c: C }) {
-  const fallback = [
-    {
-      icon: GraduationCap,
-      number: "01",
-      title: "Education",
-      label: "Learning · Confidence · Opportunity",
-      text: "Building brighter futures through learning, scholarships, and safe spaces to grow.",
-      image: pv(c, "programs.image_1", programEducation),
-    },
-    {
-      icon: HeartPulse,
-      number: "02",
-      title: "Health",
-      label: "Care · Prevention · Wellbeing",
-      text: "Promoting wellbeing with clinics, checkups, clean water, and health education.",
-      image: pv(c, "programs.image_2", programHealth),
-    },
-    {
-      icon: HomeIcon,
-      number: "03",
-      title: "Shelter & support",
-      label: "Safety · Dignity · Stability",
-      text: "Offering practical shelter and support to families facing uncertainty.",
-      image: pv(c, "programs.image_3", programShelter),
-    },
-    {
-      icon: Users,
-      number: "04",
-      title: "Community development",
-      label: "Connection · Skills · Growth",
-      text: "Creating opportunities that restore dignity and inspire shared growth.",
-      image: pv(c, "programs.image_4", programCommunity),
-    },
-  ];
   const iconMap: Record<string, typeof GraduationCap> = {
     GraduationCap,
     HeartPulse,
@@ -874,16 +771,14 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
     pv(c, "programs.image_3", programShelter),
     pv(c, "programs.image_4", programCommunity),
   ];
-  const programs = records?.length
-    ? records.map((record, index) => ({
+  const programs = (records ?? []).map((record, index) => ({
         icon: iconMap[record.icon] ?? GraduationCap,
         number: String(index + 1).padStart(2, "0"),
         title: record.title,
         label: "Community support",
         text: record.description,
         image: record.image_url || images[index % images.length],
-      }))
-    : fallback;
+      }));
 
   return (
     <section className="section-y bg-[#fbfff8]">
@@ -907,8 +802,9 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
             </span>
           </Link>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {programs.map(({ icon: Icon, number, title, label, text, image }) => (
+        {programs.length ? (
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {programs.map(({ icon: Icon, number, title, label, text, image }) => (
             <Link
               key={title}
               to="/programs"
@@ -944,47 +840,30 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
                 </div>
               </div>
             </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-[#0f6848]/20 bg-white px-5 py-8 text-sm text-[#477763]">
+            Programs will appear here once they are published in the foundation CMS.
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
 function FieldStories({ c, records }: { c: C; records?: Story[] }) {
-  const fallback = [
-    {
-      image: pv(c, "stories.image_1", story1),
-      tag: "Education",
-      title: "Amina found her voice through school.",
-      text: "From a village without a classroom to the top of her class — one scholarship changed everything.",
-    },
-    {
-      image: pv(c, "stories.image_2", story2),
-      tag: "Family",
-      title: "A home rebuilt, a mother renewed.",
-      text: "Grace and her son moved into permanent shelter after two years of uncertainty.",
-    },
-    {
-      image: pv(c, "stories.image_3", story3),
-      tag: "Youth",
-      title: "Two brothers, one graduation day.",
-      text: "Kwame and Kojo are the first in their family to finish secondary school.",
-    },
-  ];
   const fallbackImages = [
     pv(c, "stories.image_1", story1),
     pv(c, "stories.image_2", story2),
     pv(c, "stories.image_3", story3),
   ];
-  const stories = records?.length
-    ? records.map((record, index) => ({
+  const stories = (records ?? []).map((record, index) => ({
         image: record.image_url || fallbackImages[index % fallbackImages.length],
         tag: record.tag || "Community",
         title: record.title,
-        text: record.excerpt || "A story of practical support, shared dignity, and lasting change.",
-      }))
-    : fallback;
+        text: record.excerpt || "",
+      }));
 
   return (
     <section className="section-y bg-[#f1fae9]">
@@ -1008,8 +887,9 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
             </span>
           </Link>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {stories.map(({ image, tag, title, text }, index) => (
+        {stories.length ? (
+          <div className="grid gap-6 md:grid-cols-3">
+            {stories.map(({ image, tag, title, text }, index) => (
             <article key={title} className={`group ${index === 1 ? "md:translate-y-10" : ""}`}>
               <div className="relative aspect-[0.88] overflow-hidden rounded-[1.2rem] bg-[#cdeca7]">
                 <img
@@ -1035,15 +915,21 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                 <p className="mt-3 text-sm leading-6 text-[#477763]">{text}</p>
               </div>
             </article>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-[#0f6848]/20 bg-white/60 px-5 py-8 text-sm text-[#477763]">
+            Stories will appear here once they are published in the foundation CMS.
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function Mission({ c }: { c: C }) {
+function Mission({ c, stats }: { c: C; stats?: Stat[] }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const volunteerStat = stats?.find((stat) => stat.label.toLowerCase().includes("volunteer"));
   const image = imageFailed ? volunteer : publicImageValue(c, "volunteer.image", volunteer);
   const checks = [
     "Meals and clean water",
@@ -1070,17 +956,19 @@ function Mission({ c }: { c: C }) {
               loading="lazy"
             />
           </div>
-          <div className="absolute -bottom-5 -right-3 flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-[0_18px_36px_-20px_rgba(15,104,72,0.5)] sm:-right-5">
-            <div className="grid size-9 place-items-center rounded-full bg-[#f1fae9] text-[#0f6848]">
-              <HandHeart className="size-4" />
-            </div>
-            <div>
-              <div className="font-display text-xl text-[#0f6848]">620</div>
-              <div className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#477763]">
-                Active volunteers
+          {volunteerStat && (
+            <div className="absolute -bottom-5 -right-3 flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-[0_18px_36px_-20px_rgba(15,104,72,0.5)] sm:-right-5">
+              <div className="grid size-9 place-items-center rounded-full bg-[#f1fae9] text-[#0f6848]">
+                <HandHeart className="size-4" />
+              </div>
+              <div>
+                <div className="font-display text-xl text-[#0f6848]">{volunteerStat.value}</div>
+                <div className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#477763]">
+                  {volunteerStat.label}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="order-1 max-w-xl lg:order-2 lg:pl-8">
           <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[var(--earth)]">
@@ -1131,26 +1019,7 @@ function Mission({ c }: { c: C }) {
 }
 
 function Testimonials({ records }: { records?: Testimonial[] }) {
-  const fallback = [
-    [
-      "Volunteering with Elle's Foundation was the most meaningful year of my life. Their team meets people with real dignity.",
-      "Amelia O.",
-      "Volunteer, Ghana",
-    ],
-    [
-      "The scholarship program changed my daughter's future. She now dreams of becoming a nurse.",
-      "Fatou D.",
-      "Parent, Senegal",
-    ],
-    [
-      "A partner that keeps its word. Elle's Foundation delivers where it matters — on the ground, with the people.",
-      "David M.",
-      "Corporate partner",
-    ],
-  ];
-  const quotes = records?.length
-    ? records.map((record) => [record.quote, record.name, record.role || "Community voice"])
-    : fallback;
+  const quotes = (records ?? []).map((record) => [record.quote, record.name, record.role || ""]);
 
   return (
     <section className="section-y bg-[#073b2b] text-white">
@@ -1166,8 +1035,9 @@ function Testimonials({ records }: { records?: Testimonial[] }) {
           </div>
           <Quote className="hidden size-16 text-white/10 md:block" />
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {quotes.map(([quote, name, role]) => (
+        {quotes.length ? (
+          <div className="grid gap-5 md:grid-cols-3">
+            {quotes.map(([quote, name, role]) => (
             <blockquote
               key={name}
               className="rounded-[1.15rem] border border-white/10 bg-white/[0.07] p-7 transition hover:-translate-y-1 hover:bg-white/10 md:p-8"
@@ -1183,8 +1053,13 @@ function Testimonials({ records }: { records?: Testimonial[] }) {
                 <div className="mt-1 text-xs uppercase tracking-[0.15em] text-white/55">{role}</div>
               </footer>
             </blockquote>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-white/20 bg-white/[0.04] px-5 py-8 text-sm text-white/60">
+            Testimonials will appear here once they are published in the foundation CMS.
+          </div>
+        )}
       </div>
     </section>
   );
