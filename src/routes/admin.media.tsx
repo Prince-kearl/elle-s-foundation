@@ -194,6 +194,21 @@ const CATEGORIES = [
   "Media & Platform Stories",
 ];
 
+type CmsMediaState = {
+  rows: ContentRow[];
+  missingTable: boolean;
+};
+
+function isMissingPageContentTable(error: unknown) {
+  const typedError = error as { code?: string; message?: string } | null;
+  const message = String(typedError?.message ?? error ?? "");
+  return (
+    typedError?.code === "PGRST205" ||
+    typedError?.code === "42P01" ||
+    /schema cache|relation .*page_content.*does not exist/i.test(message)
+  );
+}
+
 function MediaAdmin() {
   const qc = useQueryClient();
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -204,17 +219,26 @@ function MediaAdmin() {
   const [saving, setSaving] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
 
-  const { data: rows = [], isLoading } = useQuery({
-    queryKey: ["a", "page_content", "media-slots"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("page_content")
-        .select("*")
-        .in("page", [...new Set(SLOT_DEFINITIONS.map((slot) => slot.page))]);
-      if (error) throw error;
-      return (data ?? []) as ContentRow[];
+  const { data: cmsState = { rows: [], missingTable: false }, isLoading } = useQuery<CmsMediaState>(
+    {
+      queryKey: ["a", "page_content", "media-slots"],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from("page_content")
+          .select("*")
+          .in("page", [...new Set(SLOT_DEFINITIONS.map((slot) => slot.page))]);
+        if (error) {
+          if (isMissingPageContentTable(error)) {
+            return { rows: [], missingTable: true };
+          }
+          throw error;
+        }
+        return { rows: (data ?? []) as ContentRow[], missingTable: false };
+      },
     },
-  });
+  );
+  const rows = cmsState.rows;
+  const cmsTableMissing = cmsState.missingTable;
 
   useEffect(() => {
     const nextDrafts: Record<string, string> = {};
@@ -246,6 +270,12 @@ function MediaAdmin() {
   }, [category, query]);
 
   const saveSlot = async (slot: MediaSlot) => {
+    if (cmsTableMissing) {
+      toast.error(
+        "The page_content table is not installed. Apply the CMS migration in Supabase first.",
+      );
+      return;
+    }
     setSaving(slot.id);
     try {
       const imageRow = rows.find(
@@ -298,6 +328,12 @@ function MediaAdmin() {
   };
 
   const publishChanges = async () => {
+    if (cmsTableMissing) {
+      toast.error(
+        "The page_content table is not installed. Apply the CMS migration in Supabase first.",
+      );
+      return;
+    }
     setPublishing(true);
     try {
       const pages = [...new Set(shownSlots.map((slot) => slot.page))];
@@ -344,6 +380,20 @@ function MediaAdmin() {
         </div>
       }
     >
+      {cmsTableMissing && (
+        <div className="mb-6 border border-earth/30 bg-cream p-4 text-sm text-ink">
+          <p className="font-semibold text-primary">
+            CMS setup required before image assignments can be saved.
+          </p>
+          <p className="mt-1 leading-6 text-muted-foreground">
+            Supabase cannot find <code className="font-mono text-xs">public.page_content</code> in
+            its schema cache. Apply
+            <code className="mx-1 font-mono text-xs">ELLES_CMS_CONSOLIDATED.sql</code> in the
+            Supabase SQL Editor, then reload this page.
+          </p>
+        </div>
+      )}
+
       <input
         ref={uploadRef}
         type="file"
@@ -356,7 +406,7 @@ function MediaAdmin() {
         }}
       />
 
-      <div className="mb-6 flex flex-col gap-4 border border-[#e3e8e4] bg-white p-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="mb-6 flex flex-col gap-4 border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((item) => (
             <button
@@ -365,8 +415,8 @@ function MediaAdmin() {
               onClick={() => setCategory(item)}
               className={`border px-3 py-2 text-xs font-semibold transition ${
                 category === item
-                  ? "border-[#0b4a5a] bg-[#0b4a5a] text-white"
-                  : "border-[#cdd9d2] bg-white text-[#0b4a5a] hover:border-[#0b4a5a]"
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card text-primary hover:border-primary"
               }`}
             >
               {item}
@@ -375,7 +425,7 @@ function MediaAdmin() {
         </div>
         <label className="relative block w-full lg:max-w-xs">
           <span className="sr-only">Search image slots</span>
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#8aa096]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <TextInput
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -386,11 +436,11 @@ function MediaAdmin() {
       </div>
 
       {isLoading ? (
-        <AdminCard className="p-12 text-center text-sm text-[#6b8076]">
+        <AdminCard className="p-12 text-center text-sm text-muted-foreground">
           <Loader2 className="mx-auto size-5 animate-spin" />
         </AdminCard>
       ) : shownSlots.length === 0 ? (
-        <AdminCard className="p-12 text-center text-sm text-[#6b8076]">
+        <AdminCard className="p-12 text-center text-sm text-muted-foreground">
           No image slots match your search.
         </AdminCard>
       ) : (
@@ -400,7 +450,7 @@ function MediaAdmin() {
             const isSaving = saving === slot.id;
             return (
               <AdminCard key={slot.id} className="overflow-hidden">
-                <div className="relative aspect-[16/10] bg-[#e9f1ea]">
+                <div className="relative aspect-[16/10] bg-muted">
                   {value ? (
                     <img
                       src={value}
@@ -408,29 +458,31 @@ function MediaAdmin() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="grid h-full place-items-center text-[#6b8076]">
+                    <div className="grid h-full place-items-center text-muted-foreground">
                       <ImageIcon className="size-10" />
                     </div>
                   )}
-                  <span className="absolute left-3 top-3 bg-[#0b4a5a] px-2 py-1 text-[0.62rem] font-bold text-white">
+                  <span className="absolute left-3 top-3 bg-primary px-2 py-1 text-[0.62rem] font-bold text-primary-foreground">
                     {slot.aspect}
                   </span>
-                  <span className="absolute right-3 top-3 bg-[#0b4a5a]/90 px-2 py-1 text-[0.62rem] font-bold text-white">
+                  <span className="absolute right-3 top-3 bg-forest/90 px-2 py-1 text-[0.62rem] font-bold text-primary-foreground">
                     <Check className="mr-1 inline size-3" /> {value ? "Assigned" : "Empty slot"}
                   </span>
                 </div>
                 <div className="space-y-4 p-5">
                   <div>
-                    <div className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f26518]">
+                    <div className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-earth">
                       {slot.category}
                     </div>
-                    <h2 className="mt-2 font-display text-lg font-semibold leading-tight text-[#0b4a5a]">
+                    <h2 className="mt-2 font-display text-lg font-semibold leading-tight text-primary">
                       {slot.label}
                     </h2>
-                    <p className="mt-2 text-xs leading-5 text-[#6b8076]">{slot.description}</p>
+                    <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                      {slot.description}
+                    </p>
                   </div>
                   <label className="block">
-                    <span className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#477763]">
+                    <span className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                       Accessibility & SEO alt text
                     </span>
                     <TextInput
@@ -447,7 +499,7 @@ function MediaAdmin() {
                     folder={`pages/${slot.page}`}
                     accept="image"
                   />
-                  <div className="flex items-center justify-between gap-2 border-t border-[#e3e8e4] pt-3">
+                  <div className="flex items-center justify-between gap-2 border-t border-border pt-3">
                     <button
                       type="button"
                       onClick={() => {
@@ -455,7 +507,7 @@ function MediaAdmin() {
                         void navigator.clipboard.writeText(value);
                         toast.success("Image URL copied");
                       }}
-                      className="inline-flex items-center gap-2 text-xs font-semibold text-[#0b4a5a] hover:text-[#f26518]"
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:text-earth"
                     >
                       <Copy className="size-3.5" /> Copy URL
                     </button>
@@ -464,7 +516,7 @@ function MediaAdmin() {
                         href={value}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-semibold text-[#0b4a5a] hover:text-[#f26518]"
+                        className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:text-earth"
                       >
                         <ExternalLink className="size-3.5" /> Open
                       </a>
