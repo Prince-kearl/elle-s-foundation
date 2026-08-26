@@ -1,65 +1,61 @@
+import base64
+import re
+from io import BytesIO
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-source = ROOT / "src/assets/community/live/community-team.jpeg"
+source = ROOT / "src/assets/community/live/hero-community-water.svg"
 out = ROOT / "public/social-preview.png"
 out.parent.mkdir(parents=True, exist_ok=True)
 
 W, H = 1200, 630
-GREEN = "#073B2B"
-GREEN_2 = "#0F6848"
-CREAM = "#F1FAE9"
-ORANGE = "#FF8A3D"
-MUTED = "#CDECA7"
+GREEN = (7, 59, 43, 230)
+CREAM = (241, 250, 233, 255)
+ORANGE = (255, 138, 61, 255)
+MUTED = (205, 236, 167, 255)
 
-canvas = Image.new("RGB", (W, H), GREEN)
-draw = ImageDraw.Draw(canvas)
+# Decode the embedded raster inside the exact hero SVG used by the homepage,
+# then crop it to the standard Open Graph ratio without introducing a
+# different photograph.
+svg = source.read_text()
+matches = re.findall(r"data:image/(?:png|jpeg);base64,([^\"]+)", svg)
+if not matches:
+    raise RuntimeError("Hero SVG does not contain an embedded raster image")
+hero = Image.open(BytesIO(base64.b64decode(max(matches, key=len)))).convert("RGBA")
+hero_ratio = max(W / hero.width, H / hero.height)
+hero = hero.resize((int(hero.width * hero_ratio), int(hero.height * hero_ratio)), Image.Resampling.LANCZOS)
+left = (hero.width - W) // 2
+upper = (hero.height - H) // 2
+canvas = hero.crop((left, upper, left + W, upper + H))
 
-# Right-hand community photo with a subtle green brand treatment.
-photo = Image.open(source).convert("RGB")
-photo_ratio = H / photo.height
-photo = photo.resize((int(photo.width * photo_ratio), H), Image.Resampling.LANCZOS)
-left = max(0, (photo.width - int(W * 0.52)) // 2)
-photo = photo.crop((left, 0, left + int(W * 0.52), H))
-overlay = Image.new("RGBA", photo.size, (7, 59, 43, 0))
-for x in range(photo.width):
-    alpha = int(180 * (1 - x / photo.width) ** 1.6)
-    ImageDraw.Draw(overlay).line((x, 0, x, H), fill=(7, 59, 43, alpha))
-photo = Image.alpha_composite(photo.convert("RGBA"), overlay).convert("RGB")
-canvas.paste(photo, (W - photo.width, 0))
-
-# Soft divider glow.
-glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-gd = ImageDraw.Draw(glow)
-gd.ellipse((690, -90, 930, H + 90), fill=(15, 104, 72, 95))
-glow = glow.filter(ImageFilter.GaussianBlur(36))
-canvas = Image.alpha_composite(canvas.convert("RGBA"), glow)
+# Keep the left side text-safe, matching the homepage hero treatment.
+overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+od = ImageDraw.Draw(overlay)
+od.rectangle((0, 0, 735, H), fill=GREEN)
+for x in range(735, 500, -1):
+    alpha = int(165 * (735 - x) / 235)
+    od.line((x, 0, x, H), fill=(7, 59, 43, alpha))
+canvas = Image.alpha_composite(canvas, overlay)
 draw = ImageDraw.Draw(canvas)
 
 font_dir = Path("/usr/share/fonts/truetype/dejavu")
-regular = ImageFont.truetype(font_dir / "DejaVuSans.ttf", 26)
-small = ImageFont.truetype(font_dir / "DejaVuSans-Bold.ttf", 17)
-headline = ImageFont.truetype(font_dir / "DejaVuSans-Bold.ttf", 61)
-subhead = ImageFont.truetype(font_dir / "DejaVuSans.ttf", 25)
+small = ImageFont.truetype(font_dir / "DejaVuSans-Bold.ttf", 16)
+headline = ImageFont.truetype(font_dir / "DejaVuSans-Bold.ttf", 58)
+body = ImageFont.truetype(font_dir / "DejaVuSans.ttf", 21)
 
-# Brand mark and eyebrow.
-draw.ellipse((64, 60, 112, 108), outline=MUTED, width=3)
-draw.ellipse((78, 74, 98, 94), outline=MUTED, width=2)
-draw.text((130, 66), "ELLE'S FOUNDATION", font=small, fill=CREAM)
-draw.text((66, 145), "FEEDING HOPE.", font=small, fill=ORANGE)
-
-draw.text((64, 190), "Restoring", font=headline, fill=CREAM)
-draw.text((64, 262), "Lives.", font=headline, fill=ORANGE)
-
-# Supporting copy and CTA-style marker.
-draw.text((67, 370), "Building stronger communities", font=subhead, fill=CREAM)
-draw.text((67, 407), "with dignity, care, and hope.", font=subhead, fill=CREAM)
-draw.rounded_rectangle((67, 492, 296, 548), radius=28, fill=ORANGE)
-draw.text((94, 508), "SUPPORT US  →", font=small, fill=GREEN)
-
-# Keep the right side visually quiet enough for link-preview cropping.
-draw.text((830, 566), "elles-foundation.vercel.app", font=small, fill=CREAM)
+# Compact hero metadata and mark.
+draw.ellipse((58, 54, 104, 100), outline=MUTED, width=3)
+draw.ellipse((72, 68, 90, 86), outline=MUTED, width=2)
+draw.text((122, 60), "ELLE'S FOUNDATION · EST. 2015", font=small, fill=MUTED)
+draw.text((60, 144), "FEEDING HOPE.", font=headline, fill=CREAM)
+draw.text((60, 213), "RESTORING LIVES.", font=headline, fill=ORANGE)
+draw.text((62, 322), "Every child deserves a chance,", font=body, fill=CREAM)
+draw.text((62, 355), "every community deserves hope.", font=body, fill=CREAM)
+draw.rounded_rectangle((62, 430, 275, 485), radius=27, fill=ORANGE)
+draw.text((88, 447), "SUPPORT US  →", font=small, fill=(7, 59, 43, 255))
+draw.text((62, 565), "elles-foundation.vercel.app", font=small, fill=CREAM)
 
 canvas.convert("RGB").save(out, format="PNG", optimize=True)
 print(out)
