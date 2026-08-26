@@ -28,6 +28,7 @@ import teamAsset from "@/assets/community/live/community-team.jpeg";
 import streetAsset from "@/assets/community/live/outreach-street-group.jpeg";
 import childAsset from "@/assets/community/live/child-community.jpeg";
 import treeAsset from "@/assets/community/live/team-under-tree.jpeg";
+import operationFeedTheStreet from "@/assets/community/operation-feed-the-street-2025.jpeg";
 
 export const Route = createFileRoute("/admin/media")({
   head: () => ({
@@ -95,7 +96,7 @@ const SLOT_DEFINITIONS: MediaSlot[] = [
     label: "Home: Past Event Feature",
     description: "The image displayed in the Operation Feed the Street archive card.",
     aspect: "16:10",
-    defaultUrl: heroAsset,
+    defaultUrl: operationFeedTheStreet,
     alt: "Elle's Foundation volunteers and children celebrating a community outreach moment",
     category: "Home Page",
   },

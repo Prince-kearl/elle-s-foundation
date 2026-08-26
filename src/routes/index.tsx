@@ -485,17 +485,22 @@ function UpcomingEvents() {
 }
 
 function PastEvent({ c }: { c: C }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const image = imageFailed
+    ? operationFeedTheStreet
+    : pv(c, "past_event.image", operationFeedTheStreet);
   return (
     <section className="border-b border-[#0f6848]/10 bg-[#073b2b] py-12 text-white md:py-16">
       <div className="container-wide grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
         <div className="relative overflow-hidden border border-[#cdeca7]/20 bg-[#0f6848]">
           <img
-            src={pv(c, "past_event.image", heroChildren)}
+            src={image}
             alt={pv(
               c,
               "past_event.image_alt",
               "Elle's Foundation volunteers and children celebrating a community outreach moment",
             )}
+            onError={() => setImageFailed(true)}
             className="mx-auto h-full max-h-[34rem] min-h-[20rem] w-full object-cover object-[64%_center]"
             loading="lazy"
           />
@@ -1033,6 +1038,8 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
 }
 
 function Mission({ c }: { c: C }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const image = imageFailed ? volunteer : pv(c, "volunteer.image", volunteer);
   const checks = [
     "Meals and clean water",
     "Support for children",
@@ -1047,12 +1054,13 @@ function Mission({ c }: { c: C }) {
           <div className="absolute -left-5 -top-5 size-20 rounded-full border border-[#f26518]/40" />
           <div className="relative aspect-[1.12] overflow-hidden rounded-[1.15rem]">
             <img
-              src={pv(c, "volunteer.image", volunteer)}
+              src={image}
               alt={pv(
                 c,
                 "volunteer.image_alt",
                 "Elle's Foundation volunteers serving a community meal",
               )}
+              onError={() => setImageFailed(true)}
               className="h-full w-full object-cover"
               loading="lazy"
             />
