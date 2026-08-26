@@ -108,10 +108,10 @@ function Home() {
       <Hero c={heroContent} />
       <ImpactStrip records={stats} />
       <UpcomingEvents />
-      <PastEvent />
+      <PastEvent c={c} />
       <About c={c} stats={stats} />
       <Opportunity />
-      <Programs records={programs} />
+      <Programs records={programs} c={c} />
       <FieldStories c={c} records={stories} />
       <Mission c={c} />
       <Testimonials records={testimonials} />
@@ -124,8 +124,12 @@ function Hero({ c }: { c: C }) {
   return (
     <section className="relative isolate flex min-h-[calc(100svh-5rem)] items-end overflow-hidden bg-[#073b2b] text-white">
       <img
-        src={heroChildren}
-        alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
+        src={pv(c, "hero.image", heroChildren)}
+        alt={pv(
+          c,
+          "hero.image_alt",
+          "Elle's Foundation volunteers and children celebrating a community outreach moment",
+        )}
         className="absolute inset-0 -z-20 h-full w-full object-cover object-[64%_center] sm:object-[64%_center] md:object-center"
         loading="eager"
       />
@@ -183,7 +187,11 @@ function Hero({ c }: { c: C }) {
           </a>
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2">
-              {[childrenUnity, story1, story3].map((image, index) => (
+              {[
+                pv(c, "about.image", childrenUnity),
+                pv(c, "stories.image_1", story1),
+                pv(c, "stories.image_3", story3),
+              ].map((image, index) => (
                 <img
                   key={image}
                   src={image}
@@ -476,14 +484,18 @@ function UpcomingEvents() {
   );
 }
 
-function PastEvent() {
+function PastEvent({ c }: { c: C }) {
   return (
     <section className="border-b border-[#0f6848]/10 bg-[#073b2b] py-12 text-white md:py-16">
       <div className="container-wide grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
         <div className="relative overflow-hidden border border-[#cdeca7]/20 bg-[#0f6848]">
           <img
-            src={heroChildren}
-            alt="Elle's Foundation volunteers and children celebrating a community outreach moment"
+            src={pv(c, "past_event.image", heroChildren)}
+            alt={pv(
+              c,
+              "past_event.image_alt",
+              "Elle's Foundation volunteers and children celebrating a community outreach moment",
+            )}
             className="mx-auto h-full max-h-[34rem] min-h-[20rem] w-full object-cover object-[64%_center]"
             loading="lazy"
           />
@@ -690,8 +702,8 @@ function About({ c, stats }: { c: C; stats?: Stat[] }) {
           <div className="absolute -left-5 -top-5 size-24 rounded-full border border-[#ff8a3d]/50" />
           <div className="relative aspect-[0.95] overflow-hidden rounded-[1.35rem] sm:aspect-[1.05]">
             <img
-              src={childrenUnity}
-              alt="A young girl smiling with a community volunteer"
+              src={pv(c, "about.image", childrenUnity)}
+              alt={pv(c, "about.image_alt", "A young girl smiling with a community volunteer")}
               className="h-full w-full object-cover"
               loading="lazy"
             />
@@ -805,7 +817,7 @@ function Opportunity() {
   );
 }
 
-function Programs({ records }: { records?: Program[] }) {
+function Programs({ records, c }: { records?: Program[]; c: C }) {
   const fallback = [
     {
       icon: GraduationCap,
@@ -813,7 +825,7 @@ function Programs({ records }: { records?: Program[] }) {
       title: "Education",
       label: "Learning · Confidence · Opportunity",
       text: "Building brighter futures through learning, scholarships, and safe spaces to grow.",
-      image: programEducation,
+      image: pv(c, "programs.image_1", programEducation),
     },
     {
       icon: HeartPulse,
@@ -821,7 +833,7 @@ function Programs({ records }: { records?: Program[] }) {
       title: "Health",
       label: "Care · Prevention · Wellbeing",
       text: "Promoting wellbeing with clinics, checkups, clean water, and health education.",
-      image: programHealth,
+      image: pv(c, "programs.image_2", programHealth),
     },
     {
       icon: HomeIcon,
@@ -829,7 +841,7 @@ function Programs({ records }: { records?: Program[] }) {
       title: "Shelter & support",
       label: "Safety · Dignity · Stability",
       text: "Offering practical shelter and support to families facing uncertainty.",
-      image: programShelter,
+      image: pv(c, "programs.image_3", programShelter),
     },
     {
       icon: Users,
@@ -837,7 +849,7 @@ function Programs({ records }: { records?: Program[] }) {
       title: "Community development",
       label: "Connection · Skills · Growth",
       text: "Creating opportunities that restore dignity and inspire shared growth.",
-      image: programCommunity,
+      image: pv(c, "programs.image_4", programCommunity),
     },
   ];
   const iconMap: Record<string, typeof GraduationCap> = {
@@ -846,7 +858,12 @@ function Programs({ records }: { records?: Program[] }) {
     Home: HomeIcon,
     Users,
   };
-  const images = [programEducation, programHealth, programShelter, programCommunity];
+  const images = [
+    pv(c, "programs.image_1", programEducation),
+    pv(c, "programs.image_2", programHealth),
+    pv(c, "programs.image_3", programShelter),
+    pv(c, "programs.image_4", programCommunity),
+  ];
   const programs = records?.length
     ? records.map((record, index) => ({
         icon: iconMap[record.icon] ?? GraduationCap,
@@ -927,25 +944,29 @@ function Programs({ records }: { records?: Program[] }) {
 function FieldStories({ c, records }: { c: C; records?: Story[] }) {
   const fallback = [
     {
-      image: story1,
+      image: pv(c, "stories.image_1", story1),
       tag: "Education",
       title: "Amina found her voice through school.",
       text: "From a village without a classroom to the top of her class — one scholarship changed everything.",
     },
     {
-      image: story2,
+      image: pv(c, "stories.image_2", story2),
       tag: "Family",
       title: "A home rebuilt, a mother renewed.",
       text: "Grace and her son moved into permanent shelter after two years of uncertainty.",
     },
     {
-      image: story3,
+      image: pv(c, "stories.image_3", story3),
       tag: "Youth",
       title: "Two brothers, one graduation day.",
       text: "Kwame and Kojo are the first in their family to finish secondary school.",
     },
   ];
-  const fallbackImages = [story1, story2, story3];
+  const fallbackImages = [
+    pv(c, "stories.image_1", story1),
+    pv(c, "stories.image_2", story2),
+    pv(c, "stories.image_3", story3),
+  ];
   const stories = records?.length
     ? records.map((record, index) => ({
         image: record.image_url || fallbackImages[index % fallbackImages.length],
@@ -1026,8 +1047,12 @@ function Mission({ c }: { c: C }) {
           <div className="absolute -left-5 -top-5 size-20 rounded-full border border-[#f26518]/40" />
           <div className="relative aspect-[1.12] overflow-hidden rounded-[1.15rem]">
             <img
-              src={volunteer}
-              alt="Elle's Foundation volunteers serving a community meal"
+              src={pv(c, "volunteer.image", volunteer)}
+              alt={pv(
+                c,
+                "volunteer.image_alt",
+                "Elle's Foundation volunteers serving a community meal",
+              )}
               className="h-full w-full object-cover"
               loading="lazy"
             />

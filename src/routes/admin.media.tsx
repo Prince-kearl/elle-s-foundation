@@ -1,120 +1,493 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminLayout, AdminCard, PrimaryButton, GhostButton } from "@/components/admin/AdminLayout";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  AdminCard,
+  AdminLayout,
+  GhostButton,
+  PrimaryButton,
+  TextInput,
+} from "@/components/admin/AdminLayout";
+import { MediaField } from "@/components/admin/ImageField";
 import { supabase } from "@/lib/supabase";
-import { uploadMedia, deleteAsset } from "@/lib/storage";
-import { useRef, useState } from "react";
-import { Upload, Trash2, Copy, Loader2, Film } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Check,
+  Copy,
+  ExternalLink,
+  Image as ImageIcon,
+  Loader2,
+  Search,
+  Send,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
+import heroAsset from "@/assets/community/live/hero-community-water.svg";
+import outreachAsset from "@/assets/community/live/outreach-children.jpeg";
+import suppliesAsset from "@/assets/community/live/community-supplies.jpeg";
+import teamAsset from "@/assets/community/live/community-team.jpeg";
+import streetAsset from "@/assets/community/live/outreach-street-group.jpeg";
+import childAsset from "@/assets/community/live/child-community.jpeg";
+import treeAsset from "@/assets/community/live/team-under-tree.jpeg";
 
 export const Route = createFileRoute("/admin/media")({
-  head: () => ({ meta: [{ title: "Media Library — Admin" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({
+    meta: [{ title: "Media Library — Admin" }, { name: "robots", content: "noindex" }],
+  }),
   component: MediaAdmin,
 });
 
-const FILTERS = [
-  ["all", "All"],
-  ["image", "Images"],
-  ["video", "Videos"],
-] as const;
+type MediaSlot = {
+  id: string;
+  page: string;
+  section: string;
+  key: string;
+  label: string;
+  description: string;
+  aspect: string;
+  defaultUrl: string;
+  alt: string;
+  category: string;
+};
+
+type ContentRow = {
+  id?: string;
+  page: string;
+  section: string;
+  key: string;
+  label?: string | null;
+  content_type?: string | null;
+  value?: string | null;
+  draft_value?: string | null;
+  position?: number | null;
+  status?: string | null;
+};
+
+const SLOT_DEFINITIONS: MediaSlot[] = [
+  {
+    id: "home-hero",
+    page: "home",
+    section: "hero",
+    key: "image",
+    label: "Home: Hero Main Banner",
+    description: "The primary bold hero image displayed at the top of the homepage.",
+    aspect: "16:9",
+    defaultUrl: heroAsset,
+    alt: "Elle's Foundation volunteers and children celebrating a community outreach moment",
+    category: "Home Page",
+  },
+  {
+    id: "home-about",
+    page: "home",
+    section: "about",
+    key: "image",
+    label: "Home: About Image",
+    description: "The image used beside the homepage About section.",
+    aspect: "4:3",
+    defaultUrl: outreachAsset,
+    alt: "Children and volunteers at an Elle's Foundation outreach",
+    category: "Home Page",
+  },
+  {
+    id: "home-past-event",
+    page: "home",
+    section: "past_event",
+    key: "image",
+    label: "Home: Past Event Feature",
+    description: "The image displayed in the Operation Feed the Street archive card.",
+    aspect: "16:10",
+    defaultUrl: heroAsset,
+    alt: "Elle's Foundation volunteers and children celebrating a community outreach moment",
+    category: "Home Page",
+  },
+  {
+    id: "home-volunteer",
+    page: "home",
+    section: "volunteer",
+    key: "image",
+    label: "Home: Volunteer Feature",
+    description: "The image used in the volunteer impact feature near the bottom of the homepage.",
+    aspect: "4:3",
+    defaultUrl: teamAsset,
+    alt: "Elle's Foundation volunteers serving a community meal",
+    category: "Home Page",
+  },
+  {
+    id: "home-story-1",
+    page: "home",
+    section: "stories",
+    key: "image_1",
+    label: "Home: Story 1",
+    description: "The first image in the Stories from the field section.",
+    aspect: "4:3",
+    defaultUrl: streetAsset,
+    alt: "Amina found her voice through school",
+    category: "Media & Platform Stories",
+  },
+  {
+    id: "home-story-2",
+    page: "home",
+    section: "stories",
+    key: "image_2",
+    label: "Home: Story 2",
+    description: "The second image in the Stories from the field section.",
+    aspect: "4:3",
+    defaultUrl: childAsset,
+    alt: "A home rebuilt, a mother renewed",
+    category: "Media & Platform Stories",
+  },
+  {
+    id: "home-story-3",
+    page: "home",
+    section: "stories",
+    key: "image_3",
+    label: "Home: Story 3",
+    description: "The third image in the Stories from the field section.",
+    aspect: "4:3",
+    defaultUrl: treeAsset,
+    alt: "Two brothers, one graduation day",
+    category: "Media & Platform Stories",
+  },
+  {
+    id: "about-hero",
+    page: "about",
+    section: "hero",
+    key: "image",
+    label: "About: Story Image",
+    description: "The main image on the About page story section.",
+    aspect: "4:3",
+    defaultUrl: outreachAsset,
+    alt: "Children and volunteers at an Elle's Foundation outreach",
+    category: "About Page",
+  },
+  {
+    id: "about-cta",
+    page: "about",
+    section: "cta",
+    key: "image",
+    label: "About: Decade Card Image",
+    description:
+      "Optional image for the About page decade card. Leave blank for the solid-color card.",
+    aspect: "16:10",
+    defaultUrl: "",
+    alt: "Community gathering",
+    category: "About Page",
+  },
+  {
+    id: "programs-header",
+    page: "programs",
+    section: "header",
+    key: "image",
+    label: "Programs: Header Image",
+    description: "The lead image at the top of the Programs page.",
+    aspect: "16:10",
+    defaultUrl: suppliesAsset,
+    alt: "Elle's Foundation programs and community supplies",
+    category: "Programs & Pathways",
+  },
+];
+
+const CATEGORIES = [
+  "All",
+  "Home Page",
+  "About Page",
+  "Programs & Pathways",
+  "Media & Platform Stories",
+];
 
 function MediaAdmin() {
   const qc = useQueryClient();
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
-  const [filter, setFilter] = useState<"all" | "image" | "video">("all");
+  const uploadRef = useRef<HTMLInputElement>(null);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [alts, setAlts] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
 
-  const { data: assets = [], isLoading } = useQuery({
-    queryKey: ["a", "media_assets"],
+  const { data: rows = [], isLoading } = useQuery({
+    queryKey: ["a", "page_content", "media-slots"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("media_assets").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("page_content")
+        .select("*")
+        .in("page", [...new Set(SLOT_DEFINITIONS.map((slot) => slot.page))]);
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as ContentRow[];
     },
   });
 
-  const shown = assets.filter((a: any) => filter === "all" || (a.kind ?? "image") === filter);
+  useEffect(() => {
+    const nextDrafts: Record<string, string> = {};
+    const nextAlts: Record<string, string> = {};
+    SLOT_DEFINITIONS.forEach((slot) => {
+      const imageRow = rows.find(
+        (row) => row.page === slot.page && row.section === slot.section && row.key === slot.key,
+      );
+      const altRow = rows.find(
+        (row) =>
+          row.page === slot.page && row.section === slot.section && row.key === `${slot.key}_alt`,
+      );
+      nextDrafts[slot.id] = imageRow?.draft_value ?? imageRow?.value ?? slot.defaultUrl;
+      nextAlts[slot.id] = altRow?.draft_value ?? altRow?.value ?? slot.alt;
+    });
+    setDrafts(nextDrafts);
+    setAlts(nextAlts);
+  }, [rows]);
 
-  const onUpload = async (files: FileList | null) => {
-    if (!files?.length) return;
-    setBusy(true);
+  const shownSlots = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    return SLOT_DEFINITIONS.filter((slot) => {
+      const matchesCategory = category === "All" || slot.category === category;
+      const matchesQuery =
+        !normalized ||
+        `${slot.label} ${slot.description} ${slot.category}`.toLowerCase().includes(normalized);
+      return matchesCategory && matchesQuery;
+    });
+  }, [category, query]);
+
+  const saveSlot = async (slot: MediaSlot) => {
+    setSaving(slot.id);
     try {
-      for (const f of Array.from(files)) await uploadMedia(f, "library");
-      await qc.invalidateQueries({ queryKey: ["a", "media_assets"] });
-      await qc.invalidateQueries({ queryKey: ["media_library"] });
-      toast.success(`Uploaded ${files.length} file(s)`);
-    } catch (e: any) { toast.error(e?.message ?? "Upload failed"); }
-    finally { setBusy(false); }
+      const imageRow = rows.find(
+        (row) => row.page === slot.page && row.section === slot.section && row.key === slot.key,
+      );
+      const altRow = rows.find(
+        (row) =>
+          row.page === slot.page && row.section === slot.section && row.key === `${slot.key}_alt`,
+      );
+      const base = {
+        page: slot.page,
+        section: slot.section,
+        content_type: "image",
+        position: imageRow?.position ?? 0,
+        status: "draft",
+        updated_at: new Date().toISOString(),
+      };
+      const { error } = await supabase.from("page_content").upsert(
+        [
+          {
+            ...(imageRow?.id ? { id: imageRow.id } : {}),
+            ...base,
+            key: slot.key,
+            label: slot.label,
+            value: imageRow?.value ?? drafts[slot.id] ?? slot.defaultUrl,
+            draft_value: drafts[slot.id] ?? "",
+          },
+          {
+            ...(altRow?.id ? { id: altRow.id } : {}),
+            ...base,
+            key: `${slot.key}_alt`,
+            label: `${slot.label} alt text`,
+            content_type: "text",
+            position: (imageRow?.position ?? 0) + 1,
+            value: altRow?.value ?? alts[slot.id] ?? slot.alt,
+            draft_value: alts[slot.id] ?? slot.alt,
+          },
+        ],
+        { onConflict: "page,section,key" },
+      );
+      if (error) throw error;
+      await qc.invalidateQueries({ queryKey: ["a", "page_content", "media-slots"] });
+      await qc.invalidateQueries({ queryKey: ["page_content", slot.page] });
+      toast.success(`${slot.label} saved as a draft`);
+    } catch (error: any) {
+      toast.error(error?.message ?? "Could not save image slot");
+    } finally {
+      setSaving(null);
+    }
   };
 
-  const remove = async (a: any) => {
-    if (!confirm("Delete this file? It may still be used on the site.")) return;
-    await deleteAsset(a.id, a.path);
-    await qc.invalidateQueries({ queryKey: ["a", "media_assets"] });
-    await qc.invalidateQueries({ queryKey: ["media_library"] });
-    toast.success("Deleted");
+  const publishChanges = async () => {
+    setPublishing(true);
+    try {
+      const pages = [...new Set(shownSlots.map((slot) => slot.page))];
+      for (const page of pages) {
+        const { error } = await supabase.rpc("publish_page", { _page: page, _publish_at: null });
+        if (error) throw error;
+      }
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["page_content"] }),
+        qc.invalidateQueries({ queryKey: ["a", "page_content", "media-slots"] }),
+      ]);
+      toast.success("Image changes published to the public site");
+    } catch (error: any) {
+      toast.error(error?.message ?? "Could not publish image changes");
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const uploadDirectly = async (file: File) => {
+    const { uploadMedia } = await import("@/lib/storage");
+    try {
+      await uploadMedia(file, "media-library");
+      await qc.invalidateQueries({ queryKey: ["media_library"] });
+      toast.success("Uploaded to the media library. Select it from a slot to assign it.");
+    } catch (error: any) {
+      toast.error(error?.message ?? "Upload failed");
+    }
   };
 
   return (
     <AdminLayout
-      title="Media Library"
-      subtitle="Upload and manage every image and video used across the website."
+      title="Site image customizer"
+      subtitle="Edit, upload, and update pictures across every public page and component of the website."
       action={
-        <PrimaryButton onClick={() => fileRef.current?.click()} disabled={busy}>
-          {busy ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />} Upload media
-        </PrimaryButton>
+        <div className="flex flex-wrap gap-2">
+          <GhostButton onClick={() => uploadRef.current?.click()}>
+            <Upload className="size-4" /> Upload photo
+          </GhostButton>
+          <PrimaryButton onClick={publishChanges} disabled={publishing || isLoading}>
+            {publishing ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+            {publishing ? "Publishing…" : "Publish changes"}
+          </PrimaryButton>
+        </div>
       }
     >
-      <input ref={fileRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={(e) => onUpload(e.target.files)} />
+      <input
+        ref={uploadRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) void uploadDirectly(file);
+          event.currentTarget.value = "";
+        }}
+      />
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {FILTERS.map(([k, label]) => (
-          <button key={k} onClick={() => setFilter(k as any)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === k ? "bg-primary text-white" : "bg-white border border-[#E5E7EB] text-[#4B5563] hover:border-primary/40"}`}>
-            {label}
-          </button>
-        ))}
+      <div className="mb-6 flex flex-col gap-4 border border-[#e3e8e4] bg-white p-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => setCategory(item)}
+              className={`border px-3 py-2 text-xs font-semibold transition ${
+                category === item
+                  ? "border-[#0b4a5a] bg-[#0b4a5a] text-white"
+                  : "border-[#cdd9d2] bg-white text-[#0b4a5a] hover:border-[#0b4a5a]"
+              }`}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+        <label className="relative block w-full lg:max-w-xs">
+          <span className="sr-only">Search image slots</span>
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#8aa096]" />
+          <TextInput
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search image slots..."
+            className="pl-9"
+          />
+        </label>
       </div>
 
-      <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); onUpload(e.dataTransfer.files); }}>
-      <AdminCard className="p-6">
-
-        {isLoading ? (
-          <div className="text-center py-10 text-sm text-[#6B7280]"><Loader2 className="inline size-4 animate-spin" /></div>
-        ) : shown.length === 0 ? (
-          <div className="text-center py-10 text-sm text-[#6B7280]">
-            Nothing here yet. Drag files in, or click “Upload media”.
-            <div className="text-[11px] mt-1">Images up to 5MB · Videos (MP4, WEBM, MOV) up to 100MB</div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-            {shown.map((a: any) => (
-              <div key={a.id} className="group relative aspect-square rounded-lg overflow-hidden border border-[#EEF0F3] bg-[#F9FAFB]">
-                {(a.kind ?? "image") === "video" ? (
-                  <video src={a.url} muted playsInline loop className="w-full h-full object-cover bg-black"
-                    onMouseEnter={(e) => (e.currentTarget as HTMLVideoElement).play()}
-                    onMouseLeave={(e) => (e.currentTarget as HTMLVideoElement).pause()} />
-                ) : (
-                  <img src={a.url} alt={a.alt_text || a.filename} className="w-full h-full object-cover" />
-                )}
-                {(a.kind ?? "image") === "video" && (
-                  <span className="absolute top-1.5 left-1.5 rounded bg-black/60 text-white p-1"><Film className="size-3" /></span>
-                )}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-end p-2 gap-1">
-                  <GhostButton onClick={() => { navigator.clipboard.writeText(a.url); toast.success("URL copied"); }} className="!bg-white !py-1 !px-2 text-xs">
-                    <Copy className="size-3" />
-                  </GhostButton>
-                  <button onClick={() => remove(a)} className="ml-auto p-1.5 rounded-md bg-white text-red-600 hover:bg-red-50">
-                    <Trash2 className="size-3.5" />
-                  </button>
+      {isLoading ? (
+        <AdminCard className="p-12 text-center text-sm text-[#6b8076]">
+          <Loader2 className="mx-auto size-5 animate-spin" />
+        </AdminCard>
+      ) : shownSlots.length === 0 ? (
+        <AdminCard className="p-12 text-center text-sm text-[#6b8076]">
+          No image slots match your search.
+        </AdminCard>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {shownSlots.map((slot) => {
+            const value = drafts[slot.id] ?? slot.defaultUrl;
+            const isSaving = saving === slot.id;
+            return (
+              <AdminCard key={slot.id} className="overflow-hidden">
+                <div className="relative aspect-[16/10] bg-[#e9f1ea]">
+                  {value ? (
+                    <img
+                      src={value}
+                      alt={alts[slot.id] ?? slot.alt}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="grid h-full place-items-center text-[#6b8076]">
+                      <ImageIcon className="size-10" />
+                    </div>
+                  )}
+                  <span className="absolute left-3 top-3 bg-[#0b4a5a] px-2 py-1 text-[0.62rem] font-bold text-white">
+                    {slot.aspect}
+                  </span>
+                  <span className="absolute right-3 top-3 bg-[#0b4a5a]/90 px-2 py-1 text-[0.62rem] font-bold text-white">
+                    <Check className="mr-1 inline size-3" /> {value ? "Assigned" : "Empty slot"}
+                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </AdminCard>
-      </div>
-
+                <div className="space-y-4 p-5">
+                  <div>
+                    <div className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#f26518]">
+                      {slot.category}
+                    </div>
+                    <h2 className="mt-2 font-display text-lg font-semibold leading-tight text-[#0b4a5a]">
+                      {slot.label}
+                    </h2>
+                    <p className="mt-2 text-xs leading-5 text-[#6b8076]">{slot.description}</p>
+                  </div>
+                  <label className="block">
+                    <span className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#477763]">
+                      Accessibility & SEO alt text
+                    </span>
+                    <TextInput
+                      value={alts[slot.id] ?? slot.alt}
+                      onChange={(event) =>
+                        setAlts((current) => ({ ...current, [slot.id]: event.target.value }))
+                      }
+                      className="mt-2"
+                    />
+                  </label>
+                  <MediaField
+                    value={value}
+                    onChange={(url) => setDrafts((current) => ({ ...current, [slot.id]: url }))}
+                    folder={`pages/${slot.page}`}
+                    accept="image"
+                  />
+                  <div className="flex items-center justify-between gap-2 border-t border-[#e3e8e4] pt-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!value) return;
+                        void navigator.clipboard.writeText(value);
+                        toast.success("Image URL copied");
+                      }}
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-[#0b4a5a] hover:text-[#f26518]"
+                    >
+                      <Copy className="size-3.5" /> Copy URL
+                    </button>
+                    {value && (
+                      <a
+                        href={value}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-xs font-semibold text-[#0b4a5a] hover:text-[#f26518]"
+                      >
+                        <ExternalLink className="size-3.5" /> Open
+                      </a>
+                    )}
+                    <PrimaryButton
+                      onClick={() => void saveSlot(slot)}
+                      disabled={isSaving}
+                      className="!px-3 !py-2 !text-xs"
+                    >
+                      {isSaving ? (
+                        <Loader2 className="size-3.5 animate-spin" />
+                      ) : (
+                        <Check className="size-3.5" />
+                      )}
+                      {isSaving ? "Saving" : "Save"}
+                    </PrimaryButton>
+                  </div>
+                </div>
+              </AdminCard>
+            );
+          })}
+        </div>
+      )}
     </AdminLayout>
   );
 }
