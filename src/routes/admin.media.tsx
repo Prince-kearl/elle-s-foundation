@@ -296,7 +296,7 @@ function MediaAdmin() {
       const { error } = await supabase.from("page_content").upsert(
         [
           {
-            ...(imageRow?.id ? { id: imageRow.id } : {}),
+            id: imageRow?.id ?? crypto.randomUUID(),
             ...base,
             key: slot.key,
             label: slot.label,
@@ -304,7 +304,7 @@ function MediaAdmin() {
             draft_value: drafts[slot.id] ?? "",
           },
           {
-            ...(altRow?.id ? { id: altRow.id } : {}),
+            id: altRow?.id ?? crypto.randomUUID(),
             ...base,
             key: `${slot.key}_alt`,
             label: `${slot.label} alt text`,

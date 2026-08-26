@@ -25,6 +25,9 @@ create table if not exists public.page_content (
 );
 
 alter table public.page_content
+  alter column id set default gen_random_uuid();
+
+alter table public.page_content
   add column if not exists draft_value text,
   add column if not exists status text not null default 'published',
   add column if not exists published_at timestamptz,
