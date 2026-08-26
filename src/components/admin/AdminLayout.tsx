@@ -1,6 +1,6 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   LayoutGrid,
   Sparkles,
@@ -40,6 +40,31 @@ type AdminNotification = {
 };
 
 function useAdminNotifications() {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-notifications")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "contact_submissions" },
+        () => {
+          void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+        },
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "donation_intents" }, () => {
+        void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "event_rsvps" }, () => {
+        void queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });
+      })
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   return useQuery({
     queryKey: ["admin-notifications"],
     queryFn: async () => {
@@ -89,6 +114,7 @@ function useAdminNotifications() {
     },
     refetchInterval: 30_000,
     staleTime: 10_000,
+    refetchOnWindowFocus: true,
   });
 }
 
