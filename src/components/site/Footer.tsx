@@ -286,10 +286,9 @@ export function Footer() {
                     type="submit"
                     aria-label="Send WhatsApp welcome request"
                     disabled={submitting}
-                    className="inline-flex shrink-0 items-center gap-2 bg-[color:var(--color-gold)] px-3 py-2 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
+                    className="grid size-10 shrink-0 place-items-center bg-[color:var(--color-gold)] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
                   >
                     <Send className="size-3.5" aria-hidden="true" />
-                    <span>Send</span>
                   </button>
                 </div>
                 <p
