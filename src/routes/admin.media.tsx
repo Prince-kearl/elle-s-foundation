@@ -201,6 +201,12 @@ type CmsMediaState = {
 
 type PublishRow = {
   id: string;
+  page: string;
+  section: string;
+  key: string;
+  label: string;
+  content_type: "image" | "text";
+  position: number;
   value: string;
   draft_value: string;
   status: "published";
@@ -368,6 +374,12 @@ function MediaAdmin() {
             imageRow?.id
               ? {
                   id: imageRow.id,
+                  page: slot.page,
+                  section: slot.section,
+                  key: slot.key,
+                  label: imageRow.label ?? slot.label,
+                  content_type: "image",
+                  position: imageRow.position ?? 0,
                   value: drafts[slot.id] ?? slot.defaultUrl,
                   draft_value: drafts[slot.id] ?? slot.defaultUrl,
                   status: "published",
@@ -379,6 +391,12 @@ function MediaAdmin() {
             altRow?.id
               ? {
                   id: altRow.id,
+                  page: slot.page,
+                  section: slot.section,
+                  key: `${slot.key}_alt`,
+                  label: altRow.label ?? `${slot.label} alt text`,
+                  content_type: "text",
+                  position: (imageRow?.position ?? 0) + 1,
                   value: alts[slot.id] ?? slot.alt,
                   draft_value: alts[slot.id] ?? slot.alt,
                   status: "published",
