@@ -40,6 +40,12 @@ const siteItems: SearchItem[] = [
     keywords: "programs education health shelter community",
   },
   {
+    label: "Our team",
+    description: "Meet the leadership and people behind the work",
+    to: "/about#leadership",
+    keywords: "team members leadership staff people founders directors",
+  },
+  {
     label: "Support us",
     description: "Donate and join the work",
     to: "/donate",
@@ -83,6 +89,12 @@ const adminItems: SearchItem[] = [
     description: "Manage public programmes",
     to: "/admin/programs",
     keywords: "programs education health",
+  },
+  {
+    label: "Team members",
+    description: "Manage public leadership profiles",
+    to: "/admin/team",
+    keywords: "team members leadership staff profiles people",
   },
   {
     label: "Stories",

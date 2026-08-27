@@ -112,7 +112,7 @@ function About() {
         </div>
       </section>
 
-      <section className="section-y">
+      <section id="leadership" className="section-y scroll-mt-28">
         <div className="container-wide">
           <SectionHeading
             eyebrow="Leadership"
