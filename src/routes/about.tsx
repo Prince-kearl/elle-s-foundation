@@ -120,21 +120,32 @@ function About() {
             }
           />
           {people.length ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {people.map((p) => (
                 <button
                   key={p.id}
                   type="button"
                   onClick={() => setSelectedMember(p)}
-                  className="soft-card soft-card-hover p-6 text-center text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  className="group overflow-hidden border border-border bg-background p-2 text-left transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_18px_40px_-28px_rgba(8,75,53,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   aria-label={`View ${p.name}'s profile`}
                 >
-                  <div className="size-20 mx-auto overflow-hidden rounded-full bg-secondary grid place-items-center font-display text-2xl text-primary">
-                    {p.avatar_url ? <img src={p.avatar_url} alt="" className="h-full w-full object-cover" /> : p.name.split(" ").map((s) => s[0]).join("")}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-secondary">
+                    {p.avatar_url ? (
+                      <img src={p.avatar_url} alt={`${p.name} portrait`} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    ) : (
+                      <div className="grid h-full w-full place-items-center bg-[linear-gradient(145deg,var(--color-secondary),var(--color-cream))] font-display text-5xl text-primary/70">
+                        {p.name.split(" ").map((s) => s[0]).join("")}
+                      </div>
+                    )}
+                    <span className="absolute bottom-3 left-3 bg-background/95 px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-[0.16em] text-primary">View profile</span>
                   </div>
-                  <h4 className="font-display text-lg mt-4 text-primary">{p.name}</h4>
-                  <p className="text-sm text-muted-foreground">{p.role}</p>
-                  <span className="mt-4 inline-block text-[0.65rem] font-bold uppercase tracking-[0.14em] text-earth">View profile</span>
+                  <div className="flex items-end justify-between gap-3 px-2 pb-3 pt-4">
+                    <div className="min-w-0">
+                      <p className="mb-1 text-[0.58rem] font-bold uppercase tracking-[0.16em] text-earth">{p.role}</p>
+                      <h4 className="font-display text-xl leading-tight text-primary">{p.name}</h4>
+                    </div>
+                    <span className="grid size-9 shrink-0 place-items-center border border-border text-primary transition group-hover:border-primary group-hover:bg-primary group-hover:text-white" aria-hidden="true">↗</span>
+                  </div>
                 </button>
               ))}
             </div>
