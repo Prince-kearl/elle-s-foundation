@@ -9,11 +9,11 @@ import { supabase } from "./supabase";
 
 export type BrandValues = Record<string, any>;
 
-function toColor(hex: string | null | undefined): string | null {
-  if (!hex) return null;
-  const h = hex.trim();
-  if (!/^#[0-9a-fA-F]{6}$/.test(h)) return null;
-  return `oklch(from ${h} l c h)`;
+function toColor(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const color = String(value).trim();
+  if (/^#[0-9a-fA-F]{3,8}$/.test(color) || /^(rgb|rgba|hsl|hsla|oklch|oklab|color)\(/i.test(color)) return color;
+  return null;
 }
 
 export const BRAND_DEFAULTS: BrandValues = {
@@ -35,6 +35,8 @@ export const BRAND_DEFAULTS: BrandValues = {
   section_spacing: "6rem",
   container_width: "1200px",
   radius: "0.625rem",
+  heading_weight: "600",
+  muted_color: "#6B7280",
 };
 
 export function useBrand() {
@@ -107,6 +109,9 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
   c("--ink", "ink_color");
   c("--background", "background_color");
   if (v.radius) vars["--radius"] = String(v.radius);
+  if (v.heading_weight) vars["--heading-weight"] = String(v.heading_weight);
+  const muted = toColor(v.muted_color);
+  if (muted) vars["--muted-foreground"] = muted;
   if (v.heading_font)
     vars["--font-display"] = `"${v.heading_font}", ui-sans-serif, system-ui, sans-serif`;
   if (v.body_font) vars["--font-sans"] = `"${v.body_font}", ui-sans-serif, system-ui, sans-serif`;

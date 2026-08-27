@@ -81,6 +81,7 @@
   /* Brand-editable typography & spacing tokens */
   --heading-scale: 1;
   --body-scale: 1;
+  --heading-weight: 600;
   --brand-letter-spacing: 0em;
   --brand-line-height: 1.6;
   --section-spacing: 6rem;
@@ -108,6 +109,9 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 1rem;
+    letter-spacing: var(--brand-letter-spacing, 0em);
+    line-height: var(--brand-line-height, 1.6);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
   }
@@ -117,6 +121,7 @@
   h4,
   .font-display {
     font-family: var(--font-display);
+    font-weight: var(--heading-weight, 600);
     letter-spacing: -0.01em;
   }
 }
@@ -278,4 +283,101 @@ body::-webkit-scrollbar,
 *::-webkit-scrollbar {
   width: 0;
   height: 0;
+}
+
+/* Shared rich-text typography: consistent rhythm for CMS-authored content. */
+.rich-text {
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+.rich-text > :first-child {
+  margin-top: 0;
+}
+.rich-text > :last-child {
+  margin-bottom: 0;
+}
+.rich-text p,
+.rich-text ul,
+.rich-text ol,
+.rich-text blockquote {
+  margin-block: 0.7em;
+}
+.rich-text strong,
+.rich-text b {
+  color: inherit;
+  font-weight: 750;
+}
+.rich-text em,
+.rich-text i {
+  color: inherit;
+  font-style: italic;
+}
+.rich-text a {
+  color: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+.rich-text a:hover {
+  color: var(--earth);
+}
+.rich-text ul,
+.rich-text ol {
+  padding-inline-start: 1.35rem;
+}
+.rich-text ul {
+  list-style-type: disc;
+}
+.rich-text ol {
+  list-style-type: decimal;
+}
+.rich-text li + li {
+  margin-top: 0.3em;
+}
+.rich-text blockquote {
+  border-inline-start: 3px solid var(--gold);
+  padding-inline-start: 1rem;
+  color: color-mix(in oklab, currentColor 82%, var(--gold));
+  font-family: var(--font-display);
+  font-style: italic;
+}
+.rich-text blockquote p {
+  margin-block: 0;
+}
+.rich-text br + br {
+  display: none;
+}
+.rich-text-editor .rich-text p {
+  min-height: 1.5rem;
+}
+.rich-text-editor .rich-text blockquote {
+  background: color-mix(in oklab, var(--secondary) 55%, transparent);
+  padding-block: 0.25rem;
+}
+.rich-text-editor .rich-text a {
+  color: var(--primary);
+}
+.rich-text-editor .rich-text a:hover {
+  color: var(--earth);
+}
+.rich-text-editor .rich-text:focus {
+  outline: none;
+}
+.rich-text--compact > * + * {
+  margin-top: 0.45em;
+}
+.rich-text--dark blockquote {
+  border-color: var(--sand);
+  color: color-mix(in oklab, currentColor 90%, var(--sand));
+}
+.rich-text--dark a:hover {
+  color: var(--sand);
+}
+.rich-text--admin {
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+.rich-text--admin blockquote {
+  border-color: var(--primary);
 }

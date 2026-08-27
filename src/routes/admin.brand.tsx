@@ -30,6 +30,7 @@ const COLOR_FIELDS: [string, string][] = [
   ["sand_color", "Sand"],
   ["ink_color", "Ink"],
   ["background_color", "Background"],
+  ["muted_color", "Muted text"],
 ];
 
 const FONT_CHOICES = [
@@ -204,6 +205,12 @@ function BrandAdmin() {
                   ))}
                 </select>
               </Field>
+              <Field label="Heading weight">
+                <select                   value={v.heading_weight ?? (overriding ? "" : "600")} onChange={(e) => set("heading_weight", e.target.value)} className="w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white">
+                  {overriding && <option value="">Inherit global</option>}
+                  {["400", "500", "600", "700", "800"].map((weight) => <option key={weight} value={weight}>{weight}</option>)}
+                </select>
+              </Field>
               <Field label="Base font size">
                 <TextInput
                   value={v.base_font_size ?? ""}
@@ -320,7 +327,10 @@ function LivePreview({ v }: { v: any }) {
       style={{
         background: v.background_color,
         borderRadius: v.radius,
-        letterSpacing: v.letter_spacing,
+                    letterSpacing: v.letter_spacing,
+            fontSize: v.base_font_size,
+            lineHeight: v.line_height,
+
       }}
     >
       <div
@@ -331,6 +341,7 @@ function LivePreview({ v }: { v: any }) {
           style={{
             fontFamily: `"${v.heading_font}"`,
             color: v.primary_color,
+            fontWeight: v.heading_weight,
             fontSize: `${1.05 * hs}rem`,
           }}
         >
@@ -354,6 +365,7 @@ function LivePreview({ v }: { v: any }) {
           style={{
             fontFamily: `"${v.heading_font}"`,
             color: v.primary_color,
+            fontWeight: v.heading_weight,
             fontSize: `${1.85 * hs}rem`,
             lineHeight: 1.05,
             marginTop: "0.75rem",
@@ -364,7 +376,7 @@ function LivePreview({ v }: { v: any }) {
         <p
           style={{
             fontFamily: `"${v.body_font}"`,
-            color: v.ink_color,
+            color: v.muted_color || v.ink_color,
             fontSize: `${0.875 * bs}rem`,
             lineHeight: v.line_height,
             marginTop: "0.75rem",
