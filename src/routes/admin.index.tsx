@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminCard, Badge } from "@/components/admin/AdminLayout";
 import { useAdminList } from "@/lib/cms";
@@ -71,17 +71,45 @@ function Dashboard() {
     { label: "Donation Intents", value: donations.data?.length ?? 0, sub: `${formatCurrency((donations.data ?? []).reduce((s, d) => s + Number(d.amount || 0), 0))} total`, icon: Heart, to: "/admin/donations" as const },
     { label: "FAQs", value: faqs.data?.length ?? 0, sub: "questions answered", icon: HelpCircle, to: "/admin/faqs" as const },
   ];
-  const chart = Array.from({ length: 6 }, (_, index) => {
+  const [donationPeriod, setDonationPeriod] = useState<"week" | "month" | "year">("month");
+  const periodConfig = {
+    week: { count: 8, label: "last eight weeks", unit: "week" },
+    month: { count: 6, label: "last six months", unit: "month" },
+    year: { count: 5, label: "last five years", unit: "year" },
+  } as const;
+  const selectedPeriod = periodConfig[donationPeriod];
+  const periodStart = new Date();
+  if (donationPeriod === "week") periodStart.setDate(periodStart.getDate() - (selectedPeriod.count - 1) * 7);
+  if (donationPeriod === "month") periodStart.setMonth(periodStart.getMonth() - (selectedPeriod.count - 1));
+  if (donationPeriod === "year") periodStart.setFullYear(periodStart.getFullYear() - (selectedPeriod.count - 1));
+  periodStart.setHours(0, 0, 0, 0);
+  const chart = Array.from({ length: selectedPeriod.count }, (_, index) => {
     const date = new Date();
-    date.setMonth(date.getMonth() - (5 - index));
+    if (donationPeriod === "week") date.setDate(date.getDate() - (selectedPeriod.count - 1 - index) * 7);
+    if (donationPeriod === "month") date.setMonth(date.getMonth() - (selectedPeriod.count - 1 - index));
+    if (donationPeriod === "year") date.setFullYear(date.getFullYear() - (selectedPeriod.count - 1 - index));
     const amount = (donations.data ?? []).filter((item) => {
       const value = new Date(item.created_at);
-      return value.getMonth() === date.getMonth() && value.getFullYear() === date.getFullYear();
+      if (donationPeriod === "week") {
+        const bucketStart = new Date(date);
+        bucketStart.setDate(bucketStart.getDate() - bucketStart.getDay());
+        bucketStart.setHours(0, 0, 0, 0);
+        const bucketEnd = new Date(bucketStart);
+        bucketEnd.setDate(bucketEnd.getDate() + 7);
+        return value >= bucketStart && value < bucketEnd;
+      }
+      if (donationPeriod === "month") return value.getMonth() === date.getMonth() && value.getFullYear() === date.getFullYear();
+      return value.getFullYear() === date.getFullYear();
     }).reduce((sum, item) => sum + Number(item.amount || 0), 0);
-    return { month: date.toLocaleDateString("en-GH", { month: "short" }), amount };
+    const label = donationPeriod === "week"
+      ? `W${index + 1}`
+      : donationPeriod === "month"
+        ? date.toLocaleDateString("en-GH", { month: "short" })
+        : date.toLocaleDateString("en-GH", { year: "numeric" });
+    return { period: label, amount };
   });
   const exportDonations = () => {
-    const rows = [["Name", "Email", "Amount (GHS)", "Frequency", "Status", "Date"], ...(donations.data ?? []).map((item) => [item.name ?? "", item.email ?? "", item.amount, item.frequency, item.status, item.created_at])];
+    const rows = [["Name", "Email", "Amount (GHS)", "Frequency", "Status", "Date"], ...(donations.data ?? []).filter((item) => new Date(item.created_at) >= periodStart).map((item) => [item.name ?? "", item.email ?? "", item.amount, item.frequency, item.status, item.created_at])];
     const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
     const link = document.createElement("a");
     link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
@@ -109,12 +137,21 @@ function Dashboard() {
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr] mb-6">
         <AdminCard className="p-6">
           <div className="flex items-center justify-between gap-3 mb-5">
-            <div><h3 className="font-display text-xl">Donation trend</h3><p className="text-xs text-[#6B7280]">Pledged amount in Ghana cedis · last six months</p></div>
-            <button onClick={exportDonations} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] px-3 py-2 text-xs font-semibold"><Download className="size-4" /> CSV</button>
+            <div><h3 className="font-display text-xl">Donation trend</h3><p className="text-xs text-[#6B7280]">Pledged amount in Ghana cedis · {selectedPeriod.label}</p></div>
+            <div className="flex items-center gap-2">
+              <div className="flex border border-[#E5E7EB] bg-[#FAFAFB] p-0.5" role="group" aria-label="Donation trend period">
+                {(["week", "month", "year"] as const).map((period) => (
+                  <button key={period} type="button" onClick={() => setDonationPeriod(period)} className={`px-2.5 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] transition ${donationPeriod === period ? "bg-primary text-white" : "text-[#6B7280] hover:text-primary"}`}>
+                    {period}
+                  </button>
+                ))}
+              </div>
+              <button onClick={exportDonations} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] px-3 py-2 text-xs font-semibold"><Download className="size-4" /> CSV</button>
+            </div>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chart}><defs><linearGradient id="donationFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--primary)" stopOpacity={0.28}/><stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)"/><XAxis dataKey="month" tickLine={false} axisLine={false}/><YAxis tickLine={false} axisLine={false}/><Tooltip formatter={(value) => formatCurrency(Number(value))}/><Area type="monotone" dataKey="amount" stroke="var(--primary)" fill="url(#donationFill)" strokeWidth={2}/></AreaChart>
+              <AreaChart data={chart}><defs><linearGradient id="donationFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--primary)" stopOpacity={0.28}/><stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)"/><XAxis dataKey="period" tickLine={false} axisLine={false}/><YAxis tickLine={false} axisLine={false}/><Tooltip formatter={(value) => formatCurrency(Number(value))}/><Area type="monotone" dataKey="amount" stroke="var(--primary)" fill="url(#donationFill)" strokeWidth={2}/></AreaChart>
             </ResponsiveContainer>
           </div>
         </AdminCard>
