@@ -27,7 +27,7 @@ const emptyEvent: Partial<EventRecord> = {
 
 function EventsAdmin() {
   const { data: events, isLoading: eventsLoading } = useAdminList<EventRecord>("events");
-  const { data: rsvps, isLoading: rsvpsLoading } = useAdminList<EventRsvp>("event_rsvps");
+  const { data: rsvps, isLoading: rsvpsLoading } = useAdminList<EventRsvp>("event_rsvps", "created_at");
   const { data: emailConfirmations } = useAdminList<RsvpEmailConfirmation>("rsvp_email_confirmations", "created_at");
   const upsertEvent = useUpsert("events", [["p:events"]]);
   const deleteEvent = useDelete("events", [["p:events"]]);

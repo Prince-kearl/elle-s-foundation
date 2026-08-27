@@ -15,7 +15,7 @@ export const Route = createFileRoute("/admin/contacts")({
 
 function ContactsAdmin() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useAdminList<ContactSub>("contact_submissions");
+  const { data, isLoading, isError, error } = useAdminList<ContactSub>("contact_submissions", "created_at");
 
   useEffect(() => {
     const channel = supabase

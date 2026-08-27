@@ -70,10 +70,10 @@ function Dashboard() {
   const team = useAdminList<TeamMember>("team_members");
   const testimonials = useAdminList<Testimonial>("testimonials");
   const faqs = useAdminList<Faq>("faqs");
-  const contacts = useAdminList<ContactSub>("contact_submissions");
-  const donations = useAdminList<DonationIntent>("donation_intents");
+  const contacts = useAdminList<ContactSub>("contact_submissions", "created_at");
+  const donations = useAdminList<DonationIntent>("donation_intents", "created_at");
   const events = useAdminList<EventRecord>("events");
-  const rsvps = useAdminList<EventRsvp>("event_rsvps");
+  const rsvps = useAdminList<EventRsvp>("event_rsvps", "created_at");
 
   const kpiDefinitions = [
     { label: "Children Supported", key: "children supported", icon: Users, topBorder: "border-t-[#e4c39e]", iconTone: "bg-[#fbf7f1] text-[#dcb987]" },
