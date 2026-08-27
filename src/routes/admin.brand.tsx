@@ -39,11 +39,22 @@ const FONT_CHOICES = [
   "Lora",
   "DM Serif Display",
   "Instrument Serif",
+  "Libre Baskerville",
+  "Merriweather",
+  "Bodoni Moda",
+  "Source Serif 4",
   "Inter",
+  "Plus Jakarta Sans",
   "Poppins",
   "DM Sans",
   "Manrope",
   "Work Sans",
+  "Outfit",
+  "Public Sans",
+  "Nunito Sans",
+  "Space Grotesk",
+  "IBM Plex Sans",
+  "Roboto",
 ];
 
 const PAGES = ["global", "home", "about", "programs", "sponsor", "donate", "contact"] as const;

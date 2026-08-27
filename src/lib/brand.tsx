@@ -124,13 +124,20 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
   return vars;
 }
 
+const SINGLE_WEIGHT_FONTS = new Set(["DM Serif Display", "Instrument Serif"]);
+
 export function loadBrandFonts(v: BrandValues, id = "brand-fonts") {
   if (typeof document === "undefined") return;
   const families = new Set<string>();
   if (v.heading_font) families.add(String(v.heading_font));
   if (v.body_font) families.add(String(v.body_font));
   const familyParam = Array.from(families)
-    .map((f) => `family=${encodeURIComponent(f)}:wght@400;500;600;700`)
+    .map((font) => {
+      const family = encodeURIComponent(font);
+      return SINGLE_WEIGHT_FONTS.has(font)
+        ? `family=${family}`
+        : `family=${family}:wght@400;500;600;700;800`;
+    })
     .join("&");
   if (!familyParam) return;
   const href = `https://fonts.googleapis.com/css2?${familyParam}&display=swap`;
