@@ -29,6 +29,16 @@ const DASHBOARD_TABLES = [
   "rsvp_email_confirmations",
 ] as const;
 
+function DonationTrendTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value?: number }>; label?: string }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="border border-[#d9e7df] bg-[#123d31] px-3 py-2.5 text-white shadow-xl">
+      <div className="text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#cfe8d8]">{label}</div>
+      <div className="mt-1 text-sm font-bold">{formatCurrency(Number(payload[0]?.value ?? 0))}</div>
+    </div>
+  );
+}
+
 function Dashboard() {
   const queryClient = useQueryClient();
 
@@ -115,6 +125,8 @@ function Dashboard() {
         : date.toLocaleDateString("en-GH", { year: "numeric" });
     return { period: label, amount };
   });
+  const chartRangeTotal = chart.reduce((sum, item) => sum + item.amount, 0);
+  const chartPeak = Math.max(...chart.map((item) => item.amount), 0);
   const exportDonations = () => {
     const rows = [["Name", "Email", "Amount (GHS)", "Frequency", "Status", "Date"], ...(donations.data ?? []).filter((item) => new Date(item.created_at) >= periodStart).map((item) => [item.name ?? "", item.email ?? "", item.amount, item.frequency, item.status, item.created_at])];
     const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
@@ -142,23 +154,54 @@ function Dashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr] mb-6">
-        <AdminCard className="p-6">
-          <div className="flex items-center justify-between gap-3 mb-5">
-            <div><h3 className="font-display text-xl">Donation trend</h3><p className="text-xs text-[#6B7280]">Pledged amount in Ghana cedis · {selectedPeriod.label}</p></div>
-            <div className="flex items-center gap-2">
-              <div className="flex border border-[#E5E7EB] bg-[#FAFAFB] p-0.5" role="group" aria-label="Donation trend period">
-                {(["week", "month", "year"] as const).map((period) => (
-                  <button key={period} type="button" onClick={() => setDonationPeriod(period)} className={`px-2.5 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] transition ${donationPeriod === period ? "bg-primary text-white" : "text-[#6B7280] hover:text-primary"}`}>
-                    {period}
-                  </button>
-                ))}
+        <AdminCard className="overflow-hidden border-[#dfe6e1] bg-white p-0">
+          <div className="border-b border-[#edf1ee] px-5 pb-5 pt-5 sm:px-6">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="size-2 bg-primary" />
+                  <h3 className="font-display text-xl text-[#123d31]">Donation trend</h3>
+                </div>
+                <p className="mt-1 text-xs text-[#71857c]">Pledged amount in Ghana cedis · {selectedPeriod.label}</p>
               </div>
-              <button onClick={exportDonations} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] px-3 py-2 text-xs font-semibold"><Download className="size-4" /> CSV</button>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex border border-[#dfe6e1] bg-[#f8fbf8] p-1" role="group" aria-label="Donation trend period">
+                  {(["week", "month", "year"] as const).map((period) => (
+                    <button key={period} type="button" onClick={() => setDonationPeriod(period)} className={`px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] transition ${donationPeriod === period ? "bg-primary text-white shadow-sm" : "text-[#6B7F75] hover:bg-white hover:text-primary"}`}>
+                      {period}
+                    </button>
+                  ))}
+                </div>
+                <button onClick={exportDonations} className="inline-flex items-center gap-2 border border-[#dfe6e1] bg-white px-3 py-2 text-xs font-semibold text-[#315d4d] transition hover:border-primary/40 hover:bg-[#f8fbf8]"><Download className="size-4" /> CSV</button>
+              </div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <div className="border border-[#e6eee9] bg-[#f8fbf8] px-3 py-2">
+                <div className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#8ba096]">Range total</div>
+                <div className="mt-0.5 text-sm font-bold text-[#123d31]">{formatCurrency(chartRangeTotal)}</div>
+              </div>
+              <div className="border border-[#e6eee9] bg-[#f8fbf8] px-3 py-2">
+                <div className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#8ba096]">Peak period</div>
+                <div className="mt-0.5 text-sm font-bold text-[#123d31]">{formatCurrency(chartPeak)}</div>
+              </div>
             </div>
           </div>
-          <div className="h-64">
+          <div className="h-72 bg-gradient-to-b from-[#fbfefb] to-white px-2 pb-4 pt-5 sm:px-4">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chart}><defs><linearGradient id="donationFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--primary)" stopOpacity={0.28}/><stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/></linearGradient></defs><CartesianGrid vertical={false} stroke="var(--border)"/><XAxis dataKey="period" tickLine={false} axisLine={false}/><YAxis tickLine={false} axisLine={false}/><Tooltip formatter={(value) => formatCurrency(Number(value))}/><Area type="monotone" dataKey="amount" stroke="var(--primary)" fill="url(#donationFill)" strokeWidth={2}/></AreaChart>
+              <AreaChart data={chart} margin={{ top: 8, right: 10, left: 4, bottom: donationPeriod === "month" ? 24 : 8 }}>
+                <defs>
+                  <linearGradient id="donationFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.32} />
+                    <stop offset="78%" stopColor="var(--primary)" stopOpacity={0.08} />
+                    <stop offset="100%" stopColor="var(--primary)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="#e4ece7" strokeDasharray="4 6" />
+                <XAxis dataKey="period" interval={0} tickLine={false} axisLine={false} tick={{ fill: "#789087", fontSize: 10 }} tickMargin={12} angle={donationPeriod === "month" ? -32 : 0} textAnchor={donationPeriod === "month" ? "end" : "middle"} />
+                <YAxis tickLine={false} axisLine={false} tick={{ fill: "#789087", fontSize: 10 }} tickMargin={8} width={42} />
+                <Tooltip content={<DonationTrendTooltip />} cursor={{ stroke: "var(--primary)", strokeOpacity: 0.2, strokeDasharray: "4 4" }} />
+                <Area type="monotone" dataKey="amount" stroke="var(--primary)" fill="url(#donationFill)" strokeWidth={2.5} strokeLinecap="round" dot={{ r: 3.5, fill: "var(--primary)", stroke: "#ffffff", strokeWidth: 2 }} activeDot={{ r: 5, fill: "var(--gold)", stroke: "#123d31", strokeWidth: 2 }} connectNulls />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </AdminCard>
