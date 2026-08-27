@@ -13,7 +13,7 @@ export const Route = createFileRoute("/admin/stories")({
         fields={[
           { name: "tag", label: "Tag (Education, Family, Youth…)", type: "text" },
           { name: "title", label: "Title", type: "text" },
-          { name: "excerpt", label: "Excerpt", type: "textarea" },
+          { name: "excerpt", label: "Excerpt", type: "richtext" },
           { name: "image_url", label: "Image", type: "image", folder: "stories" },
         ]}
         columns={[

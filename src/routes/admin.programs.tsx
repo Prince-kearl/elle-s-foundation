@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/programs")({
         invalidateKeys={[["p:programs"]]}
         fields={[
           { name: "title", label: "Title", type: "text" },
-          { name: "description", label: "Description", type: "textarea" },
+          { name: "description", label: "Description", type: "richtext" },
           { name: "icon", label: "Icon (GraduationCap, HeartPulse, Home, TreePine, Heart, Sparkles)", type: "text" },
           { name: "image_url", label: "Image", type: "image", folder: "programs" },
           { name: "video_url", label: "Video (optional — replaces image)", type: "video", folder: "programs" },

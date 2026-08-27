@@ -148,7 +148,7 @@ function About() {
                           </div>
                           <span className="shrink-0 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-earth">Profile</span>
                         </div>
-                        {p.bio ? <p className="mt-4 line-clamp-2 text-xs leading-5 text-muted-foreground">{p.bio}</p> : null}
+                        {p.bio ? <div className="prose prose-xs mt-4 line-clamp-2 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(p.bio) }} /> : null}
                         <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                           <span className="inline-flex items-center gap-1.5 text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"><span className="size-1.5 rounded-full bg-earth" aria-hidden="true" /> Elle’s Foundation</span>
                           <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.55rem] font-semibold text-primary-foreground transition group-hover:bg-forest">View bio <span className="text-secondary">↗</span></span>
@@ -251,7 +251,7 @@ function TeamMemberModal({ member, onClose }: { member: TeamMember; onClose: () 
           <h2 id="team-member-name" className="mt-5 font-display text-3xl text-primary">{member.name}</h2>
           <p className="mt-1 text-sm font-semibold uppercase tracking-[0.12em] text-earth">{member.role}</p>
           {member.bio ? (
-            <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground">{member.bio}</p>
+            <div className="prose prose-sm mt-5 max-w-md text-sm leading-7 text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(member.bio) }} />
           ) : (
             <p className="mt-5 text-sm text-muted-foreground">This profile is managed by the Elle’s Foundation team.</p>
           )}

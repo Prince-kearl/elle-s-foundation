@@ -3,6 +3,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
+import { richTextForDisplay } from "@/components/admin/RichTextEditor";
 import { usePublicPrograms, usePublicStats, type Stat } from "@/lib/cms";
 import programEducation from "@/assets/community/live/community-supplies.jpeg";
 import programHealth from "@/assets/community/live/family-support.jpeg";
@@ -96,9 +97,7 @@ function Programs() {
                   <h2 className="font-display text-4xl mt-5 text-primary leading-tight">
                     {p.title}
                   </h2>
-                  <p className="text-muted-foreground mt-4 text-lg leading-relaxed">
-                    {p.description}
-                  </p>
+                  <div className="prose prose-lg mt-4 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(p.description) }} />
                   <div className="mt-6 flex items-center gap-6">
                     {p.stat_value ? (
                       <div>

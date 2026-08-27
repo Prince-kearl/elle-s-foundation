@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/sponsorships")({
         invalidateKeys={[["p:sponsorships"]]}
         fields={[
           { name: "title", label: "Title", type: "text" },
-          { name: "description", label: "Description", type: "textarea" },
+          { name: "description", label: "Description", type: "richtext" },
           { name: "amount", label: "Amount (GH₵)", type: "number" },
           { name: "frequency", label: "Frequency (monthly / once / yearly)", type: "text" },
           { name: "icon", label: "Icon (HandHeart, GraduationCap, Utensils, Home, TreePine, Heart)", type: "text" },

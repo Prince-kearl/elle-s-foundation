@@ -3,7 +3,7 @@ import { Pencil, Trash2, Plus, X, Eye, EyeOff, ArrowUp, ArrowDown, GripVertical 
 import { AdminCard, PrimaryButton, GhostButton, Field, TextInput, TextArea, Toggle, Badge } from "./AdminLayout";
 import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
 import { MediaField } from "./ImageField";
-import { RichTextEditor } from "./RichTextEditor";
+import { RichTextEditor, richTextForDisplay } from "./RichTextEditor";
 import { toast } from "sonner";
 
 export type FieldDef =
@@ -121,7 +121,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                     </td>
                     {columns.map((c) => (
                       <td key={c.key} className="px-6 py-3 align-top max-w-[380px]">
-                        {c.render ? c.render(row as T) : <span className="line-clamp-2 text-[#374151]">{String(row[c.key] ?? "")}</span>}
+                        {c.render ? c.render(row as T) : fields.some((field) => field.name === c.key && field.type === "richtext") ? <span className="line-clamp-2 text-[#374151]" dangerouslySetInnerHTML={{ __html: richTextForDisplay(row[c.key]) }} /> : <span className="line-clamp-2 text-[#374151]">{String(row[c.key] ?? "")}</span>}
                       </td>
                     ))}
                     <td className="px-6 py-3">

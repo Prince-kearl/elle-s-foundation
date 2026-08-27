@@ -46,7 +46,7 @@ function TeamAdmin() {
         fields={[
           { name: "name", label: "Name", type: "text" },
           { name: "role", label: "Role", type: "text" },
-          { name: "bio", label: "Bio", type: "textarea" },
+          { name: "bio", label: "Bio", type: "richtext" },
           { name: "avatar_url", label: "Avatar", type: "image", folder: "team" },
           { name: "linkedin_url", label: "LinkedIn URL", type: "text" },
           { name: "instagram_url", label: "Instagram URL", type: "text" },

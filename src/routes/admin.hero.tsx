@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminLayout, AdminCard, PrimaryButton, Field, TextInput, TextArea } from "@/components/admin/AdminLayout";
+import { AdminLayout, AdminCard, PrimaryButton, Field, TextInput } from "@/components/admin/AdminLayout";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useSiteCopy } from "@/lib/cms";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
@@ -57,7 +58,7 @@ function HeroAdmin() {
             <div key={k.name} className={k.type === "textarea" ? "sm:col-span-2" : ""}>
               <Field label={k.label}>
                 {k.type === "textarea"
-                  ? <TextArea rows={4} value={values[k.name] ?? ""} onChange={(e) => setValues({ ...values, [k.name]: e.target.value })} />
+                  ? <RichTextEditor value={values[k.name] ?? ""} onChange={(value) => setValues({ ...values, [k.name]: value })} />
                   : <TextInput value={values[k.name] ?? ""} onChange={(e) => setValues({ ...values, [k.name]: e.target.value })} />}
               </Field>
             </div>

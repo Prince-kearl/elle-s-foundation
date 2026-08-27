@@ -17,6 +17,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { richTextForDisplay } from "@/components/admin/RichTextEditor";
 import heroChildren from "@/assets/community/live/hero-community-water.svg";
 import childrenUnity from "@/assets/community/live/outreach-children.jpeg";
 import programCommunity from "@/assets/community/live/community-gathering.jpeg";
@@ -149,13 +150,7 @@ function Hero({ c }: { c: C }) {
               {pv(c, "hero.title_line_2", "Restoring lives.")}
             </span>
           </h1>
-          <p className="mx-auto mt-7 max-w-xl text-base leading-7 text-white/80 md:mx-0 md:text-lg md:leading-8">
-            {pv(
-              c,
-              "hero.description",
-              "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.",
-            )}
-          </p>
+          <div className="prose prose-lg mx-auto mt-7 max-w-xl text-base leading-7 text-white/80 md:mx-0 md:text-lg md:leading-8 [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(pv(c, "hero.description", "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.")) }} />
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:justify-start">
             <a
               href={pv(c, "hero.cta_primary_href", "/donate")}
@@ -394,7 +389,7 @@ function UpcomingEvents() {
                       <Clock3 className="size-3.5" /> Community-led
                     </span>
                   </div>
-                  <p className="mt-3 max-w-2xl text-sm leading-6 text-[#477763]">{event.detail}</p>
+                  <div className="prose prose-sm mt-3 max-w-2xl text-sm leading-6 text-[#477763] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(event.detail) }} />
                 </div>
                 <div className="flex items-center justify-between gap-4 border-t border-[#0f6848]/10 pt-4 sm:block sm:border-t-0 sm:pt-0 sm:text-right">
                   <span className="inline-flex items-center gap-2 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-[#0f6848]">
@@ -916,7 +911,7 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                 <h3 className="font-display text-2xl font-semibold leading-tight text-[#0f6848]">
                   {title}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-[#477763]">{text}</p>
+                <div className="prose prose-sm mt-3 max-w-sm text-sm leading-6 text-[#477763] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(text) }} />
               </div>
             </article>
             ))}

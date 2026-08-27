@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/faqs")({
         invalidateKeys={[["p:faqs"]]}
         fields={[
           { name: "question", label: "Question", type: "text" },
-          { name: "answer", label: "Answer", type: "textarea" },
+          { name: "answer", label: "Answer", type: "richtext" },
         ]}
         columns={[
           { key: "question", label: "Question", render: (r: any) => <span className="font-semibold">{r.question}</span> },

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AdminLayout, AdminCard, PrimaryButton, Field, TextInput, TextArea } from "@/components/admin/AdminLayout";
+import { AdminLayout, AdminCard, PrimaryButton, Field, TextInput } from "@/components/admin/AdminLayout";
 import { MediaField } from "@/components/admin/ImageField";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -120,7 +121,7 @@ function PagesAdmin() {
               <div className="grid sm:grid-cols-2 gap-4">
                 {items.map((r: any) => {
                   const type = r.content_type as string;
-                  const wide = type === "textarea" || type === "image" || type === "video" || type === "media";
+                  const wide = type === "textarea" || type === "richtext" || type === "image" || type === "video" || type === "media";
                   return (
                     <div key={r.id} className={wide ? "sm:col-span-2" : ""}>
                       <Field label={r.label || r.key}>
@@ -131,8 +132,8 @@ function PagesAdmin() {
                             folder={`pages/${page}`}
                             accept={type === "video" ? "video" : type === "media" ? "any" : "image"}
                           />
-                        ) : type === "textarea" ? (
-                          <TextArea rows={4} value={values[r.id] ?? ""} onChange={(e) => setValues((p) => ({ ...p, [r.id]: e.target.value }))} />
+                        ) : type === "textarea" || type === "richtext" ? (
+                          <RichTextEditor value={values[r.id] ?? ""} onChange={(value) => setValues((p) => ({ ...p, [r.id]: value }))} />
                         ) : (
                           <TextInput value={values[r.id] ?? ""} onChange={(e) => setValues((p) => ({ ...p, [r.id]: e.target.value }))} />
                         )}
