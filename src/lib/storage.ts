@@ -6,6 +6,8 @@ const MAX_VIDEO = 100 * 1024 * 1024; // 100MB
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
 const VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime", "video/ogg"];
+const FONT_TYPES = ["font/woff2", "font/woff", "font/ttf", "font/otf", "application/font-woff", "application/x-font-ttf", "application/vnd.ms-opentype"];
+const MAX_FONT = 5 * 1024 * 1024;
 
 export type MediaKind = "image" | "video";
 
@@ -70,6 +72,29 @@ export async function uploadMedia(
   });
 
   return { url, path, kind };
+}
+
+/** Upload a validated custom webfont to the public media bucket. */
+export async function uploadFont(file: File, folder = "fonts"): Promise<{ url: string; path: string }> {
+  if (!FONT_TYPES.includes(file.type) && !/\.(woff2?|ttf|otf)$/i.test(file.name)) {
+    throw new Error("Only WOFF2, WOFF, TTF, or OTF font files are allowed.");
+  }
+  if (file.size > MAX_FONT) throw new Error("Font files must be under 5MB.");
+  const ext = file.name.split(".").pop()?.toLowerCase() || "woff2";
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const contentType = file.type || (ext === "woff2" ? "font/woff2" : ext === "woff" ? "font/woff" : "font/ttf");
+  const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+    cacheControl: "31536000",
+    upsert: false,
+    contentType,
+  });
+  if (error) {
+    if (/bucket not found|does not exist/i.test(error.message ?? "")) {
+      throw new Error('Supabase Storage bucket "media" is missing. Run the media storage migration in the Supabase SQL Editor.');
+    }
+    throw error;
+  }
+  return { url: publicUrl(path), path };
 }
 
 /** Backwards-compatible alias. */

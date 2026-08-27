@@ -37,6 +37,8 @@ export const BRAND_DEFAULTS: BrandValues = {
   radius: "0.625rem",
   heading_weight: "600",
   muted_color: "#6B7280",
+  custom_heading_font_url: "",
+  custom_body_font_url: "",
 };
 
 export function useBrand() {
@@ -113,8 +115,8 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
   const muted = toColor(v.muted_color);
   if (muted) vars["--muted-foreground"] = muted;
   if (v.heading_font)
-    vars["--font-display"] = `"${v.heading_font}", ui-sans-serif, system-ui, sans-serif`;
-  if (v.body_font) vars["--font-sans"] = `"${v.body_font}", ui-sans-serif, system-ui, sans-serif`;
+    vars["--font-display"] = `"${v.custom_heading_font_url ? "Elle Custom Heading" : v.heading_font}", ui-sans-serif, system-ui, sans-serif`;
+  if (v.body_font) vars["--font-sans"] = `"${v.custom_body_font_url ? "Elle Custom Body" : v.body_font}", ui-sans-serif, system-ui, sans-serif`;
   if (v.heading_scale) vars["--heading-scale"] = String(v.heading_scale);
   if (v.body_scale) vars["--body-scale"] = String(v.body_scale);
   if (v.letter_spacing) vars["--brand-letter-spacing"] = String(v.letter_spacing);
@@ -127,6 +129,7 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
 const SINGLE_WEIGHT_FONTS = new Set(["DM Serif Display", "Instrument Serif"]);
 
 export function loadBrandFonts(v: BrandValues, id = "brand-fonts") {
+  loadCustomBrandFonts(v);
   if (typeof document === "undefined") return;
   const families = new Set<string>();
   if (v.heading_font) families.add(String(v.heading_font));
@@ -149,6 +152,31 @@ export function loadBrandFonts(v: BrandValues, id = "brand-fonts") {
     document.head.appendChild(link);
   }
   if (link.href !== href) link.href = href;
+}
+
+function loadCustomBrandFonts(v: BrandValues, id = "custom-brand-fonts") {
+  if (typeof document === "undefined") return;
+  const rules: string[] = [];
+  const fontFace = (family: string, value: unknown) => {
+    const url = String(value ?? "").replace(/"/g, "");
+    if (!url) return "";
+    const extension = url.split("?")[0].split(".").pop()?.toLowerCase();
+    const format = extension === "woff" ? "woff" : extension === "ttf" ? "truetype" : extension === "otf" ? "opentype" : "woff2";
+    return `@font-face { font-family: "${family}"; src: url("${url}") format("${format}"); font-weight: 400 800; font-style: normal; font-display: swap; }`;
+  };
+  if (v.custom_heading_font_url) rules.push(fontFace("Elle Custom Heading", v.custom_heading_font_url));
+  if (v.custom_body_font_url) rules.push(fontFace("Elle Custom Body", v.custom_body_font_url));
+  let style = document.getElementById(id) as HTMLStyleElement | null;
+  if (!rules.length) {
+    style?.remove();
+    return;
+  }
+  if (!style) {
+    style = document.createElement("style");
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  style.textContent = rules.join("\\n");
 }
 
 export function BrandStyle() {

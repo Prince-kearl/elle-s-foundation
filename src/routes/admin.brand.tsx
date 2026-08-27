@@ -9,6 +9,7 @@ import {
 } from "@/components/admin/AdminLayout";
 import { useBrand, usePageBrand, mergeBrand, BRAND_DEFAULTS } from "@/lib/brand";
 import { supabase } from "@/lib/supabase";
+import { uploadFont } from "@/lib/storage";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Save, RotateCcw } from "lucide-react";
@@ -78,6 +79,27 @@ function BrandAdmin() {
     scope === "global" ? { ...BRAND_DEFAULTS, ...v } : mergeBrand(global, { ...v, enabled: true });
 
   const set = (k: string, val: any) => setV((p: any) => ({ ...p, [k]: val }));
+
+  const uploadCustomFont = async (field: "heading" | "body", file?: File) => {
+    if (!file) return;
+    try {
+      const result = await uploadFont(file);
+      const urlField = field === "heading" ? "custom_heading_font_url" : "custom_body_font_url";
+      const fontField = field === "heading" ? "heading_font" : "body_font";
+      set(urlField, result.url);
+      set(fontField, field === "heading" ? "Elle Custom Heading" : "Elle Custom Body");
+      toast.success(`${field === "heading" ? "Heading" : "Body"} font uploaded`);
+    } catch (error: any) {
+      toast.error(error?.message ?? "Could not upload font");
+    }
+  };
+
+  const clearCustomFont = (field: "heading" | "body") => {
+    const urlField = field === "heading" ? "custom_heading_font_url" : "custom_body_font_url";
+    const fontField = field === "heading" ? "heading_font" : "body_font";
+    set(urlField, "");
+    set(fontField, overriding ? "" : field === "heading" ? BRAND_DEFAULTS.heading_font : BRAND_DEFAULTS.body_font);
+  };
 
   const save = async () => {
     setSaving(true);
@@ -195,12 +217,14 @@ function BrandAdmin() {
                   className="w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white"
                 >
                   {overriding && <option value="">Inherit global</option>}
+                  {v.custom_heading_font_url && <option value="Elle Custom Heading">Custom uploaded font</option>}
                   {FONT_CHOICES.map((f) => (
                     <option key={f} value={f}>
                       {f}
                     </option>
                   ))}
                 </select>
+                <FontUploadControl label="Upload heading font" hasCustom={Boolean(v.custom_heading_font_url)} onUpload={(file) => void uploadCustomFont("heading", file)} onClear={() => clearCustomFont("heading")} />
               </Field>
               <Field label="Body font">
                 <select
@@ -209,12 +233,14 @@ function BrandAdmin() {
                   className="w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white"
                 >
                   {overriding && <option value="">Inherit global</option>}
+                  {v.custom_body_font_url && <option value="Elle Custom Body">Custom uploaded font</option>}
                   {FONT_CHOICES.map((f) => (
                     <option key={f} value={f}>
                       {f}
                     </option>
                   ))}
                 </select>
+                <FontUploadControl label="Upload body font" hasCustom={Boolean(v.custom_body_font_url)} onUpload={(file) => void uploadCustomFont("body", file)} onClear={() => clearCustomFont("body")} />
               </Field>
               <Field label="Heading weight">
                 <select                   value={v.heading_weight ?? (overriding ? "" : "600")} onChange={(e) => set("heading_weight", e.target.value)} className="w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white">
@@ -296,6 +322,19 @@ function BrandAdmin() {
         </AdminCard>
       </div>
     </AdminLayout>
+  );
+}
+
+function FontUploadControl({ label, hasCustom, onUpload, onClear }: { label: string; hasCustom: boolean; onUpload: (file: File) => void; onClear: () => void }) {
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2">
+      <label className="inline-flex cursor-pointer items-center border border-border bg-card px-2.5 py-1.5 text-xs font-semibold text-primary transition hover:bg-muted">
+        {label}
+        <input type="file" accept=".woff2,.woff,.ttf,.otf,font/woff2,font/woff,font/ttf,font/otf" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) onUpload(file); event.currentTarget.value = ""; }} />
+      </label>
+      {hasCustom && <button type="button" onClick={onClear} className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-earth">Remove custom font</button>}
+      <span className="w-full text-[11px] text-muted-foreground">WOFF2, WOFF, TTF, or OTF · max 5MB</span>
+    </div>
   );
 }
 
