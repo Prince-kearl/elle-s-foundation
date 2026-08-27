@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
-import { usePublicTeam, type TeamMember } from "@/lib/cms";
+import { trackTeamProfileClick, usePublicTeam, usePublicTestimonials, type TeamMember } from "@/lib/cms";
 import aboutHero from "@/assets/community/live/outreach-children.jpeg";
 import { useState } from "react";
 import { ArrowRight, Globe, Heart, Instagram, Linkedin, X } from "lucide-react";
@@ -43,8 +43,10 @@ const milestones = [
 function About() {
   const { data: c } = usePageContent("about");
   const { data: liveTeam } = usePublicTeam();
+  const { data: liveTestimonials } = usePublicTestimonials();
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const people = liveTeam ?? [];
+  const testimonials = liveTestimonials ?? [];
   return (
     <SiteLayout>
       <section className="pt-14 section-y-sm">
@@ -124,7 +126,7 @@ function About() {
               {people.map((p) => (
                 <article key={p.id} className="group relative">
                   <div className="relative overflow-hidden rounded-[1.25rem] border border-border bg-background shadow-[0_16px_32px_-26px_var(--forest)] transition duration-300 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_24px_42px_-25px_var(--forest)]">
-                    <button type="button" onClick={() => setSelectedMember(p)} className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={`View ${p.name}'s profile`}>
+                    <button type="button" onClick={() => { setSelectedMember(p); void trackTeamProfileClick(p.id).catch(() => undefined); }} className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={`View ${p.name}'s profile`}>
                       <div className="relative aspect-[1.28/1] overflow-hidden bg-[var(--forest)]">
                         {p.avatar_url ? (
                           <img src={p.avatar_url} alt={`${p.name} portrait`} className="h-full w-full object-cover grayscale contrast-110 transition duration-500 group-hover:scale-105 group-hover:grayscale-0" />
@@ -166,6 +168,22 @@ function About() {
               Leadership profiles will appear here once they are published in the foundation CMS.
             </div>
           )}
+          {testimonials.length ? (
+            <div className="mt-16 border-t border-border pt-12">
+              <SectionHeading eyebrow="Voices behind the work" title="Trusted by those we serve and serve with." />
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {testimonials.slice(0, 6).map((testimonial) => (
+                  <figure key={testimonial.id} className="border border-primary/15 bg-primary px-5 py-6 text-primary-foreground shadow-[0_18px_36px_-28px_var(--forest)]">
+                    <blockquote className="text-sm leading-7 text-primary-foreground/90">“{testimonial.quote}”</blockquote>
+                    <figcaption className="mt-6 border-t border-primary-foreground/20 pt-4">
+                      <p className="font-semibold">{testimonial.name}</p>
+                      {testimonial.role ? <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-secondary">{testimonial.role}</p> : null}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </section>
 

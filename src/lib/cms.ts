@@ -7,6 +7,7 @@ export type Program = { id: string; title: string; description: string; icon: st
 export type Story = { id: string; tag: string | null; title: string; excerpt: string | null; image_url: string | null; position: number; visible: boolean };
 export type TeamMember = { id: string; name: string; role: string; bio: string | null; avatar_url: string | null; linkedin_url?: string | null; instagram_url?: string | null; website_url?: string | null; position: number; visible: boolean };
 export type Testimonial = { id: string; quote: string; name: string; role: string | null; avatar_url: string | null; position: number; visible: boolean };
+export type TeamProfileView = { id: string; team_member_id: string; source: string; created_at: string };
 export type Faq = { id: string; question: string; answer: string; position: number; visible: boolean };
 export type ContactSub = { id: string; name: string; email: string; interest: string | null; message: string; handled: boolean; created_at: string };
 export type DonationIntent = { id: string; amount: number; frequency: string; currency?: string; sponsorship_id?: string | null; name: string | null; email: string | null; phone: string | null; note: string | null; status: string; created_at: string };
@@ -42,6 +43,30 @@ export const usePublicPrograms = () => useQuery({ queryKey: ["p:programs"], quer
 export const usePublicStories = () => useQuery({ queryKey: ["p:stories"], queryFn: () => selectVisible<Story>("stories") });
 export const usePublicTeam = () => useQuery({ queryKey: ["p:team"], queryFn: () => selectVisible<TeamMember>("team_members") });
 export const usePublicTestimonials = () => useQuery({ queryKey: ["p:testimonials"], queryFn: () => selectVisible<Testimonial>("testimonials") });
+
+/** Records a profile-card open without collecting visitor identity or contact data. */
+export async function trackTeamProfileClick(teamMemberId: string, source = "about") {
+  const { error } = await supabase.from("team_profile_views").insert({ team_member_id: teamMemberId, source });
+  if (error && error.code !== "42P01") throw error;
+}
+
+export function useTeamProfileAnalytics() {
+  return useQuery({
+    queryKey: ["a:team-profile-analytics"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("team_profile_views").select("team_member_id");
+      if (error) {
+        if (error.code === "42P01") return [] as Array<{ team_member_id: string; views: number }>;
+        throw error;
+      }
+      const counts = new Map<string, number>();
+      (data ?? []).forEach((row: { team_member_id: string }) => counts.set(row.team_member_id, (counts.get(row.team_member_id) ?? 0) + 1));
+      return Array.from(counts, ([team_member_id, views]) => ({ team_member_id, views })).sort((a, b) => b.views - a.views);
+    },
+    staleTime: 30_000,
+  });
+}
+
 export const usePublicFaqs = () => useQuery({ queryKey: ["p:faqs"], queryFn: () => selectVisible<Faq>("faqs") });
 export const usePublicEvents = () => useQuery({
   queryKey: ["p:events"],

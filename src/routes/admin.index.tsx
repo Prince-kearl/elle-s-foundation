@@ -27,6 +27,7 @@ const DASHBOARD_TABLES = [
   "events",
   "event_rsvps",
   "rsvp_email_confirmations",
+  "team_profile_views",
 ] as const;
 
 function DonationTrendTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value?: number }>; label?: string }) {
@@ -48,7 +49,12 @@ function Dashboard() {
       channel.on(
         "postgres_changes",
         { event: "*", schema: "public", table },
-        () => void queryClient.invalidateQueries({ queryKey: ["a", table] }),
+        () => {
+          void queryClient.invalidateQueries({ queryKey: ["a", table] });
+          if (table === "team_profile_views") {
+            void queryClient.invalidateQueries({ queryKey: ["a:team-profile-analytics"] });
+          }
+        },
       );
     });
     channel.subscribe();
