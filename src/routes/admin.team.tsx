@@ -48,7 +48,7 @@ function TeamAdmin() {
           { name: "name", label: "Name", type: "text" },
           { name: "role", label: "Role", type: "text" },
           { name: "bio", label: "Bio", type: "richtext" },
-          { name: "avatar_url", label: "Avatar", type: "image", folder: "team", crop: true },
+          { name: "avatar_url", label: "Avatar", type: "image", folder: "team", crop: true, originalField: "avatar_original_url" },
           { name: "linkedin_url", label: "LinkedIn URL", type: "text" },
           { name: "instagram_url", label: "Instagram URL", type: "text" },
           { name: "website_url", label: "Website URL", type: "text" },

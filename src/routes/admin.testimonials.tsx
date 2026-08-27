@@ -15,7 +15,7 @@ export const Route = createFileRoute("/admin/testimonials")({
           { name: "quote", label: "Quote", type: "richtext" },
           { name: "name", label: "Name", type: "text" },
           { name: "role", label: "Role / Location", type: "text" },
-          { name: "avatar_url", label: "Avatar", type: "image", folder: "testimonials" },
+          { name: "avatar_url", label: "Avatar", type: "image", folder: "testimonials", crop: true, originalField: "avatar_original_url" },
         ]}
         columns={[
           { key: "quote", label: "Quote", render: (r: any) => <span className="line-clamp-2 text-[#374151]" dangerouslySetInnerHTML={{ __html: richTextForDisplay(r.quote) }} /> },

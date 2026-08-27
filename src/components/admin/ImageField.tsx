@@ -67,6 +67,8 @@ export function MediaField({
   folder = "general",
   accept = "image",
   enableCrop = false,
+  originalValue,
+  onReset,
 }: {
   value: string;
   onChange: (url: string) => void;
@@ -74,6 +76,8 @@ export function MediaField({
   /** "image" | "video" | "any" */
   accept?: "image" | "video" | "any";
   enableCrop?: boolean;
+  originalValue?: string;
+  onReset?: () => void;
 }) {
   const [tab, setTab] = useState<Tab>("upload");
   const [busy, setBusy] = useState(false);
@@ -153,7 +157,7 @@ export function MediaField({
             <X className="size-3" />
           </button>
         </div>
-        {enableCrop && valueKind === "image" ? <ImageCropPanel value={value} folder={folder} onChange={onChange} /> : null}
+        {enableCrop && valueKind === "image" ? <ImageCropPanel value={value} originalValue={originalValue} folder={folder} onChange={onChange} onReset={onReset} /> : null}
         </div>
       ) : null}
 
@@ -303,7 +307,7 @@ export function ImageField(props: {
 }
 
 
-function ImageCropPanel({ value, folder, onChange }: { value: string; folder: string; onChange: (url: string) => void }) {
+function ImageCropPanel({ value, originalValue, folder, onChange, onReset }: { value: string; originalValue?: string; folder: string; onChange: (url: string) => void; onReset?: () => void }) {
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [positionX, setPositionX] = useState(50);
@@ -372,7 +376,10 @@ function ImageCropPanel({ value, folder, onChange }: { value: string; folder: st
           </label>
           <div className="flex items-center justify-between gap-3 border-t border-[#E5E7EB] pt-3">
             <p className="text-[11px] leading-5 text-[#6B7280]">Keep the eyes and face inside the frame. The saved crop matches the public card ratio.</p>
-            <button type="button" disabled={busy} onClick={() => void applyCrop()} className="shrink-0 bg-primary px-3 py-2 text-xs font-bold text-white disabled:opacity-60">{busy ? "Saving…" : "Apply crop"}</button>
+            <div className="flex shrink-0 gap-2">
+              {onReset && originalValue && originalValue !== value ? <button type="button" disabled={busy} onClick={onReset} className="border border-[#D8E0DA] px-3 py-2 text-xs font-bold text-[#4B5563] hover:border-primary hover:text-primary">Reset original</button> : null}
+              <button type="button" disabled={busy} onClick={() => void applyCrop()} className="bg-primary px-3 py-2 text-xs font-bold text-white disabled:opacity-60">{busy ? "Saving…" : "Apply crop"}</button>
+            </div>
           </div>
         </div>
       ) : null}

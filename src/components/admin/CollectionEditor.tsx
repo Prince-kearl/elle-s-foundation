@@ -9,7 +9,7 @@ import { toast } from "sonner";
 export type FieldDef =
   | { name: string; label: string; type: "text" | "url" | "number" }
   | { name: string; label: string; type: "textarea" | "richtext"; rows?: number }
-  | { name: string; label: string; type: "image" | "video" | "media"; folder?: string; crop?: boolean };
+  | { name: string; label: string; type: "image" | "video" | "media"; folder?: string; crop?: boolean; originalField?: string };
 
 interface Props<T> {
   table: string;
@@ -213,7 +213,7 @@ function EditorModal({ row, fields, preview, title, onClose, onSave }: { row: Ro
               ) : f.type === "textarea" ? (
                 <TextArea rows={f.rows ?? 4} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />
               ) : f.type === "image" || f.type === "video" || f.type === "media" ? (
-                <MediaField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} accept={f.type === "video" ? "video" : f.type === "media" ? "any" : "image"} enableCrop={f.type === "image" && f.crop === true} />
+                <MediaField value={state[f.name] ?? ""} originalValue={f.type === "image" && f.crop ? state[f.originalField ?? `${f.name.replace(/_url$/, "")}_original_url`] : undefined} onChange={(url) => setState({ ...state, [f.name]: url, ...(f.type === "image" && f.crop ? { [f.originalField ?? `${f.name.replace(/_url$/, "")}_original_url`]: state[f.originalField ?? `${f.name.replace(/_url$/, "")}_original_url`] || state[f.name] } : {}) })} onReset={f.type === "image" && f.crop ? () => setState({ ...state, [f.name]: state[f.originalField ?? `${f.name.replace(/_url$/, "")}_original_url`] || state[f.name] }) : undefined} folder={f.folder ?? "general"} accept={f.type === "video" ? "video" : f.type === "media" ? "any" : "image"} enableCrop={f.type === "image" && f.crop === true} />
               ) : (
                 <TextInput type={f.type === "url" ? "url" : f.type === "number" ? "number" : "text"} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: f.type === "number" ? Number(e.target.value) : e.target.value })} />
               )}
