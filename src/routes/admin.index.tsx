@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout, AdminCard, Badge } from "@/components/admin/AdminLayout";
 import { useAdminList } from "@/lib/cms";
-import type { Program, Story, TeamMember, ContactSub, DonationIntent, Faq, Testimonial, EventRecord, EventRsvp } from "@/lib/cms";
-import { HeartHandshake, Users, MessageSquare, Inbox, Heart, HelpCircle, ImageIcon, TrendingUp, CalendarDays, ClipboardList } from "lucide-react";
+import type { Stat, Program, Story, TeamMember, ContactSub, DonationIntent, Faq, Testimonial, EventRecord, EventRsvp } from "@/lib/cms";
+import { HeartHandshake, Users, MessageSquare, Inbox, Heart, HelpCircle, ImageIcon, TrendingUp, CalendarDays, ClipboardList, CheckCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { formatCurrency } from "@/lib/utils";
@@ -58,6 +58,7 @@ function Dashboard() {
     };
   }, [queryClient]);
 
+  const cmsStats = useAdminList<Stat>("stats");
   const programs = useAdminList<Program>("programs");
   const stories = useAdminList<Story>("stories");
   const team = useAdminList<TeamMember>("team_members");
@@ -68,14 +69,16 @@ function Dashboard() {
   const events = useAdminList<EventRecord>("events");
   const rsvps = useAdminList<EventRsvp>("event_rsvps");
 
-  const stats = [
-    { label: "Programs", value: programs.data?.length ?? 0, icon: HeartHandshake, tone: "bg-emerald-50 text-emerald-600" },
-    { label: "Stories", value: stories.data?.length ?? 0, icon: ImageIcon, tone: "bg-blue-50 text-blue-600" },
-    { label: "Team Members", value: team.data?.length ?? 0, icon: Users, tone: "bg-purple-50 text-purple-600" },
-    { label: "Testimonials", value: testimonials.data?.length ?? 0, icon: MessageSquare, tone: "bg-amber-50 text-amber-600" },
-    { label: "Upcoming Events", value: (events.data ?? []).filter((event) => event.status === "published" && event.visible).length, icon: CalendarDays, tone: "bg-orange-50 text-orange-600" },
-    { label: "Event RSVPs", value: rsvps.data?.length ?? 0, icon: ClipboardList, tone: "bg-cyan-50 text-cyan-600" },
-  ];
+  const kpiDefinitions = [
+    { label: "Children Supported", key: "children supported", icon: Users, topBorder: "border-t-[#e4c39e]", iconTone: "bg-[#fbf7f1] text-[#dcb987]" },
+    { label: "Communities Reached", key: "communities reached", icon: HeartHandshake, topBorder: "border-t-[#0f9d73]", iconTone: "bg-[#edf9f3] text-[#0f9d73]" },
+    { label: "Volunteers", key: "volunteers", icon: Heart, topBorder: "border-t-[#d9b294]", iconTone: "bg-[#fcf6f2] text-[#d9b294]" },
+    { label: "Projects Completed", key: "projects completed", icon: CheckCircle, topBorder: "border-t-[#208db2]", iconTone: "bg-[#eef7fb] text-[#208db2]" },
+  ] as const;
+  const kpis = kpiDefinitions.map((definition) => {
+    const record = (cmsStats.data ?? []).find((item) => item.label.trim().toLowerCase() === definition.key);
+    return { ...definition, value: record?.value ?? "—" };
+  });
   const inbox = [
     { label: "New Messages", value: contacts.data?.filter((c) => !c.handled).length ?? 0, sub: `${contacts.data?.length ?? 0} total`, icon: Inbox, to: "/admin/contacts" as const },
     { label: "Donation Intents", value: donations.data?.length ?? 0, sub: `${formatCurrency((donations.data ?? []).reduce((s, d) => s + Number(d.amount || 0), 0))} total`, icon: Heart, to: "/admin/donations" as const },
@@ -139,15 +142,17 @@ function Dashboard() {
 
   return (
     <AdminLayout title="Dashboard Overview" subtitle="Welcome back to your command center">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-        {stats.map((s) => (
-          <AdminCard key={s.label} className="p-5 flex items-center gap-4">
-            <div className={`size-12 rounded-xl grid place-items-center ${s.tone}`}>
-              <s.icon className="size-5" />
-            </div>
-            <div>
-              <div className="text-xs uppercase tracking-wider text-[#6B7280]">{s.label}</div>
-              <div className="font-display text-3xl text-[#111827] mt-0.5">{s.value}</div>
+      <div className="grid grid-cols-1 gap-3 mb-6 sm:grid-cols-2 xl:grid-cols-4">
+        {kpis.map((kpi) => (
+          <AdminCard key={kpi.label} className={`min-h-[128px] rounded-none border border-[#d5dfd7] border-t-4 bg-white p-5 sm:p-6 ${kpi.topBorder}`}>
+            <div className="flex h-full items-start justify-between gap-4">
+              <div className="self-end">
+                <div className="font-display text-4xl leading-none text-[#073b2b] sm:text-[2.65rem]">{kpi.value}</div>
+                <div className="mt-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#587268]">{kpi.label}</div>
+              </div>
+              <span className={`grid size-10 shrink-0 place-items-center ${kpi.iconTone}`}>
+                <kpi.icon className="size-4" strokeWidth={1.7} />
+              </span>
             </div>
           </AdminCard>
         ))}
