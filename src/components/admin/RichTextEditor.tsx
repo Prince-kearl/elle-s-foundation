@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Bold, Italic, Link, List, ListOrdered, Quote, Underline } from "lucide-react";
 
 const ALLOWED_TAGS = new Set(["B", "STRONG", "I", "EM", "U", "P", "BR", "UL", "OL", "LI", "BLOCKQUOTE", "A"]);
+const SAFE_LINK_PROTOCOL = /^(?:https?:\/\/|mailto:|tel:)/i;
 
 export function sanitizeRichText(value: string | null | undefined) {
   const input = String(value ?? "");
@@ -17,9 +18,10 @@ export function sanitizeRichText(value: string | null | undefined) {
     const children = Array.from(element.childNodes).map(clean).join("");
     if (!ALLOWED_TAGS.has(tag)) return children;
     if (tag === "A") {
-      const href = element.getAttribute("href") ?? "";
-      if (!/^https?:\/\//i.test(href)) return children;
-      return `<a href="${href.replace(/&/g, "&amp;").replace(/\"/g, "&quot;")}" target="_blank" rel="noreferrer">${children}</a>`;
+      const href = (element.getAttribute("href") ?? "").trim();
+      if (!SAFE_LINK_PROTOCOL.test(href)) return children;
+      const escapedHref = href.replace(/&/g, "&amp;").replace(/\"/g, "&quot;");
+      return `<a href="${escapedHref}" target="_blank" rel="noopener noreferrer">${children}</a>`;
     }
     return `<${tag.toLowerCase()}>${children}</${tag.toLowerCase()}>`;
   };
@@ -61,7 +63,7 @@ export function RichTextEditor({ value, onChange, placeholder = "Write a quoteâ€
         <button type="button" onClick={() => command("formatBlock", "blockquote")} title="Quote block" aria-label="Quote block" className="grid size-8 place-items-center text-primary hover:bg-secondary"><Quote className="size-4" /></button>
         <button type="button" onClick={() => { const url = window.prompt("Link URL"); if (url) command("createLink", url); }} title="Add link" aria-label="Add link" className="grid size-8 place-items-center text-primary hover:bg-secondary"><Link className="size-4" /></button>
       </div>
-      <div ref={editorRef} contentEditable role="textbox" aria-multiline="true" data-placeholder={placeholder} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onInput={(event) => onChange(event.currentTarget.innerHTML)} className="min-h-36 p-4 text-sm leading-7 text-ink outline-none empty:before:pointer-events-none empty:before:text-muted-foreground empty:before:content-[attr(data-placeholder)]" />
+      <div ref={editorRef} contentEditable role="textbox" aria-multiline="true" data-placeholder={placeholder} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} onInput={(event) => onChange(event.currentTarget.innerHTML)} className="rich-text-editor rich-text min-h-36 p-4 text-sm leading-7 text-ink outline-none empty:before:pointer-events-none empty:before:text-muted-foreground empty:before:content-[attr(data-placeholder)]" />
     </div>
   );
 }

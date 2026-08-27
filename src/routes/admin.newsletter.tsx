@@ -161,20 +161,20 @@ function NewsletterAdmin() {
       <AdminCard className="overflow-hidden">
         <div className="flex flex-col gap-4 border-b border-[#e3e8e4] p-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <div className="text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[#8aa096]">
+            <div className="text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
               AUDIENCE LIST
             </div>
             <h2 className="mt-1 font-display text-xl font-semibold text-[#0b4a5a]">
               Newsletter subscribers
             </h2>
-            <p className="mt-1 text-sm text-[#6b8076]">
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">
               {filteredSubscribers.length} of {(subscribers ?? []).length} records shown
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
             <label className="relative block min-w-0 sm:w-72">
               <span className="sr-only">Search subscribers</span>
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#8aa096]" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
               <TextInput
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
@@ -220,7 +220,7 @@ function NewsletterAdmin() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left">
-              <thead className="bg-[#fbfff8] text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[#6b8076]">
+              <thead className="bg-[var(--background)] text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
                 <tr>
                   <th className="px-5 py-3">Subscriber</th>
                   <th className="px-5 py-3">Joined</th>
@@ -234,7 +234,7 @@ function NewsletterAdmin() {
                   const databaseRecord = confirmationBySubscriber.get(`${subscriber.id}:database`);
                   const whatsappRecord = confirmationBySubscriber.get(`${subscriber.id}:whatsapp`);
                   return (
-                    <tr key={subscriber.id} className="align-top hover:bg-[#fbfff8]">
+                    <tr key={subscriber.id} className="align-top hover:bg-[var(--background)]">
                       <td className="px-5 py-4">
                         <a
                           href={`mailto:${subscriber.email}`}
@@ -243,11 +243,11 @@ function NewsletterAdmin() {
                           {subscriber.email}
                         </a>
                         {subscriber.whatsapp_number && (
-                          <div className="mt-1 text-xs text-[#477763]">
+                          <div className="mt-1 text-xs text-[var(--muted-foreground)]">
                             WhatsApp: {subscriber.whatsapp_number}
                           </div>
                         )}
-                        <div className="mt-1 text-[0.68rem] uppercase tracking-[0.1em] text-[#8aa096]">
+                        <div className="mt-1 text-[0.68rem] uppercase tracking-[0.1em] text-[var(--muted-foreground)]">
                           {subscriber.source.replaceAll("_", " ")}
                         </div>
                       </td>
@@ -329,7 +329,7 @@ function Metric({
 }) {
   const tones = {
     gold: "bg-[#fff7c7] text-[#0b4a5a]",
-    green: "bg-[#dff5e8] text-[#0f6848]",
+    green: "bg-[#dff5e8] text-[var(--primary)]",
     orange: "bg-[#ffe2d2] text-[#f26518]",
     blue: "bg-[#dcecf4] text-[#1b86b8]",
   };
@@ -339,12 +339,12 @@ function Metric({
         <span className={`grid size-9 place-items-center ${tones[tone]}`}>
           <Icon className="size-4" />
         </span>
-        <span className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#8aa096]">
+        <span className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
           Live
         </span>
       </div>
       <div className="mt-4 font-display text-3xl font-semibold text-[#0b4a5a]">{value}</div>
-      <div className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[#477763]">
+      <div className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
         {label}
       </div>
     </div>
@@ -353,7 +353,7 @@ function Metric({
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="border-b border-dashed border-[#dfe6e1] p-10 text-center text-sm text-[#6b8076]">
+    <div className="border-b border-dashed border-[#dfe6e1] p-10 text-center text-sm text-[var(--muted-foreground)]">
       {label}
     </div>
   );

@@ -208,7 +208,7 @@ export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-label="Search the website"
-        className={`inline-flex items-center gap-2 border px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] transition ${scope === "admin" ? "border-[#0f6848]/20 bg-white text-[#0f6848] hover:bg-[#f1fae9]" : "border-border/70 bg-background/80 text-foreground/70 hover:border-primary hover:text-primary"}`}
+        className={`inline-flex items-center gap-2 border px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] transition ${scope === "admin" ? "border-[var(--primary)]/20 bg-white text-[var(--primary)] hover:bg-[var(--cream)]" : "border-border/70 bg-background/80 text-foreground/70 hover:border-primary hover:text-primary"}`}
       >
         <Search className="size-4" /> <span className="hidden sm:inline">Search</span>
         <kbd className="hidden md:inline border-l border-current/20 pl-2 font-sans text-[0.58rem] opacity-60">
@@ -217,9 +217,9 @@ export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
       </button>
       {open && (
         <div
-          className={`absolute right-0 top-[calc(100%+0.75rem)] z-[70] w-[min(90vw,24rem)] border bg-white shadow-[0_20px_50px_-24px_rgba(8,75,53,0.5)] ${scope === "admin" ? "border-[#c5dfb6]" : "border-border"}`}
+          className={`absolute right-0 top-[calc(100%+0.75rem)] z-[70] w-[min(90vw,24rem)] border bg-white shadow-[0_20px_50px_-24px_rgba(8,75,53,0.5)] ${scope === "admin" ? "border-[var(--border)]" : "border-border"}`}
         >
-          <div className="flex items-center gap-2 border-b border-[#c5dfb6]/70 px-3 py-3">
+          <div className="flex items-center gap-2 border-b border-[var(--border)]/70 px-3 py-3">
             <Search className="size-4 text-[var(--earth)]" />
             <input
               ref={inputRef}
@@ -231,7 +231,7 @@ export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
               className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#7b9185]"
             />
             <button type="button" onClick={() => setOpen(false)} aria-label="Close search">
-              <X className="size-4 text-[#477763]" />
+              <X className="size-4 text-[var(--muted-foreground)]" />
             </button>
           </div>
           <div className="p-2">
@@ -241,26 +241,26 @@ export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
                   key={item.to}
                   to={item.to as never}
                   onClick={() => setOpen(false)}
-                  className="group flex items-start gap-3 px-3 py-3 transition hover:bg-[#f1fae9]"
+                  className="group flex items-start gap-3 px-3 py-3 transition hover:bg-[var(--cream)]"
                 >
-                  <span className="mt-0.5 grid size-7 shrink-0 place-items-center bg-[#cdeca7] text-[#084b35]">
+                  <span className="mt-0.5 grid size-7 shrink-0 place-items-center bg-[var(--sand)] text-[var(--forest)]">
                     <ArrowUpRight className="size-3.5" />
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-sm font-bold text-[#084b35]">{item.label}</span>
-                    <span className="mt-0.5 block text-xs leading-5 text-[#6b8076]">
+                    <span className="block text-sm font-bold text-[var(--forest)]">{item.label}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-[var(--muted-foreground)]">
                       {item.description}
                     </span>
                   </span>
                 </Link>
               ))
             ) : (
-              <p className="px-3 py-6 text-center text-sm text-[#6b8076]">
+              <p className="px-3 py-6 text-center text-sm text-[var(--muted-foreground)]">
                 No matching results found.
               </p>
             )}
           </div>
-          <div className="border-t border-[#c5dfb6]/70 px-3 py-2 text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#8aa096]">
+          <div className="border-t border-[var(--border)]/70 px-3 py-2 text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
             {scope === "admin" ? "Portal search" : "Site search"} · Keywords and pages · Esc to close
           </div>
         </div>

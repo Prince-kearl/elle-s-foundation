@@ -36,7 +36,7 @@ function DonationsAdmin() {
   return (
     <AdminLayout title="Donations" subtitle="Donation intents captured from the donate page.">
       <div className="mb-5 flex justify-end">
-        <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#0F6848] transition hover:border-[#0F6848] disabled:cursor-not-allowed disabled:opacity-50">
+        <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-50">
           <Download className="size-4" /> Export CSV
         </button>
       </div>

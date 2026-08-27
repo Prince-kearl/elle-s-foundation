@@ -97,7 +97,7 @@ function Programs() {
                   <h2 className="font-display text-4xl mt-5 text-primary leading-tight">
                     {p.title}
                   </h2>
-                  <div className="prose prose-lg mt-4 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(p.description) }} />
+                  <div className="rich-text prose prose-lg mt-4 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(p.description) }} />
                   <div className="mt-6 flex items-center gap-6">
                     {p.stat_value ? (
                       <div>

@@ -44,7 +44,7 @@ function AuthPage() {
   const isSignIn = mode === "signin";
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#073B2B] px-4 py-10 text-[#124A3A] sm:px-6">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--forest)] px-4 py-10 text-[#124A3A] sm:px-6">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-40"
@@ -54,7 +54,7 @@ function AuthPage() {
           backgroundSize: "34px 34px, 47px 47px",
         }}
       />
-      <div className="relative w-full max-w-[430px] border border-white/10 bg-[#FBFFF8] shadow-[0_28px_80px_-28px_rgba(0,0,0,0.7)]">
+      <div className="relative w-full max-w-[430px] border border-white/10 bg-[var(--background)] shadow-[0_28px_80px_-28px_rgba(0,0,0,0.7)]">
         <div className="border-b border-[#124A3A]/10 px-7 pb-6 pt-7 sm:px-9 sm:pt-9">
           <Link
             to="/"
@@ -64,14 +64,14 @@ function AuthPage() {
             <span className="grid size-11 place-items-center border border-[#D9A88E]/60 bg-[#F7E8DC]">
               <img src={logoAsset} alt="" className="size-9 object-contain" />
             </span>
-            <span className="font-display text-xl font-semibold tracking-[-0.03em] text-[#084B35]">
+            <span className="font-display text-xl font-semibold tracking-[-0.03em] text-[var(--forest)]">
               Elle's Foundation
             </span>
           </Link>
           <div className="mb-3 flex items-center gap-2 text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[#D9A88E]">
             <span className="size-2 rounded-full bg-[#D9A88E]" /> Protected workspace
           </div>
-          <h1 className="font-display text-3xl font-semibold leading-tight tracking-[-0.04em] text-[#084B35] sm:text-[2.15rem]">
+          <h1 className="font-display text-3xl font-semibold leading-tight tracking-[-0.04em] text-[var(--forest)] sm:text-[2.15rem]">
             {isSignIn ? "Admin sign in" : "Create admin account"}
           </h1>
           <p className="mt-3 max-w-sm text-sm leading-6 text-[#5C7067]">
@@ -93,7 +93,7 @@ function AuthPage() {
                   onChange={(e) => setFullName(e.target.value)}
                   required
                   autoComplete="name"
-                  className="h-12 w-full border border-[#C9D8CE] bg-white px-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[#0F6848] focus:ring-2 focus:ring-[#D9A88E]/30"
+                  className="h-12 w-full border border-[#C9D8CE] bg-white px-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[var(--primary)] focus:ring-2 focus:ring-[#D9A88E]/30"
                   placeholder="Your full name"
                 />
               </label>
@@ -114,7 +114,7 @@ function AuthPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
-                  className="h-12 w-full border border-[#C9D8CE] bg-white pl-10 pr-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[#0F6848] focus:ring-2 focus:ring-[#D9A88E]/30"
+                  className="h-12 w-full border border-[#C9D8CE] bg-white pl-10 pr-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[var(--primary)] focus:ring-2 focus:ring-[#D9A88E]/30"
                   placeholder="you@example.com"
                 />
               </span>
@@ -136,7 +136,7 @@ function AuthPage() {
                   required
                   minLength={6}
                   autoComplete={isSignIn ? "current-password" : "new-password"}
-                  className="h-12 w-full border border-[#C9D8CE] bg-white pl-10 pr-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[#0F6848] focus:ring-2 focus:ring-[#D9A88E]/30"
+                  className="h-12 w-full border border-[#C9D8CE] bg-white pl-10 pr-3.5 text-sm text-[#124A3A] outline-none transition placeholder:text-[#91A39A] focus:border-[var(--primary)] focus:ring-2 focus:ring-[#D9A88E]/30"
                   placeholder="Enter your password"
                 />
               </span>
@@ -144,7 +144,7 @@ function AuthPage() {
 
             <button
               disabled={submitting}
-              className="flex h-12 w-full items-center justify-center gap-2 bg-[#0F6848] px-4 text-sm font-bold text-white transition hover:bg-[#084B35] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9A88E] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-4 text-sm font-bold text-white transition hover:bg-[var(--forest)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9A88E] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting && <Loader2 className="size-4 animate-spin" />}
               {isSignIn ? "Sign in" : "Create account"}
@@ -155,7 +155,7 @@ function AuthPage() {
           <button
             type="button"
             onClick={() => setMode(isSignIn ? "signup" : "signin")}
-            className="mt-5 text-sm font-semibold text-[#0F6848] underline-offset-4 transition hover:text-[#D9A88E] hover:underline"
+            className="mt-5 text-sm font-semibold text-[var(--primary)] underline-offset-4 transition hover:text-[#D9A88E] hover:underline"
           >
             {isSignIn ? "No account yet? Create one →" : "Already have an account? Sign in →"}
           </button>
@@ -170,7 +170,7 @@ function AuthPage() {
           <div className="mt-7 border-t border-[#124A3A]/10 pt-5 text-xs text-[#6D8278]">
             <Link
               to="/"
-              className="inline-flex items-center gap-1 font-semibold transition hover:text-[#0F6848]"
+              className="inline-flex items-center gap-1 font-semibold transition hover:text-[var(--primary)]"
             >
               ← Back to website
             </Link>

@@ -47,7 +47,7 @@ function SponsorPage() {
           <h1 className="font-display text-5xl md:text-6xl mt-5 leading-[1.02] text-primary">
             {pv(c, "hero.title", "Sponsor a life. Change a story.")}
           </h1>
-          <p className="prose prose-lg mt-6 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(pv(c, "hero.description", "Your recurring gift in Ghana Cedis creates lasting change — from meals and schooling to safe homes and clean water.")) }} />
+          <p className="rich-text prose prose-lg mt-6 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(pv(c, "hero.description", "Your recurring gift in Ghana Cedis creates lasting change — from meals and schooling to safe homes and clean water.")) }} />
         </div>
       </section>
 
@@ -72,7 +72,7 @@ function SponsorPage() {
                       <Icon className="size-6" />
                     </div>
                     <h3 className="font-display text-xl mt-4 text-primary leading-snug">{t.title}</h3>
-                    <div className="prose prose-sm mt-2 max-w-none flex-1 text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(t.description) }} />
+                    <div className="rich-text prose prose-sm mt-2 max-w-none flex-1 text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(t.description) }} />
                     <div className="mt-5">
                       <div className="font-display text-3xl text-primary">GH₵{Number(t.amount).toLocaleString()}</div>
                       <div className="text-xs uppercase tracking-widest text-muted-foreground mt-0.5">{t.frequency}</div>

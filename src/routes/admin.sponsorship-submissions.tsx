@@ -70,7 +70,7 @@ function SponsorshipSubmissionsAdmin() {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        <button onClick={exportCsv} disabled={!submissions.length} className="inline-flex items-center justify-center gap-2 border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#0F6848] transition hover:border-[#0F6848] disabled:cursor-not-allowed disabled:opacity-50">
+        <button onClick={exportCsv} disabled={!submissions.length} className="inline-flex items-center justify-center gap-2 border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-50">
           <Download className="size-4" /> Export CSV
         </button>
       </div>

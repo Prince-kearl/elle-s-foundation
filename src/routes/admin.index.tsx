@@ -153,7 +153,7 @@ function Dashboard() {
           <AdminCard key={kpi.label} className={`min-h-[128px] rounded-none border border-[#d5dfd7] border-t-4 bg-white p-5 sm:p-6 ${kpi.topBorder}`}>
             <div className="flex h-full items-start justify-between gap-4">
               <div className="self-end">
-                <div className="font-display text-4xl leading-none text-[#073b2b] sm:text-[2.65rem]">{kpi.value}</div>
+                <div className="font-display text-4xl leading-none text-[var(--forest)] sm:text-[2.65rem]">{kpi.value}</div>
                 <div className="mt-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#587268]">{kpi.label}</div>
               </div>
               <span className={`grid size-10 shrink-0 place-items-center ${kpi.iconTone}`}>

@@ -9,8 +9,8 @@ export function Logo({
   orgName?: string;
   tagline?: string;
 }) {
-  const textColor = tone === "light" ? "#ffffff" : "#0f6848";
-  const subColor = tone === "light" ? "#cdeca7" : "var(--earth)";
+  const textColor = tone === "light" ? "#ffffff" : "var(--primary)";
+  const subColor = tone === "light" ? "var(--sand)" : "var(--earth)";
   return (
     <a
       href="/"
