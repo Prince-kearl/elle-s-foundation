@@ -38,8 +38,17 @@ function PagesAdmin() {
   const save = async () => {
     setSaving(true);
     try {
-      const updates = rows.map((r: any) => ({ id: r.id, draft_value: values[r.id] ?? "", status: r.status === "published" ? "draft" : r.status, updated_at: new Date().toISOString() }));
-      const { error } = await supabase.from("page_content").upsert(updates);
+      const updatedAt = new Date().toISOString();
+      const updates = rows.map((r: any) => ({
+        id: r.id,
+        draft_value: values[r.id] ?? "",
+        status: r.status === "published" ? "draft" : r.status,
+        updated_at: updatedAt,
+      }));
+      const results = await Promise.all(
+        updates.map(({ id, ...payload }) => supabase.from("page_content").update(payload).eq("id", id)),
+      );
+      const error = results.find((result) => result.error)?.error;
       if (error) throw error;
       await qc.invalidateQueries({ queryKey: ["page_content", page] });
       toast.success("Draft saved");
