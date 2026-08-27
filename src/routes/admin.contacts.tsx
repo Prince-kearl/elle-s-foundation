@@ -4,7 +4,9 @@ import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
 import type { ContactSub } from "@/lib/cms";
 import { Mail, Trash2, Check } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin/contacts")({
   head: () => ({ meta: [{ title: "Contact Messages — Admin" }, { name: "robots", content: "noindex" }] }),
@@ -12,7 +14,18 @@ export const Route = createFileRoute("/admin/contacts")({
 });
 
 function ContactsAdmin() {
-  const { data, isLoading } = useAdminList<ContactSub>("contact_submissions");
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error } = useAdminList<ContactSub>("contact_submissions");
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-contact-submissions")
+      .on("postgres_changes", { event: "*", schema: "public", table: "contact_submissions" }, () => {
+        void queryClient.invalidateQueries({ queryKey: ["a", "contact_submissions"] });
+      })
+      .subscribe();
+    return () => { void supabase.removeChannel(channel); };
+  }, [queryClient]);
   const upsert = useUpsert("contact_submissions");
   const del = useDelete("contact_submissions");
   const [filter, setFilter] = useState<"all" | "new" | "handled">("all");
@@ -40,6 +53,8 @@ function ContactsAdmin() {
       <AdminCard>
         {isLoading ? (
           <div className="p-10 text-center text-sm text-[#6B7280]">Loading…</div>
+        ) : isError ? (
+          <div className="p-10 text-center text-sm text-red-600">Could not load contact messages. {error instanceof Error ? error.message : "Check the contact_submissions table and admin access policies in Supabase."}</div>
         ) : rows.length === 0 ? (
           <div className="p-10 text-center text-sm text-[#6B7280]">No messages{filter !== "all" ? ` (${filter})` : ""} yet.</div>
         ) : (
