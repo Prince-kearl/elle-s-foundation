@@ -146,19 +146,17 @@ function About() {
                             <h4 className="truncate font-display text-lg leading-tight text-primary">{p.name}</h4>
                             <p className="mt-1 truncate text-[0.62rem] font-semibold uppercase tracking-[0.11em] text-muted-foreground">{p.role}</p>
                           </div>
-                          <span className="shrink-0 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-earth">Profile</span>
                         </div>
-                        {p.bio ? <div className="prose prose-xs mt-4 line-clamp-2 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(p.bio) }} /> : null}
+                        {p.bio ? <div className="rich-text prose prose-xs mt-4 line-clamp-2 max-w-none text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(p.bio) }} /> : null}
                         <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                          <span className="inline-flex items-center gap-1.5 text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"><span className="size-1.5 rounded-full bg-earth" aria-hidden="true" /> Elle’s Foundation</span>
                           <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.55rem] font-semibold text-primary-foreground transition group-hover:bg-forest">View bio <span className="text-secondary">↗</span></span>
                         </div>
                       </div>
                     </button>
                     <div className="flex items-center gap-2 border-t border-border px-4 py-3" aria-label={`${p.name} social profiles`}>
-                      {p.linkedin_url ? <a href={p.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Linkedin className="size-3" /></a> : <span title="LinkedIn link not added" aria-label="LinkedIn link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Linkedin className="size-3" /></span>}
-                      {p.instagram_url ? <a href={p.instagram_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Instagram className="size-3" /></a> : <span title="Instagram link not added" aria-label="Instagram link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Instagram className="size-3" /></span>}
-                      {p.website_url ? <a href={p.website_url} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Globe className="size-3" /></a> : <span title="Website link not added" aria-label="Website link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Globe className="size-3" /></span>}
+                      {safeExternalUrl(p.linkedin_url) ? <a href={safeExternalUrl(p.linkedin_url)} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Linkedin className="size-3" /></a> : <span title="LinkedIn link not added" aria-label="LinkedIn link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Linkedin className="size-3" /></span>}
+                      {safeExternalUrl(p.instagram_url) ? <a href={safeExternalUrl(p.instagram_url)} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Instagram className="size-3" /></a> : <span title="Instagram link not added" aria-label="Instagram link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Instagram className="size-3" /></span>}
+                      {safeExternalUrl(p.website_url) ? <a href={safeExternalUrl(p.website_url)} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Globe className="size-3" /></a> : <span title="Website link not added" aria-label="Website link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Globe className="size-3" /></span>}
                     </div>
                   </div>
                 </article>
@@ -175,7 +173,7 @@ function About() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {testimonials.slice(0, 6).map((testimonial) => (
                   <figure key={testimonial.id} className="border border-primary/15 bg-primary px-5 py-6 text-primary-foreground shadow-[0_18px_36px_-28px_var(--forest)]">
-                    <blockquote className="prose prose-sm max-w-none text-sm leading-7 text-primary-foreground/90 [&_a]:underline [&_a]:underline-offset-4 [&_blockquote]:border-l-2 [&_blockquote]:border-secondary [&_blockquote]:pl-3 [&_em]:italic [&_strong]:font-bold [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">“<span dangerouslySetInnerHTML={{ __html: richTextForDisplay(testimonial.quote) }} />”</blockquote>
+                    <blockquote className="rich-text prose prose-sm max-w-none text-sm leading-7 text-primary-foreground/90 [&_a]:underline [&_a]:underline-offset-4 [&_blockquote]:border-l-2 [&_blockquote]:border-secondary [&_blockquote]:pl-3 [&_em]:italic [&_strong]:font-bold [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">“<span dangerouslySetInnerHTML={{ __html: richTextForDisplay(testimonial.quote) }} />”</blockquote>
                     <figcaption className="mt-6 border-t border-primary-foreground/20 pt-4">
                       <p className="font-semibold">{testimonial.name}</p>
                       {testimonial.role ? <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-secondary">{testimonial.role}</p> : null}
@@ -219,6 +217,18 @@ function About() {
 }
 
 
+function safeExternalUrl(value?: string | null) {
+  const trimmed = value?.trim();
+  if (!trimmed) return "";
+  const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    const parsed = new URL(candidate);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed.toString() : "";
+  } catch {
+    return "";
+  }
+}
+
 function TeamMemberModal({ member, onClose }: { member: TeamMember; onClose: () => void }) {
   return (
     <div
@@ -251,15 +261,15 @@ function TeamMemberModal({ member, onClose }: { member: TeamMember; onClose: () 
           <h2 id="team-member-name" className="mt-5 font-display text-3xl text-primary">{member.name}</h2>
           <p className="mt-1 text-sm font-semibold uppercase tracking-[0.12em] text-earth">{member.role}</p>
           {member.bio ? (
-            <div className="prose prose-sm mt-5 max-w-md text-sm leading-7 text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(member.bio) }} />
+            <div className="rich-text prose prose-sm mt-5 max-w-md text-sm leading-7 text-muted-foreground [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(member.bio) }} />
           ) : (
             <p className="mt-5 text-sm text-muted-foreground">This profile is managed by the Elle’s Foundation team.</p>
           )}
-          {(member.linkedin_url || member.instagram_url || member.website_url) ? (
+          {(safeExternalUrl(member.linkedin_url) || safeExternalUrl(member.instagram_url) || safeExternalUrl(member.website_url)) ? (
             <div className="mt-6 flex items-center gap-3">
-              {member.linkedin_url ? <a href={member.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${member.name} on LinkedIn`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Linkedin className="size-4" /></a> : null}
-              {member.instagram_url ? <a href={member.instagram_url} target="_blank" rel="noreferrer" aria-label={`${member.name} on Instagram`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Instagram className="size-4" /></a> : null}
-              {member.website_url ? <a href={member.website_url} target="_blank" rel="noreferrer" aria-label={`${member.name}'s website`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Globe className="size-4" /></a> : null}
+              {safeExternalUrl(member.linkedin_url) ? <a href={safeExternalUrl(member.linkedin_url)} target="_blank" rel="noreferrer" aria-label={`${member.name} on LinkedIn`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Linkedin className="size-4" /></a> : null}
+              {safeExternalUrl(member.instagram_url) ? <a href={safeExternalUrl(member.instagram_url)} target="_blank" rel="noreferrer" aria-label={`${member.name} on Instagram`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Instagram className="size-4" /></a> : null}
+              {safeExternalUrl(member.website_url) ? <a href={safeExternalUrl(member.website_url)} target="_blank" rel="noreferrer" aria-label={`${member.name}'s website`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Globe className="size-4" /></a> : null}
             </div>
           ) : null}
         </div>

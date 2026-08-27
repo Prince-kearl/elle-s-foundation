@@ -49,9 +49,9 @@ function TeamAdmin() {
           { name: "role", label: "Role", type: "text" },
           { name: "bio", label: "Bio", type: "richtext" },
           { name: "avatar_url", label: "Avatar", type: "image", folder: "team", crop: true, originalField: "avatar_original_url" },
-          { name: "linkedin_url", label: "LinkedIn URL", type: "text" },
-          { name: "instagram_url", label: "Instagram URL", type: "text" },
-          { name: "website_url", label: "Website URL", type: "text" },
+          { name: "linkedin_url", label: "LinkedIn URL", type: "url" },
+          { name: "instagram_url", label: "Instagram URL", type: "url" },
+          { name: "website_url", label: "Website URL", type: "url" },
         ]}
         preview={(row) => <TeamCardPreview row={row} />}
         columns={[
@@ -81,7 +81,7 @@ function TeamCardPreview({ row }: { row: Record<string, any> }) {
             <p className="truncate font-display text-base text-primary">{name}</p>
             <p className="mt-1 truncate text-[9px] font-semibold uppercase tracking-[0.11em] text-muted-foreground">{row.role || "Role"}</p>
             {row.bio ? <div className="rich-text rich-text--compact mt-3 line-clamp-2 text-[10px] leading-4 text-muted-foreground" dangerouslySetInnerHTML={{ __html: richTextForDisplay(row.bio) }} /> : null}
-            <div className="mt-3 flex items-center justify-between border-t border-border pt-2"><span className="text-[8px] font-bold uppercase tracking-[0.11em] text-muted-foreground">Elle’s Foundation</span><span className="bg-primary px-2 py-1 text-[9px] font-semibold text-primary-foreground">View bio ↗</span></div>
+            <div className="mt-3 flex justify-end border-t border-border pt-2"><span className="bg-primary px-2 py-1 text-[9px] font-semibold text-primary-foreground">View bio ↗</span></div>
           </div>
         </div>
       </div>
