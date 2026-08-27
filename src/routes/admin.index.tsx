@@ -73,38 +73,45 @@ function Dashboard() {
   ];
   const [donationPeriod, setDonationPeriod] = useState<"week" | "month" | "year">("month");
   const periodConfig = {
-    week: { count: 8, label: "last eight weeks", unit: "week" },
-    month: { count: 6, label: "last six months", unit: "month" },
+    week: { count: 5, label: "Monday to Friday", unit: "weekday" },
+    month: { count: 12, label: "January to December", unit: "month" },
     year: { count: 5, label: "last five years", unit: "year" },
   } as const;
   const selectedPeriod = periodConfig[donationPeriod];
   const periodStart = new Date();
-  if (donationPeriod === "week") periodStart.setDate(periodStart.getDate() - (selectedPeriod.count - 1) * 7);
-  if (donationPeriod === "month") periodStart.setMonth(periodStart.getMonth() - (selectedPeriod.count - 1));
-  if (donationPeriod === "year") periodStart.setFullYear(periodStart.getFullYear() - (selectedPeriod.count - 1));
   periodStart.setHours(0, 0, 0, 0);
+  if (donationPeriod === "week") {
+    const day = periodStart.getDay();
+    periodStart.setDate(periodStart.getDate() - (day === 0 ? 6 : day - 1));
+  }
+  if (donationPeriod === "month") {
+    periodStart.setMonth(0, 1);
+  }
+  if (donationPeriod === "year") {
+    periodStart.setFullYear(periodStart.getFullYear() - (selectedPeriod.count - 1), 0, 1);
+  }
   const chart = Array.from({ length: selectedPeriod.count }, (_, index) => {
     const date = new Date();
-    if (donationPeriod === "week") date.setDate(date.getDate() - (selectedPeriod.count - 1 - index) * 7);
-    if (donationPeriod === "month") date.setMonth(date.getMonth() - (selectedPeriod.count - 1 - index));
-    if (donationPeriod === "year") date.setFullYear(date.getFullYear() - (selectedPeriod.count - 1 - index));
+    if (donationPeriod === "week") {
+      const day = date.getDay();
+      date.setDate(date.getDate() - (day === 0 ? 6 : day - 1) + index);
+    }
+    if (donationPeriod === "month") date.setMonth(index, 1);
+    if (donationPeriod === "year") date.setFullYear(date.getFullYear() - (selectedPeriod.count - 1 - index), 0, 1);
     const amount = (donations.data ?? []).filter((item) => {
       const value = new Date(item.created_at);
       if (donationPeriod === "week") {
-        const bucketStart = new Date(date);
-        bucketStart.setDate(bucketStart.getDate() - bucketStart.getDay());
-        bucketStart.setHours(0, 0, 0, 0);
-        const bucketEnd = new Date(bucketStart);
-        bucketEnd.setDate(bucketEnd.getDate() + 7);
-        return value >= bucketStart && value < bucketEnd;
+        return value.getFullYear() === date.getFullYear()
+          && value.getMonth() === date.getMonth()
+          && value.getDate() === date.getDate();
       }
       if (donationPeriod === "month") return value.getMonth() === date.getMonth() && value.getFullYear() === date.getFullYear();
       return value.getFullYear() === date.getFullYear();
     }).reduce((sum, item) => sum + Number(item.amount || 0), 0);
     const label = donationPeriod === "week"
-      ? `W${index + 1}`
+      ? date.toLocaleDateString("en-GH", { weekday: "long" })
       : donationPeriod === "month"
-        ? date.toLocaleDateString("en-GH", { month: "short" })
+        ? date.toLocaleDateString("en-GH", { month: "long" })
         : date.toLocaleDateString("en-GH", { year: "numeric" });
     return { period: label, amount };
   });
