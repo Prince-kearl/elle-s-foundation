@@ -26,6 +26,7 @@ import {
   UserCog,
   HardDrive,
   Mail,
+  ClipboardList,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import logoAsset from "@/assets/brand/elles-foundation-mark.png";
@@ -131,7 +132,8 @@ const navSections = [
   {
     label: "Community & Engagement",
     items: [
-      { to: "/admin/sponsorships", label: "Sponsorships", icon: HandHeart },
+      { to: "/admin/sponsorships", label: "Sponsorship Tiers", icon: HandHeart },
+      { to: "/admin/sponsorship-submissions", label: "Sponsorship Submissions", icon: ClipboardList },
       { to: "/admin/newsletter", label: "Newsletter Subscribers", icon: Mail },
       { to: "/admin/contacts", label: "Contact Messages", icon: Inbox, badge: "contact" as const },
       { to: "/admin/donations", label: "Donations", icon: Heart, badge: "donation" as const },
