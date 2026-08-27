@@ -120,37 +120,48 @@ function About() {
             }
           />
           {people.length ? (
-            <div className="grid gap-10 rounded-[2.5rem] bg-[#dfe1df] p-5 [background-image:linear-gradient(rgba(255,255,255,0.28)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.28)_1px,transparent_1px)] [background-size:48px_48px] sm:grid-cols-2 sm:p-8 lg:grid-cols-4 lg:gap-7 lg:p-10">
-              {people.map((p, index) => (
-                <div key={p.id} className="relative pt-3">
-                  <div className="absolute inset-x-5 top-0 h-full translate-x-3 translate-y-4 rounded-[2rem] border border-white/70 bg-white/70" aria-hidden="true" />
-                  <div className="absolute inset-x-3 top-1 h-full translate-x-1.5 translate-y-2 rounded-[2rem] border border-white/80 bg-white/85" aria-hidden="true" />
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMember(p)}
-                    className="group relative z-10 block w-full overflow-hidden rounded-[2rem] border border-white/90 bg-[#f8f8f5] p-3 text-left shadow-[0_22px_40px_-30px_rgba(8,75,53,0.75)] transition hover:-translate-y-1 hover:shadow-[0_26px_48px_-28px_rgba(8,75,53,0.85)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                    aria-label={`View ${p.name}'s profile`}
-                  >
-                    <div className={`relative aspect-[4/5] overflow-hidden rounded-[1.45rem] ${index % 3 === 0 ? "bg-[#d9f6a5]" : index % 3 === 1 ? "bg-[#f5cba6]" : "bg-[#d7c1f4]"}`}>
-                      {p.avatar_url ? (
-                        <img src={p.avatar_url} alt={`${p.name} portrait`} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                      ) : (
-                        <div className="grid h-full w-full place-items-center bg-[linear-gradient(145deg,var(--color-secondary),var(--color-cream))] font-display text-5xl text-primary/70">
-                          {p.name.split(" ").map((s) => s[0]).join("")}
-                        </div>
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-[#b8f23f]/90 via-[#b8f23f]/35 to-transparent opacity-80 mix-blend-multiply" aria-hidden="true" />
-                    </div>
-                    <div className="flex items-end justify-between gap-3 px-1 pb-1 pt-4">
-                      <div className="min-w-0">
-                        <h4 className="truncate font-display text-xl leading-tight text-primary">{p.name}</h4>
-                        <p className="mt-1 truncate text-xs text-muted-foreground">{p.role}</p>
-                        <p className="mt-3 inline-flex items-center gap-1.5 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-primary/70"><span className="size-1.5 rounded-full bg-[#72c94b]" aria-hidden="true" /> Elle’s Foundation</p>
+            <div className="grid gap-8 rounded-[2rem] bg-[#dedfdd] p-5 [background-image:linear-gradient(rgba(255,255,255,0.32)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.32)_1px,transparent_1px)] [background-size:48px_48px] sm:grid-cols-2 sm:p-8 lg:grid-cols-4 lg:gap-7 lg:p-10">
+              {people.map((p) => (
+                <article key={p.id} className="group relative pt-2">
+                  <div className="absolute inset-x-2 top-0 h-full translate-x-3 translate-y-3 rounded-[1.75rem] border border-white/70 bg-white/50" aria-hidden="true" />
+                  <div className="relative z-10 overflow-hidden rounded-[1.75rem] border border-white/90 bg-white shadow-[0_24px_45px_-30px_rgba(0,0,0,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_30px_50px_-28px_rgba(0,0,0,0.75)]">
+                    <button type="button" onClick={() => setSelectedMember(p)} className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={`View ${p.name}'s profile`}>
+                      <div className="relative aspect-[1.12/1] overflow-hidden bg-[#181818]">
+                        {p.avatar_url ? (
+                          <img src={p.avatar_url} alt={`${p.name} portrait`} className="h-full w-full object-cover grayscale contrast-125 transition duration-500 group-hover:scale-105 group-hover:grayscale-0" />
+                        ) : (
+                          <div className="grid h-full w-full place-items-center bg-[linear-gradient(145deg,#111,#595959)] font-display text-5xl text-white/80">
+                            {p.name.split(" ").map((s) => s[0]).join("")}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" aria-hidden="true" />
+                        <span className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/60 bg-white/10 text-white backdrop-blur-sm" aria-hidden="true">↗</span>
                       </div>
-                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#171817] px-3 py-2 text-[0.58rem] font-semibold text-white transition group-hover:bg-primary" aria-hidden="true">Profile <span className="text-[#b8f23f]">↗</span></span>
-                    </div>
-                  </button>
-                </div>
+                      <div className="relative px-5 pb-5 pt-12">
+                        <span className="absolute -top-10 left-5 grid size-20 place-items-center rounded-full border-[5px] border-white bg-black font-display text-2xl text-white shadow-lg" aria-hidden="true">{p.name.split(" ").map((s) => s[0]).join("")}</span>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <h4 className="truncate font-display text-xl leading-tight text-[#111]">{p.name}</h4>
+                            <p className="mt-1 truncate text-xs font-medium uppercase tracking-[0.1em] text-[#6b6b6b]">{p.role}</p>
+                          </div>
+                          <span className="shrink-0 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-[#8a8a8a]">Profile</span>
+                        </div>
+                        <p className="mt-5 line-clamp-3 min-h-[4.5rem] text-xs leading-6 text-[#4f4f4f]">{p.bio || "Meet the person helping Elle’s Foundation build lasting change with communities."}</p>
+                        <div className="mt-5 flex items-center justify-between border-t border-[#e7e7e7] pt-4">
+                          <span className="inline-flex items-center gap-2 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#6d6d6d]"><span className="size-1.5 rounded-full bg-[#39a85b]" aria-hidden="true" /> Elle’s Foundation</span>
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#111] px-3 py-2 text-[0.58rem] font-semibold text-white transition group-hover:bg-primary">View bio <span className="text-[#d9f6a5]">↗</span></span>
+                        </div>
+                      </div>
+                    </button>
+                    {(p.linkedin_url || p.instagram_url || p.website_url) ? (
+                      <div className="flex gap-2 px-5 pb-5">
+                        {p.linkedin_url ? <a href={p.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-8 place-items-center rounded-full border border-[#d8d8d8] text-[#303030] transition hover:bg-[#111] hover:text-white"><Linkedin className="size-3.5" /></a> : null}
+                        {p.instagram_url ? <a href={p.instagram_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-8 place-items-center rounded-full border border-[#d8d8d8] text-[#303030] transition hover:bg-[#111] hover:text-white"><Instagram className="size-3.5" /></a> : null}
+                        {p.website_url ? <a href={p.website_url} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-8 place-items-center rounded-full border border-[#d8d8d8] text-[#303030] transition hover:bg-[#111] hover:text-white"><Globe className="size-3.5" /></a> : null}
+                      </div>
+                    ) : null}
+                  </div>
+                </article>
               ))}
             </div>
           ) : (
