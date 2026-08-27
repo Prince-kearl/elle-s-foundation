@@ -151,7 +151,7 @@ export function MediaField({
           )}
           <button
             type="button"
-            onClick={() => onChange("")}
+            onClick={(event) => { event.preventDefault(); event.stopPropagation(); onChange(""); }}
             className="absolute -top-2 -right-2 size-6 rounded-full bg-white border border-[#E5E7EB] shadow grid place-items-center text-[#6B7280] hover:text-red-600"
           >
             <X className="size-3" />
@@ -352,8 +352,8 @@ function ImageCropPanel({ value, originalValue, folder, onChange, onReset }: { v
   };
 
   return (
-    <div className="w-full max-w-md border border-[#E5E7EB] bg-[#F8FAF7] p-3">
-      <button type="button" onClick={() => setOpen((current) => !current)} className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-primary hover:text-earth">
+    <div className="w-full max-w-md border border-[#E5E7EB] bg-[#F8FAF7] p-3" onClick={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
+      <button type="button" onClick={(event) => { event.preventDefault(); event.stopPropagation(); setOpen((current) => !current); }} className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-primary hover:text-earth">
         <Crop className="size-4" /> {open ? "Close crop tool" : "Crop for team card"}
       </button>
       {open ? (
@@ -365,20 +365,20 @@ function ImageCropPanel({ value, originalValue, folder, onChange, onReset }: { v
           </div>
           <label className="flex items-center gap-3 text-xs font-semibold text-[#4B5563]">
             <ZoomIn className="size-4 text-primary" /> Zoom
-            <input type="range" min="1" max="3" step="0.05" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} className="min-w-0 flex-1 accent-[var(--primary)]" />
+            <input type="range" min="1" max="3" step="0.05" value={zoom} onChange={(event) => { event.stopPropagation(); setZoom(Number(event.target.value)); }} className="min-w-0 flex-1 accent-[var(--primary)]" />
             <span className="w-10 text-right tabular-nums">{zoom.toFixed(1)}×</span>
           </label>
           <label className="block text-xs font-semibold text-[#4B5563]">Horizontal focus
-            <input type="range" min="0" max="100" value={positionX} onChange={(event) => setPositionX(Number(event.target.value))} className="mt-1 w-full accent-[var(--primary)]" />
+            <input type="range" min="0" max="100" value={positionX} onChange={(event) => { event.stopPropagation(); setPositionX(Number(event.target.value)); }} className="mt-1 w-full accent-[var(--primary)]" />
           </label>
           <label className="block text-xs font-semibold text-[#4B5563]">Vertical focus
-            <input type="range" min="0" max="100" value={positionY} onChange={(event) => setPositionY(Number(event.target.value))} className="mt-1 w-full accent-[var(--primary)]" />
+            <input type="range" min="0" max="100" value={positionY} onChange={(event) => { event.stopPropagation(); setPositionY(Number(event.target.value)); }} className="mt-1 w-full accent-[var(--primary)]" />
           </label>
           <div className="flex items-center justify-between gap-3 border-t border-[#E5E7EB] pt-3">
             <p className="text-[11px] leading-5 text-[#6B7280]">Keep the eyes and face inside the frame. The saved crop matches the public card ratio.</p>
             <div className="flex shrink-0 gap-2">
-              {onReset && originalValue && originalValue !== value ? <button type="button" disabled={busy} onClick={onReset} className="border border-[#D8E0DA] px-3 py-2 text-xs font-bold text-[#4B5563] hover:border-primary hover:text-primary">Reset original</button> : null}
-              <button type="button" disabled={busy} onClick={() => void applyCrop()} className="bg-primary px-3 py-2 text-xs font-bold text-white disabled:opacity-60">{busy ? "Saving…" : "Apply crop"}</button>
+              {onReset && originalValue && originalValue !== value ? <button type="button" disabled={busy} onClick={(event) => { event.preventDefault(); event.stopPropagation(); onReset(); }} className="border border-[#D8E0DA] px-3 py-2 text-xs font-bold text-[#4B5563] hover:border-primary hover:text-primary">Reset original</button> : null}
+              <button type="button" disabled={busy} onClick={(event) => { event.preventDefault(); event.stopPropagation(); void applyCrop(); }} className="bg-primary px-3 py-2 text-xs font-bold text-white disabled:opacity-60">{busy ? "Saving…" : "Apply crop"}</button>
             </div>
           </div>
         </div>
