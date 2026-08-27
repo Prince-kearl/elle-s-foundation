@@ -1,10 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Search, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 type SearchScope = "site" | "admin";
 
 type SearchItem = {
+  label: string;
+  description: string;
+  to: string;
+  keywords: string;
+};
+
+type SearchRecord = {
   label: string;
   description: string;
   to: string;
@@ -107,20 +116,63 @@ const adminItems: SearchItem[] = [
   },
 ];
 
+async function loadSearchRecords(scope: SearchScope): Promise<SearchRecord[]> {
+  const publicSources = [
+    { table: "programs", route: "/programs", label: "Program" },
+    { table: "stories", route: "/", label: "Story" },
+    { table: "events", route: "/#events", label: "Event" },
+    { table: "faqs", route: "/contact", label: "FAQ" },
+    { table: "sponsorships", route: "/sponsor", label: "Sponsorship" },
+  ] as const;
+  const adminSources = [
+    { table: "programs", route: "/admin/programs", label: "Program" },
+    { table: "stories", route: "/admin/stories", label: "Story" },
+    { table: "events", route: "/admin/events", label: "Event" },
+    { table: "sponsorships", route: "/admin/sponsorships", label: "Sponsorship tier" },
+    { table: "donation_intents", route: "/admin/donations", label: "Donation" },
+    { table: "contact_submissions", route: "/admin/contacts", label: "Contact message" },
+  ] as const;
+  const sources = scope === "admin" ? adminSources : publicSources;
+  const results = await Promise.all(sources.map(async (source) => {
+    let request = supabase.from(source.table).select("*").limit(100);
+    if (scope === "site") request = request.eq("visible", true);
+    if (source.table === "events" && scope === "site") request = request.eq("status", "published").gte("event_date", new Date().toISOString().slice(0, 10));
+    const { data } = await request;
+    return (data ?? []).map((row: any) => {
+      const title = row.title ?? row.name ?? row.question ?? row.subject ?? row.email ?? source.label;
+      const description = row.description ?? row.excerpt ?? row.answer ?? row.message ?? row.note ?? "";
+      return {
+        label: `${source.label}: ${title}`,
+        description: description || `Open ${source.route.replace("/#events", "").replace("/", "") || "the website"}`,
+        to: source.route,
+        keywords: `${title} ${description} ${row.tag ?? ""} ${row.category ?? ""} ${row.status ?? ""}`,
+      };
+    });
+  }));
+  return results.flat();
+}
+
 export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const items = scope === "admin" ? adminItems : siteItems;
+  const { data: liveItems = [] } = useQuery({
+    queryKey: ["global-search", scope],
+    queryFn: () => loadSearchRecords(scope),
+    staleTime: 30_000,
+    enabled: open,
+  });
+  const searchableItems = useMemo(() => [...items, ...liveItems], [items, liveItems]);
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return items.slice(0, 5);
-    return items
+    if (!normalized) return searchableItems.slice(0, 6);
+    return searchableItems
       .filter((item) =>
         `${item.label} ${item.description} ${item.keywords}`.toLowerCase().includes(normalized),
       )
-      .slice(0, 6);
-  }, [items, query]);
+      .slice(0, 8);
+  }, [searchableItems, query]);
 
   useEffect(() => {
     if (open) window.setTimeout(() => inputRef.current?.focus(), 0);
@@ -192,12 +244,12 @@ export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
               ))
             ) : (
               <p className="px-3 py-6 text-center text-sm text-[#6b8076]">
-                No matching pages found.
+                No matching results found.
               </p>
             )}
           </div>
           <div className="border-t border-[#c5dfb6]/70 px-3 py-2 text-[0.58rem] font-bold uppercase tracking-[0.12em] text-[#8aa096]">
-            {scope === "admin" ? "Portal search" : "Site search"} · Esc to close
+            {scope === "admin" ? "Portal search" : "Site search"} · Keywords and pages · Esc to close
           </div>
         </div>
       )}
