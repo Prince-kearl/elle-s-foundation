@@ -152,13 +152,11 @@ function About() {
                         </div>
                       </div>
                     </button>
-                    {(p.linkedin_url || p.instagram_url || p.website_url) ? (
-                      <div className="flex gap-2 px-4 pb-4">
-                        {p.linkedin_url ? <a href={p.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Linkedin className="size-3" /></a> : null}
-                        {p.instagram_url ? <a href={p.instagram_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Instagram className="size-3" /></a> : null}
-                        {p.website_url ? <a href={p.website_url} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Globe className="size-3" /></a> : null}
-                      </div>
-                    ) : null}
+                    <div className="flex items-center gap-2 border-t border-border px-4 py-3" aria-label={`${p.name} social profiles`}>
+                      {p.linkedin_url ? <a href={p.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Linkedin className="size-3" /></a> : <span title="LinkedIn link not added" aria-label="LinkedIn link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Linkedin className="size-3" /></span>}
+                      {p.instagram_url ? <a href={p.instagram_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Instagram className="size-3" /></a> : <span title="Instagram link not added" aria-label="Instagram link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Instagram className="size-3" /></span>}
+                      {p.website_url ? <a href={p.website_url} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Globe className="size-3" /></a> : <span title="Website link not added" aria-label="Website link not added" className="grid size-7 place-items-center rounded-full border border-border text-primary/25"><Globe className="size-3" /></span>}
+                    </div>
                   </div>
                 </article>
               ))}
