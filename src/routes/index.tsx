@@ -81,7 +81,6 @@ type HomepageEvent = {
   title: string;
   meta: string;
   detail: string;
-  status: string;
   accent: string;
 };
 
@@ -150,7 +149,7 @@ function Hero({ c }: { c: C }) {
               {pv(c, "hero.title_line_2", "Restoring lives.")}
             </span>
           </h1>
-          <div className="prose prose-lg mx-auto mt-7 max-w-xl text-base leading-7 text-white/80 md:mx-0 md:text-lg md:leading-8 [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(pv(c, "hero.description", "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.")) }} />
+          <div className="rich-text prose prose-lg mx-auto mt-7 max-w-xl text-base leading-7 text-white/80 md:mx-0 md:text-lg md:leading-8 [&_a]:underline [&_strong]:font-bold [&_em]:italic" dangerouslySetInnerHTML={{ __html: richTextForDisplay(pv(c, "hero.description", "We believe every child deserves a chance, every family deserves support, and every community deserves the opportunity to thrive with dignity and hope.")) }} />
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:justify-start">
             <a
               href={pv(c, "hero.cta_primary_href", "/donate")}
@@ -286,7 +285,6 @@ function UpcomingEvents() {
           title: event.title,
           meta: `${event.location} · ${date.toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}`,
           detail: event.description,
-          status: event.status === "published" ? "Confirmed" : "Coming soon",
           accent: event.accent,
         };
       });
@@ -389,12 +387,9 @@ function UpcomingEvents() {
                       <Clock3 className="size-3.5" /> Community-led
                     </span>
                   </div>
-                  <div className="prose prose-sm mt-3 max-w-2xl text-sm leading-6 text-[#477763] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(event.detail) }} />
+                  <div className="rich-text prose prose-sm mt-3 max-w-2xl text-sm leading-6 text-[#477763] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(event.detail) }} />
                 </div>
                 <div className="flex items-center justify-between gap-4 border-t border-[#0f6848]/10 pt-4 sm:block sm:border-t-0 sm:pt-0 sm:text-right">
-                  <span className="inline-flex items-center gap-2 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-[#0f6848]">
-                    <span className="size-2 bg-[#0f9d73]" /> {event.status}
-                  </span>
                   <button
                     type="button"
                     onClick={() => setSelectedEvent(event)}
@@ -465,9 +460,6 @@ function PastEvent({ c }: { c: C }) {
               </div>
             ))}
           </div>
-          <p className="mt-8 border-l-2 border-[var(--gold)] pl-4 text-sm font-semibold text-[#cdeca7]">
-            Past event archive · Operation Feed the Street (#OFTS)
-          </p>
         </div>
       </div>
     </section>
@@ -911,7 +903,7 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                 <h3 className="font-display text-2xl font-semibold leading-tight text-[#0f6848]">
                   {title}
                 </h3>
-                <div className="prose prose-sm mt-3 max-w-sm text-sm leading-6 text-[#477763] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(text) }} />
+                <div className="rich-text prose prose-sm mt-3 max-w-sm text-sm leading-6 text-[#477763] [&_a]:underline [&_strong]:font-bold [&_em]:italic [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: richTextForDisplay(text) }} />
               </div>
             </article>
             ))}
