@@ -11,6 +11,7 @@ export type Faq = { id: string; question: string; answer: string; position: numb
 export type ContactSub = { id: string; name: string; email: string; interest: string | null; message: string; handled: boolean; created_at: string };
 export type DonationIntent = { id: string; amount: number; frequency: string; name: string | null; email: string | null; phone: string | null; note: string | null; status: string; created_at: string };
 export type EventRecord = { id: string; title: string; event_type: string; description: string; event_date: string; start_time: string | null; end_time: string | null; location: string; status: "draft" | "published" | "archived"; visible: boolean; accent: string; position: number; created_at: string; updated_at: string };
+export type Sponsorship = { id: string; title: string; description: string; amount: number; currency: string; frequency: string; icon: string | null; image_url: string | null; benefits: string[] | null; featured: boolean; position: number; visible: boolean; created_at: string; updated_at: string };
 export type EventRsvp = { id: string; event_id: string; name: string; email: string; phone: string | null; guests: number; note: string | null; status: "pending" | "confirmed" | "attended" | "cancelled"; created_at: string; events?: { title: string; event_date: string } | null };
 export type RsvpEmailConfirmation = { id: string; rsvp_id: string; recipient_email: string; status: "queued" | "sending" | "sent" | "failed" | "needs_setup"; provider_message_id: string | null; error_message: string | null; sent_at: string | null; created_at: string; updated_at: string };
 export type NewsletterSubscriber = { id: string; email: string; whatsapp_number: string | null; source: string; status: "subscribed" | "unsubscribed"; created_at: string; updated_at: string };
@@ -59,6 +60,7 @@ const PUBLIC_REALTIME_TABLES = [
   { table: "testimonials", keys: [["p:testimonials"]] },
   { table: "faqs", keys: [["p:faqs"]] },
   { table: "events", keys: [["p:events"]] },
+  { table: "sponsorships", keys: [["p:sponsorships"]] },
   { table: "page_content", keys: [["page_content"]] },
   { table: "site_content", keys: [["site_copy"]] },
   { table: "site_settings", keys: [["site_settings"]] },

@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
@@ -7,13 +7,11 @@ import { useQuery } from "@tanstack/react-query";
 import { GraduationCap, Utensils, Home, TreePine, HandHeart, Heart, Loader2, Check, Star } from "lucide-react";
 import { toast } from "sonner";
 import { usePageContent, pv } from "@/lib/page-content";
+import type { Sponsorship } from "@/lib/cms";
 
 const ICONS: Record<string, any> = { GraduationCap, Utensils, Home, TreePine, HandHeart, Heart };
 
 export const Route = createFileRoute("/sponsor")({
-  beforeLoad: () => {
-    throw redirect({ to: "/donate" });
-  },
   head: () => ({
     meta: [
       { title: "Sponsor — Elle's Foundation" },
@@ -29,16 +27,16 @@ export const Route = createFileRoute("/sponsor")({
 
 function SponsorPage() {
   const { data: c } = usePageContent("sponsor");
-  const { data: tiers = [], isLoading } = useQuery({
+  const { data: tiers = [], isLoading } = useQuery<Sponsorship[]>({
     queryKey: ["p:sponsorships"],
     queryFn: async () => {
       const { data, error } = await supabase.from("sponsorships").select("*").eq("visible", true).order("position", { ascending: true });
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as Sponsorship[];
     },
   });
 
-  const [selected, setSelected] = useState<any | null>(null);
+  const [selected, setSelected] = useState<Sponsorship | null>(null);
 
   return (
     <SiteLayout>
@@ -60,8 +58,10 @@ function SponsorPage() {
             <div className="text-center py-20"><Loader2 className="inline size-6 animate-spin text-primary" /></div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {tiers.map((t: any) => {
-                const Icon = ICONS[t.icon] ?? HandHeart;
+              {tiers.length === 0 ? (
+                <div className="col-span-full border border-border bg-secondary/30 px-6 py-16 text-center text-muted-foreground">Sponsorship options will be available soon.</div>
+              ) : tiers.map((t) => {
+                const Icon = ICONS[t.icon ?? ""] ?? HandHeart;
                 return (
                   <article key={t.id} className={`soft-card soft-card-hover p-6 flex flex-col ${t.featured ? "ring-2 ring-primary/40" : ""}`}>
                     {t.featured && (
@@ -101,7 +101,7 @@ function SponsorPage() {
   );
 }
 
-function SponsorModal({ tier, onClose }: { tier: any; onClose: () => void }) {
+function SponsorModal({ tier, onClose }: { tier: Sponsorship; onClose: () => void }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
