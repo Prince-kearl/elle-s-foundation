@@ -84,8 +84,12 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={async () => {
-                            await upsert.mutateAsync({ id: row.id, visible: !row.visible });
-                            toast.success(row.visible ? "Hidden" : "Now visible");
+                            try {
+                              await upsert.mutateAsync({ id: row.id, visible: !row.visible });
+                              toast.success(row.visible ? "Hidden" : "Now visible");
+                            } catch (e: any) {
+                              toast.error(e?.message ?? "Update failed");
+                            }
                           }}
                           className="p-2 rounded-lg hover:bg-[#F5EFE5] text-[#6B7280]"
                           title={row.visible ? "Hide" : "Show"}

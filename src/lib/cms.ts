@@ -119,7 +119,10 @@ export function useUpsert(table: string, invalidateKeys: string[][] = []) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (row: any) => {
-      const { data, error } = await supabase.from(table).upsert(row).select().single();
+      const query = row?.id
+        ? supabase.from(table).update(row).eq("id", row.id)
+        : supabase.from(table).insert(row);
+      const { data, error } = await query.select().single();
       if (error) throw error;
       return data;
     },
