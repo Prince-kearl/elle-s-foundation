@@ -9,7 +9,7 @@ import { toast } from "sonner";
 export type FieldDef =
   | { name: string; label: string; type: "text" | "url" | "number" }
   | { name: string; label: string; type: "textarea" | "richtext"; rows?: number }
-  | { name: string; label: string; type: "image" | "video" | "media"; folder?: string };
+  | { name: string; label: string; type: "image" | "video" | "media"; folder?: string; crop?: boolean };
 
 interface Props<T> {
   table: string;
@@ -19,11 +19,12 @@ interface Props<T> {
   emptyLabel?: string;
   singularName: string;
   enableDragSort?: boolean;
+  preview?: (row: Row) => ReactNode;
 }
 
 type Row = Record<string, any>;
 
-export function CollectionEditor<T extends Row>({ table, fields, columns, invalidateKeys = [], singularName, enableDragSort = false }: Props<T>) {
+export function CollectionEditor<T extends Row>({ table, fields, columns, invalidateKeys = [], singularName, enableDragSort = false, preview }: Props<T>) {
   const { data: rows, isLoading } = useAdminList<T>(table);
   const upsert = useUpsert(table, invalidateKeys);
   const del = useDelete(table, invalidateKeys);
@@ -171,6 +172,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
         <EditorModal
           row={editing}
           fields={fields}
+          preview={preview}
           title={editing.id ? `Edit ${singularName}` : `New ${singularName}`}
           onClose={() => setEditing(null)}
           onSave={async (payload) => {
@@ -188,7 +190,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
   );
 }
 
-function EditorModal({ row, fields, title, onClose, onSave }: { row: Row; fields: FieldDef[]; title: string; onClose: () => void; onSave: (payload: Row) => Promise<void> }) {
+function EditorModal({ row, fields, preview, title, onClose, onSave }: { row: Row; fields: FieldDef[]; preview?: (row: Row) => ReactNode; title: string; onClose: () => void; onSave: (payload: Row) => Promise<void> }) {
   const [state, setState] = useState<Row>(row);
   useEffect(() => setState(row), [row]);
 
@@ -203,6 +205,7 @@ function EditorModal({ row, fields, title, onClose, onSave }: { row: Row; fields
           onSubmit={(e) => { e.preventDefault(); onSave(state); }}
           className="flex-1 overflow-y-auto p-6 space-y-4"
         >
+          {preview ? <div className="border-b border-[#EEF0F3] pb-5">{preview(state)}</div> : null}
           {fields.map((f) => (
             <Field key={f.name} label={f.label}>
               {f.type === "richtext" ? (
@@ -210,7 +213,7 @@ function EditorModal({ row, fields, title, onClose, onSave }: { row: Row; fields
               ) : f.type === "textarea" ? (
                 <TextArea rows={f.rows ?? 4} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />
               ) : f.type === "image" || f.type === "video" || f.type === "media" ? (
-                <MediaField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} accept={f.type === "video" ? "video" : f.type === "media" ? "any" : "image"} />
+                <MediaField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} accept={f.type === "video" ? "video" : f.type === "media" ? "any" : "image"} enableCrop={f.type === "image" && f.crop === true} />
               ) : (
                 <TextInput type={f.type === "url" ? "url" : f.type === "number" ? "number" : "text"} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: f.type === "number" ? Number(e.target.value) : e.target.value })} />
               )}

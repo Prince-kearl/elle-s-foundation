@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Upload, Image as ImageIcon, Link2, X, Loader2, Check, Film } from "lucide-react";
+import { Upload, Image as ImageIcon, Link2, X, Loader2, Check, Film, Crop, ZoomIn } from "lucide-react";
 import { uploadMedia, kindOf, type MediaKind } from "@/lib/storage";
 import { supabase } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
@@ -66,12 +66,14 @@ export function MediaField({
   onChange,
   folder = "general",
   accept = "image",
+  enableCrop = false,
 }: {
   value: string;
   onChange: (url: string) => void;
   folder?: string;
   /** "image" | "video" | "any" */
   accept?: "image" | "video" | "any";
+  enableCrop?: boolean;
 }) {
   const [tab, setTab] = useState<Tab>("upload");
   const [busy, setBusy] = useState(false);
@@ -126,6 +128,7 @@ export function MediaField({
   return (
     <div className="space-y-3">
       {value ? (
+        <div className="space-y-3">
         <div className="relative inline-block">
           {valueKind === "video" ? (
             <video
@@ -149,6 +152,8 @@ export function MediaField({
           >
             <X className="size-3" />
           </button>
+        </div>
+        {enableCrop && valueKind === "image" ? <ImageCropPanel value={value} folder={folder} onChange={onChange} /> : null}
         </div>
       ) : null}
 
@@ -295,4 +300,82 @@ export function ImageField(props: {
   folder?: string;
 }) {
   return <MediaField {...props} accept="image" />;
+}
+
+
+function ImageCropPanel({ value, folder, onChange }: { value: string; folder: string; onChange: (url: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [positionX, setPositionX] = useState(50);
+  const [positionY, setPositionY] = useState(50);
+  const [busy, setBusy] = useState(false);
+  const aspect = 1.28;
+
+  const applyCrop = async () => {
+    setBusy(true);
+    try {
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.src = value;
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("The image could not be loaded for cropping."));
+      });
+      const baseWidth = Math.min(image.naturalWidth, image.naturalHeight * aspect);
+      const baseHeight = baseWidth / aspect;
+      const cropWidth = baseWidth / zoom;
+      const cropHeight = baseHeight / zoom;
+      const sx = (image.naturalWidth - cropWidth) * (positionX / 100);
+      const sy = (image.naturalHeight - cropHeight) * (positionY / 100);
+      const canvas = document.createElement("canvas");
+      canvas.width = 1280;
+      canvas.height = Math.round(canvas.width / aspect);
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Your browser could not prepare the crop.");
+      context.drawImage(image, sx, sy, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92));
+      if (!blob) throw new Error("The cropped image could not be created.");
+      const file = new File([blob], `team-crop-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const uploaded = await uploadMedia(file, folder);
+      onChange(uploaded.url);
+      setOpen(false);
+      toast.success("Cropped team image ready to publish");
+    } catch (error: any) {
+      toast.error(error?.message ?? "Could not crop this image. Check that the image URL allows browser access.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-md border border-[#E5E7EB] bg-[#F8FAF7] p-3">
+      <button type="button" onClick={() => setOpen((current) => !current)} className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-primary hover:text-earth">
+        <Crop className="size-4" /> {open ? "Close crop tool" : "Crop for team card"}
+      </button>
+      {open ? (
+        <div className="mt-3 space-y-3">
+          <div className="relative mx-auto aspect-[1.28/1] w-full max-w-sm overflow-hidden border border-primary/25 bg-forest">
+            <img src={value} alt="Crop preview" className="absolute h-full w-full object-cover" style={{ objectPosition: `${positionX}% ${positionY}%`, transform: `scale(${zoom})` }} />
+            <div className="pointer-events-none absolute inset-0 border-2 border-white/80 shadow-[inset_0_0_0_999px_rgb(8_75_53/0.08)]" />
+            <span className="absolute left-2 top-2 bg-forest/75 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white">Team card frame</span>
+          </div>
+          <label className="flex items-center gap-3 text-xs font-semibold text-[#4B5563]">
+            <ZoomIn className="size-4 text-primary" /> Zoom
+            <input type="range" min="1" max="3" step="0.05" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} className="min-w-0 flex-1 accent-[var(--primary)]" />
+            <span className="w-10 text-right tabular-nums">{zoom.toFixed(1)}×</span>
+          </label>
+          <label className="block text-xs font-semibold text-[#4B5563]">Horizontal focus
+            <input type="range" min="0" max="100" value={positionX} onChange={(event) => setPositionX(Number(event.target.value))} className="mt-1 w-full accent-[var(--primary)]" />
+          </label>
+          <label className="block text-xs font-semibold text-[#4B5563]">Vertical focus
+            <input type="range" min="0" max="100" value={positionY} onChange={(event) => setPositionY(Number(event.target.value))} className="mt-1 w-full accent-[var(--primary)]" />
+          </label>
+          <div className="flex items-center justify-between gap-3 border-t border-[#E5E7EB] pt-3">
+            <p className="text-[11px] leading-5 text-[#6B7280]">Keep the eyes and face inside the frame. The saved crop matches the public card ratio.</p>
+            <button type="button" disabled={busy} onClick={() => void applyCrop()} className="shrink-0 bg-primary px-3 py-2 text-xs font-bold text-white disabled:opacity-60">{busy ? "Saving…" : "Apply crop"}</button>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
 }
