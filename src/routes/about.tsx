@@ -4,6 +4,7 @@ import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
 import { trackTeamProfileClick, usePublicTeam, usePublicTestimonials, type TeamMember } from "@/lib/cms";
+import { richTextForDisplay } from "@/components/admin/RichTextEditor";
 import aboutHero from "@/assets/community/live/outreach-children.jpeg";
 import { useState } from "react";
 import { ArrowRight, Globe, Heart, Instagram, Linkedin, X } from "lucide-react";
@@ -174,7 +175,7 @@ function About() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {testimonials.slice(0, 6).map((testimonial) => (
                   <figure key={testimonial.id} className="border border-primary/15 bg-primary px-5 py-6 text-primary-foreground shadow-[0_18px_36px_-28px_var(--forest)]">
-                    <blockquote className="text-sm leading-7 text-primary-foreground/90">“{testimonial.quote}”</blockquote>
+                    <blockquote className="prose prose-sm max-w-none text-sm leading-7 text-primary-foreground/90 [&_a]:underline [&_a]:underline-offset-4 [&_blockquote]:border-l-2 [&_blockquote]:border-secondary [&_blockquote]:pl-3 [&_em]:italic [&_strong]:font-bold [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">“<span dangerouslySetInnerHTML={{ __html: richTextForDisplay(testimonial.quote) }} />”</blockquote>
                     <figcaption className="mt-6 border-t border-primary-foreground/20 pt-4">
                       <p className="font-semibold">{testimonial.name}</p>
                       {testimonial.role ? <p className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-secondary">{testimonial.role}</p> : null}

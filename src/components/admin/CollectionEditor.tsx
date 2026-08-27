@@ -3,11 +3,12 @@ import { Pencil, Trash2, Plus, X, Eye, EyeOff, ArrowUp, ArrowDown, GripVertical 
 import { AdminCard, PrimaryButton, GhostButton, Field, TextInput, TextArea, Toggle, Badge } from "./AdminLayout";
 import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
 import { MediaField } from "./ImageField";
+import { RichTextEditor } from "./RichTextEditor";
 import { toast } from "sonner";
 
 export type FieldDef =
   | { name: string; label: string; type: "text" | "url" | "number" }
-  | { name: string; label: string; type: "textarea"; rows?: number }
+  | { name: string; label: string; type: "textarea" | "richtext"; rows?: number }
   | { name: string; label: string; type: "image" | "video" | "media"; folder?: string };
 
 interface Props<T> {
@@ -204,7 +205,9 @@ function EditorModal({ row, fields, title, onClose, onSave }: { row: Row; fields
         >
           {fields.map((f) => (
             <Field key={f.name} label={f.label}>
-              {f.type === "textarea" ? (
+              {f.type === "richtext" ? (
+                <RichTextEditor value={state[f.name] ?? ""} onChange={(value) => setState({ ...state, [f.name]: value })} />
+              ) : f.type === "textarea" ? (
                 <TextArea rows={f.rows ?? 4} value={state[f.name] ?? ""} onChange={(e) => setState({ ...state, [f.name]: e.target.value })} />
               ) : f.type === "image" || f.type === "video" || f.type === "media" ? (
                 <MediaField value={state[f.name] ?? ""} onChange={(url) => setState({ ...state, [f.name]: url })} folder={f.folder ?? "general"} accept={f.type === "video" ? "video" : f.type === "media" ? "any" : "image"} />
