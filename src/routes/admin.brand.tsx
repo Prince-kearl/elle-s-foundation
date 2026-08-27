@@ -242,6 +242,30 @@ function BrandAdmin() {
                 </select>
                 <FontUploadControl label="Upload body font" hasCustom={Boolean(v.custom_body_font_url)} onUpload={(file) => void uploadCustomFont("body", file)} onClear={() => clearCustomFont("body")} />
               </Field>
+              <div className="sm:col-span-2 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
+                <Field label="Custom heading weight">
+                  <select value={v.custom_heading_font_weight ?? "600"} onChange={(e) => set("custom_heading_font_weight", e.target.value)} disabled={!v.custom_heading_font_url} className="w-full border border-border bg-card px-3.5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
+                    {["400", "500", "600", "700", "800"].map((weight) => <option key={weight} value={weight}>{weight}</option>)}
+                  </select>
+                </Field>
+                <Field label="Custom heading style">
+                  <select value={v.custom_heading_font_style ?? "normal"} onChange={(e) => set("custom_heading_font_style", e.target.value)} disabled={!v.custom_heading_font_url} className="w-full border border-border bg-card px-3.5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
+                    <option value="normal">Normal</option>
+                    <option value="italic">Italic</option>
+                  </select>
+                </Field>
+                <Field label="Custom body weight">
+                  <select value={v.custom_body_font_weight ?? "400"} onChange={(e) => set("custom_body_font_weight", e.target.value)} disabled={!v.custom_body_font_url} className="w-full border border-border bg-card px-3.5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
+                    {["400", "500", "600", "700", "800"].map((weight) => <option key={weight} value={weight}>{weight}</option>)}
+                  </select>
+                </Field>
+                <Field label="Custom body style">
+                  <select value={v.custom_body_font_style ?? "normal"} onChange={(e) => set("custom_body_font_style", e.target.value)} disabled={!v.custom_body_font_url} className="w-full border border-border bg-card px-3.5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-50">
+                    <option value="normal">Normal</option>
+                    <option value="italic">Italic</option>
+                  </select>
+                </Field>
+              </div>
               <Field label="Heading weight">
                 <select                   value={v.heading_weight ?? (overriding ? "" : "600")} onChange={(e) => set("heading_weight", e.target.value)} className="w-full rounded-lg border border-[#E5E7EB] px-3.5 py-2.5 text-sm bg-white">
                   {overriding && <option value="">Inherit global</option>}
@@ -391,8 +415,9 @@ function LivePreview({ v }: { v: any }) {
           style={{
             fontFamily: `"${v.heading_font}"`,
             color: v.primary_color,
-            fontWeight: v.heading_weight,
+            fontWeight: v.custom_heading_font_url ? v.custom_heading_font_weight : v.heading_weight,
             fontSize: `${1.05 * hs}rem`,
+            fontStyle: v.custom_heading_font_url ? v.custom_heading_font_style : "normal",
           }}
         >
           Elle's Foundation
@@ -415,9 +440,10 @@ function LivePreview({ v }: { v: any }) {
           style={{
             fontFamily: `"${v.heading_font}"`,
             color: v.primary_color,
-            fontWeight: v.heading_weight,
+            fontWeight: v.custom_heading_font_url ? v.custom_heading_font_weight : v.heading_weight,
             fontSize: `${1.85 * hs}rem`,
             lineHeight: 1.05,
+            fontStyle: v.custom_heading_font_url ? v.custom_heading_font_style : "normal",
             marginTop: "0.75rem",
           }}
         >
@@ -428,6 +454,8 @@ function LivePreview({ v }: { v: any }) {
             fontFamily: `"${v.body_font}"`,
             color: v.muted_color || v.ink_color,
             fontSize: `${0.875 * bs}rem`,
+            fontWeight: v.custom_body_font_url ? v.custom_body_font_weight : 400,
+            fontStyle: v.custom_body_font_url ? v.custom_body_font_style : "normal",
             lineHeight: v.line_height,
             marginTop: "0.75rem",
             opacity: 0.85,

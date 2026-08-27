@@ -82,6 +82,9 @@
   --heading-scale: 1;
   --body-scale: 1;
   --heading-weight: 600;
+  --heading-style: normal;
+  --body-weight: 400;
+  --body-style: normal;
   --brand-letter-spacing: 0em;
   --brand-line-height: 1.6;
   --section-spacing: 6rem;
@@ -110,6 +113,8 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-size: 1rem;
+    font-weight: var(--body-weight, 400);
+    font-style: var(--body-style, normal);
     letter-spacing: var(--brand-letter-spacing, 0em);
     line-height: var(--brand-line-height, 1.6);
     font-feature-settings: "ss01", "cv11";
@@ -122,6 +127,7 @@
   .font-display {
     font-family: var(--font-display);
     font-weight: var(--heading-weight, 600);
+    font-style: var(--heading-style, normal);
     letter-spacing: -0.01em;
   }
 }

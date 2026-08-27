@@ -39,6 +39,10 @@ export const BRAND_DEFAULTS: BrandValues = {
   muted_color: "#6B7280",
   custom_heading_font_url: "",
   custom_body_font_url: "",
+  custom_heading_font_weight: "600",
+  custom_body_font_weight: "400",
+  custom_heading_font_style: "normal",
+  custom_body_font_style: "normal",
 };
 
 export function useBrand() {
@@ -111,7 +115,10 @@ export function brandCssVars(v: BrandValues): Record<string, string> {
   c("--ink", "ink_color");
   c("--background", "background_color");
   if (v.radius) vars["--radius"] = String(v.radius);
-  if (v.heading_weight) vars["--heading-weight"] = String(v.heading_weight);
+  if (v.heading_weight) vars["--heading-weight"] = String(v.custom_heading_font_url ? (v.custom_heading_font_weight || v.heading_weight) : v.heading_weight);
+  if (v.body_font_weight) vars["--body-weight"] = String(v.body_font_weight);
+  if (v.body_font_style) vars["--body-style"] = String(v.body_font_style);
+  if (v.custom_heading_font_url) vars["--heading-style"] = String(v.custom_heading_font_style || "normal");
   const muted = toColor(v.muted_color);
   if (muted) vars["--muted-foreground"] = muted;
   if (v.heading_font)
@@ -157,15 +164,17 @@ export function loadBrandFonts(v: BrandValues, id = "brand-fonts") {
 function loadCustomBrandFonts(v: BrandValues, id = "custom-brand-fonts") {
   if (typeof document === "undefined") return;
   const rules: string[] = [];
-  const fontFace = (family: string, value: unknown) => {
+  const fontFace = (family: string, value: unknown, weight: unknown, style: unknown) => {
     const url = String(value ?? "").replace(/"/g, "");
     if (!url) return "";
     const extension = url.split("?")[0].split(".").pop()?.toLowerCase();
     const format = extension === "woff" ? "woff" : extension === "ttf" ? "truetype" : extension === "otf" ? "opentype" : "woff2";
-    return `@font-face { font-family: "${family}"; src: url("${url}") format("${format}"); font-weight: 400 800; font-style: normal; font-display: swap; }`;
+    const safeWeight = /^(400|500|600|700|800)$/.test(String(weight)) ? String(weight) : "400";
+    const safeStyle = String(style) === "italic" ? "italic" : "normal";
+    return `@font-face { font-family: "${family}"; src: url("${url}") format("${format}"); font-weight: ${safeWeight}; font-style: ${safeStyle}; font-display: swap; }`;
   };
-  if (v.custom_heading_font_url) rules.push(fontFace("Elle Custom Heading", v.custom_heading_font_url));
-  if (v.custom_body_font_url) rules.push(fontFace("Elle Custom Body", v.custom_body_font_url));
+  if (v.custom_heading_font_url) rules.push(fontFace("Elle Custom Heading", v.custom_heading_font_url, v.custom_heading_font_weight, v.custom_heading_font_style));
+  if (v.custom_body_font_url) rules.push(fontFace("Elle Custom Body", v.custom_body_font_url, v.custom_body_font_weight, v.custom_body_font_style));
   let style = document.getElementById(id) as HTMLStyleElement | null;
   if (!rules.length) {
     style?.remove();
