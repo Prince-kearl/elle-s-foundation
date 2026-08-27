@@ -159,12 +159,12 @@ function NewsletterAdmin() {
       </div>
 
       <AdminCard className="overflow-hidden">
-        <div className="flex flex-col gap-4 border-b border-[#e3e8e4] p-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-4 border-b border-[var(--border)] p-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="text-[0.58rem] font-bold uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
               AUDIENCE LIST
             </div>
-            <h2 className="mt-1 font-display text-xl font-semibold text-[#0b4a5a]">
+            <h2 className="mt-1 font-display text-xl font-semibold text-[var(--forest)]">
               Newsletter subscribers
             </h2>
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
@@ -189,7 +189,7 @@ function NewsletterAdmin() {
                 onChange={(event) =>
                   setStatusFilter(event.target.value as "all" | NewsletterSubscriber["status"])
                 }
-                className="h-[42px] w-full border border-[#cdd9d2] bg-white px-3 text-sm text-[#0b4a5a] outline-none focus:border-[#f26518] sm:w-auto"
+                className="h-[42px] w-full border border-[var(--border)] bg-white px-3 text-sm text-[var(--forest)] outline-none focus:border-[var(--earth)] sm:w-auto"
               >
                 <option value="all">All statuses</option>
                 <option value="subscribed">Subscribed</option>
@@ -229,7 +229,7 @@ function NewsletterAdmin() {
                   <th className="px-5 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e3e8e4]">
+              <tbody className="divide-y divide-[var(--border)]">
                 {filteredSubscribers.map((subscriber) => {
                   const databaseRecord = confirmationBySubscriber.get(`${subscriber.id}:database`);
                   const whatsappRecord = confirmationBySubscriber.get(`${subscriber.id}:whatsapp`);
@@ -238,7 +238,7 @@ function NewsletterAdmin() {
                       <td className="px-5 py-4">
                         <a
                           href={`mailto:${subscriber.email}`}
-                          className="font-semibold text-[#0b4a5a] hover:text-[#f26518] hover:underline"
+                          className="font-semibold text-[var(--forest)] hover:text-[var(--earth)] hover:underline"
                         >
                           {subscriber.email}
                         </a>
@@ -251,7 +251,7 @@ function NewsletterAdmin() {
                           {subscriber.source.replaceAll("_", " ")}
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-5 py-4 text-sm text-[#5c756a]">
+                      <td className="whitespace-nowrap px-5 py-4 text-sm text-[var(--muted-foreground)]">
                         {formatDate(subscriber.created_at)}
                       </td>
                       <td className="px-5 py-4">
@@ -283,7 +283,7 @@ function NewsletterAdmin() {
                               event.target.value as NewsletterSubscriber["status"],
                             )
                           }
-                          className="border border-[#cdd9d2] bg-white px-2 py-1.5 text-xs font-semibold text-[#0b4a5a] outline-none focus:border-[#f26518]"
+                          className="border border-[var(--border)] bg-white px-2 py-1.5 text-xs font-semibold text-[var(--forest)] outline-none focus:border-[var(--earth)]"
                         >
                           <option value="subscribed">Subscribed</option>
                           <option value="unsubscribed">Unsubscribed</option>
@@ -328,13 +328,13 @@ function Metric({
   tone: "gold" | "green" | "orange" | "blue";
 }) {
   const tones = {
-    gold: "bg-[#fff7c7] text-[#0b4a5a]",
+    gold: "bg-[#fff7c7] text-[var(--forest)]",
     green: "bg-[#dff5e8] text-[var(--primary)]",
-    orange: "bg-[#ffe2d2] text-[#f26518]",
+    orange: "bg-[#ffe2d2] text-[var(--earth)]",
     blue: "bg-[#dcecf4] text-[#1b86b8]",
   };
   return (
-    <div className="border border-[#dfe6e1] bg-white p-4">
+    <div className="border border-[var(--border)] bg-white p-4">
       <div className="flex items-start justify-between">
         <span className={`grid size-9 place-items-center ${tones[tone]}`}>
           <Icon className="size-4" />
@@ -343,7 +343,7 @@ function Metric({
           Live
         </span>
       </div>
-      <div className="mt-4 font-display text-3xl font-semibold text-[#0b4a5a]">{value}</div>
+      <div className="mt-4 font-display text-3xl font-semibold text-[var(--forest)]">{value}</div>
       <div className="mt-1 text-[0.62rem] font-bold uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
         {label}
       </div>
@@ -353,7 +353,7 @@ function Metric({
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="border-b border-dashed border-[#dfe6e1] p-10 text-center text-sm text-[var(--muted-foreground)]">
+    <div className="border-b border-dashed border-[var(--border)] p-10 text-center text-sm text-[var(--muted-foreground)]">
       {label}
     </div>
   );

@@ -36,41 +36,41 @@ function DonationsAdmin() {
   return (
     <AdminLayout title="Donations" subtitle="Donation intents captured from the donate page.">
       <div className="mb-5 flex justify-end">
-        <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-50">
+        <button onClick={exportCsv} disabled={!rows.length} className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[var(--primary)] transition hover:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-50">
           <Download className="size-4" /> Export CSV
         </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <AdminCard className="p-5">
           <div className="flex items-center gap-3">
-            <div className="size-11 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center"><TrendingUp className="size-5" /></div>
-            <div><div className="text-xs uppercase tracking-wider text-[#6B7280]">Total pledged</div><div className="font-display text-2xl">{formatCurrency(total)}</div></div>
+            <div className="size-11 rounded-xl bg-[var(--cream)] text-[var(--primary)] grid place-items-center"><TrendingUp className="size-5" /></div>
+            <div><div className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">Total pledged</div><div className="font-display text-2xl">{formatCurrency(total)}</div></div>
           </div>
         </AdminCard>
         <AdminCard className="p-5">
           <div className="flex items-center gap-3">
-            <div className="size-11 rounded-xl bg-[#F5EFE5] text-primary grid place-items-center"><Heart className="size-5" /></div>
-            <div><div className="text-xs uppercase tracking-wider text-[#6B7280]">Donations</div><div className="font-display text-2xl">{rows.length}</div></div>
+            <div className="size-11 rounded-xl bg-[var(--cream)] text-primary grid place-items-center"><Heart className="size-5" /></div>
+            <div><div className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">Donations</div><div className="font-display text-2xl">{rows.length}</div></div>
           </div>
         </AdminCard>
         <AdminCard className="p-5">
           <div className="flex items-center gap-3">
-            <div className="size-11 rounded-xl bg-purple-50 text-purple-600 grid place-items-center"><Heart className="size-5" fill="currentColor" /></div>
-            <div><div className="text-xs uppercase tracking-wider text-[#6B7280]">Monthly donors</div><div className="font-display text-2xl">{monthly}</div></div>
+            <div className="size-11 rounded-xl bg-[var(--cream)] text-[var(--earth)] grid place-items-center"><Heart className="size-5" fill="currentColor" /></div>
+            <div><div className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">Monthly donors</div><div className="font-display text-2xl">{monthly}</div></div>
           </div>
         </AdminCard>
       </div>
 
       <AdminCard>
         {isLoading ? (
-          <div className="p-10 text-center text-sm text-[#6B7280]">Loading…</div>
+          <div className="p-10 text-center text-sm text-[var(--muted-foreground)]">Loading…</div>
         ) : rows.length === 0 ? (
-          <div className="p-10 text-center text-sm text-[#6B7280]">No donation intents yet.</div>
+          <div className="p-10 text-center text-sm text-[var(--muted-foreground)]">No donation intents yet.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="border-b border-[#EEF0F3]">
-                <tr className="text-left text-[11px] uppercase tracking-wider text-[#6B7280]">
+              <thead className="border-b border-[var(--border)]">
+                <tr className="text-left text-[11px] uppercase tracking-wider text-[var(--muted-foreground)]">
                   <th className="px-6 py-3">Donor</th>
                   <th className="px-6 py-3">Mobile</th>
                   <th className="px-6 py-3">Amount</th>
@@ -80,28 +80,28 @@ function DonationsAdmin() {
                   <th className="px-6 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F3F4F6]">
+              <tbody className="divide-y divide-[var(--muted)]">
                 {rows.map((r) => (
-                  <tr key={r.id} className="hover:bg-[#FAFAFB]">
+                  <tr key={r.id} className="hover:bg-[var(--background)]">
                     <td className="px-6 py-3">
                       <div className="font-semibold">{r.name ?? "Anonymous"}</div>
-                      <div className="text-xs text-[#6B7280]">{r.email ?? "—"}</div>
+                      <div className="text-xs text-[var(--muted-foreground)]">{r.email ?? "—"}</div>
                     </td>
-                    <td className="px-6 py-3 text-xs text-[#6B7280]">{r.phone ?? "—"}</td>
+                    <td className="px-6 py-3 text-xs text-[var(--muted-foreground)]">{r.phone ?? "—"}</td>
                     <td className="px-6 py-3 font-display text-lg text-primary">{formatCurrency(r.amount)}</td>
                     <td className="px-6 py-3"><Badge tone={r.frequency === "monthly" ? "brand" : "neutral"}>{r.frequency}</Badge></td>
                     <td className="px-6 py-3">
                       <select
                         value={r.status}
                         onChange={async (e) => { await upsert.mutateAsync({ id: r.id, status: e.target.value }); toast.success("Updated"); }}
-                        className="text-xs rounded-lg border border-[#E5E7EB] px-2 py-1 bg-white"
+                        className="text-xs rounded-lg border border-[var(--border)] px-2 py-1 bg-white"
                       >
                         <option value="pending">pending</option>
                         <option value="completed">completed</option>
                         <option value="cancelled">cancelled</option>
                       </select>
                     </td>
-                    <td className="px-6 py-3 text-xs text-[#6B7280]">{new Date(r.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-3 text-xs text-[var(--muted-foreground)]">{new Date(r.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-3 text-right">
                       <button
                         onClick={async () => { if (!confirm("Delete this donation record?")) return; await del.mutateAsync(r.id); toast.success("Deleted"); }}
