@@ -120,44 +120,43 @@ function About() {
             }
           />
           {people.length ? (
-            <div className="grid gap-8 rounded-[2rem] bg-[#dedfdd] p-5 [background-image:linear-gradient(rgba(255,255,255,0.32)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.32)_1px,transparent_1px)] [background-size:48px_48px] sm:grid-cols-2 sm:p-8 lg:grid-cols-4 lg:gap-7 lg:p-10">
+            <div className="grid gap-6 bg-transparent sm:grid-cols-2 lg:grid-cols-4 lg:gap-7">
               {people.map((p) => (
-                <article key={p.id} className="group relative pt-2">
-                  <div className="absolute inset-x-2 top-0 h-full translate-x-3 translate-y-3 rounded-[1.75rem] border border-white/70 bg-white/50" aria-hidden="true" />
-                  <div className="relative z-10 overflow-hidden rounded-[1.75rem] border border-white/90 bg-white shadow-[0_24px_45px_-30px_rgba(0,0,0,0.8)] transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_30px_50px_-28px_rgba(0,0,0,0.75)]">
+                <article key={p.id} className="group relative">
+                  <div className="relative overflow-hidden rounded-[1.25rem] border border-border bg-background shadow-[0_16px_32px_-26px_var(--forest)] transition duration-300 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_24px_42px_-25px_var(--forest)]">
                     <button type="button" onClick={() => setSelectedMember(p)} className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={`View ${p.name}'s profile`}>
-                      <div className="relative aspect-[1.12/1] overflow-hidden bg-[#181818]">
+                      <div className="relative aspect-[1.28/1] overflow-hidden bg-[var(--forest)]">
                         {p.avatar_url ? (
-                          <img src={p.avatar_url} alt={`${p.name} portrait`} className="h-full w-full object-cover grayscale contrast-125 transition duration-500 group-hover:scale-105 group-hover:grayscale-0" />
+                          <img src={p.avatar_url} alt={`${p.name} portrait`} className="h-full w-full object-cover grayscale contrast-110 transition duration-500 group-hover:scale-105 group-hover:grayscale-0" />
                         ) : (
-                          <div className="grid h-full w-full place-items-center bg-[linear-gradient(145deg,#111,#595959)] font-display text-5xl text-white/80">
+                          <div className="grid h-full w-full place-items-center bg-[var(--forest)] font-display text-4xl text-[var(--cream)]/85">
                             {p.name.split(" ").map((s) => s[0]).join("")}
                           </div>
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" aria-hidden="true" />
-                        <span className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-white/60 bg-white/10 text-white backdrop-blur-sm" aria-hidden="true">↗</span>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--forest)]/75 via-transparent to-[var(--primary)]/15" aria-hidden="true" />
+                        <span className="absolute right-4 top-4 grid size-8 place-items-center rounded-full border border-[var(--cream)]/55 bg-[var(--forest)]/25 text-[var(--cream)] backdrop-blur-sm" aria-hidden="true">↗</span>
                       </div>
-                      <div className="relative px-5 pb-5 pt-12">
-                        <span className="absolute -top-10 left-5 grid size-20 place-items-center rounded-full border-[5px] border-white bg-black font-display text-2xl text-white shadow-lg" aria-hidden="true">{p.name.split(" ").map((s) => s[0]).join("")}</span>
-                        <div className="flex items-start justify-between gap-3">
+                      <div className="relative px-4 pb-4 pt-10">
+                        <span className="absolute -top-8 left-4 grid size-16 place-items-center rounded-full border-4 border-background bg-[var(--forest)] font-display text-xl text-[var(--cream)] shadow-md" aria-hidden="true">{p.name.split(" ").map((s) => s[0]).join("")}</span>
+                        <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0">
-                            <h4 className="truncate font-display text-xl leading-tight text-[#111]">{p.name}</h4>
-                            <p className="mt-1 truncate text-xs font-medium uppercase tracking-[0.1em] text-[#6b6b6b]">{p.role}</p>
+                            <h4 className="truncate font-display text-lg leading-tight text-primary">{p.name}</h4>
+                            <p className="mt-1 truncate text-[0.62rem] font-semibold uppercase tracking-[0.11em] text-muted-foreground">{p.role}</p>
                           </div>
-                          <span className="shrink-0 text-[0.6rem] font-bold uppercase tracking-[0.12em] text-[#8a8a8a]">Profile</span>
+                          <span className="shrink-0 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-earth">Profile</span>
                         </div>
-                        <p className="mt-5 line-clamp-3 min-h-[4.5rem] text-xs leading-6 text-[#4f4f4f]">{p.bio || "Meet the person helping Elle’s Foundation build lasting change with communities."}</p>
-                        <div className="mt-5 flex items-center justify-between border-t border-[#e7e7e7] pt-4">
-                          <span className="inline-flex items-center gap-2 text-[0.58rem] font-bold uppercase tracking-[0.14em] text-[#6d6d6d]"><span className="size-1.5 rounded-full bg-[#39a85b]" aria-hidden="true" /> Elle’s Foundation</span>
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#111] px-3 py-2 text-[0.58rem] font-semibold text-white transition group-hover:bg-primary">View bio <span className="text-[#d9f6a5]">↗</span></span>
+                        {p.bio ? <p className="mt-4 line-clamp-2 text-xs leading-5 text-muted-foreground">{p.bio}</p> : null}
+                        <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
+                          <span className="inline-flex items-center gap-1.5 text-[0.54rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"><span className="size-1.5 rounded-full bg-earth" aria-hidden="true" /> Elle’s Foundation</span>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[0.55rem] font-semibold text-primary-foreground transition group-hover:bg-forest">View bio <span className="text-secondary">↗</span></span>
                         </div>
                       </div>
                     </button>
                     {(p.linkedin_url || p.instagram_url || p.website_url) ? (
-                      <div className="flex gap-2 px-5 pb-5">
-                        {p.linkedin_url ? <a href={p.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-8 place-items-center rounded-full border border-[#d8d8d8] text-[#303030] transition hover:bg-[#111] hover:text-white"><Linkedin className="size-3.5" /></a> : null}
-                        {p.instagram_url ? <a href={p.instagram_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-8 place-items-center rounded-full border border-[#d8d8d8] text-[#303030] transition hover:bg-[#111] hover:text-white"><Instagram className="size-3.5" /></a> : null}
-                        {p.website_url ? <a href={p.website_url} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-8 place-items-center rounded-full border border-[#d8d8d8] text-[#303030] transition hover:bg-[#111] hover:text-white"><Globe className="size-3.5" /></a> : null}
+                      <div className="flex gap-2 px-4 pb-4">
+                        {p.linkedin_url ? <a href={p.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on LinkedIn`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Linkedin className="size-3" /></a> : null}
+                        {p.instagram_url ? <a href={p.instagram_url} target="_blank" rel="noreferrer" aria-label={`${p.name} on Instagram`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Instagram className="size-3" /></a> : null}
+                        {p.website_url ? <a href={p.website_url} target="_blank" rel="noreferrer" aria-label={`${p.name}'s website`} className="grid size-7 place-items-center rounded-full border border-border text-primary transition hover:bg-primary hover:text-primary-foreground"><Globe className="size-3" /></a> : null}
                       </div>
                     ) : null}
                   </div>
