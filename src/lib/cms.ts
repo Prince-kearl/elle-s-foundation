@@ -5,7 +5,7 @@ import { supabase } from "./supabase";
 export type Stat = { id: string; value: string; label: string; position: number; visible: boolean };
 export type Program = { id: string; title: string; description: string; icon: string; image_url: string | null; position: number; visible: boolean };
 export type Story = { id: string; tag: string | null; title: string; excerpt: string | null; image_url: string | null; position: number; visible: boolean };
-export type TeamMember = { id: string; name: string; role: string; bio: string | null; avatar_url: string | null; position: number; visible: boolean };
+export type TeamMember = { id: string; name: string; role: string; bio: string | null; avatar_url: string | null; linkedin_url?: string | null; instagram_url?: string | null; website_url?: string | null; position: number; visible: boolean };
 export type Testimonial = { id: string; quote: string; name: string; role: string | null; avatar_url: string | null; position: number; visible: boolean };
 export type Faq = { id: string; question: string; answer: string; position: number; visible: boolean };
 export type ContactSub = { id: string; name: string; email: string; interest: string | null; message: string; handled: boolean; created_at: string };

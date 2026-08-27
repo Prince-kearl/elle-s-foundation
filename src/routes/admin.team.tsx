@@ -10,11 +10,15 @@ export const Route = createFileRoute("/admin/team")({
         table="team_members"
         singularName="Member"
         invalidateKeys={[["p:team"]]}
+        enableDragSort
         fields={[
           { name: "name", label: "Name", type: "text" },
           { name: "role", label: "Role", type: "text" },
           { name: "bio", label: "Bio", type: "textarea" },
           { name: "avatar_url", label: "Avatar", type: "image", folder: "team" },
+          { name: "linkedin_url", label: "LinkedIn URL", type: "text" },
+          { name: "instagram_url", label: "Instagram URL", type: "text" },
+          { name: "website_url", label: "Website URL", type: "text" },
         ]}
         columns={[
           { key: "name", label: "Name", render: (r: any) => <span className="font-semibold">{r.name}</span> },

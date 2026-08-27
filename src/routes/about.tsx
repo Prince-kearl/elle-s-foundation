@@ -3,9 +3,10 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { SectionHeading } from "@/components/site/Section";
 import { Media } from "@/components/site/Media";
 import { usePageContent, pv } from "@/lib/page-content";
-import { usePublicTeam } from "@/lib/cms";
+import { usePublicTeam, type TeamMember } from "@/lib/cms";
 import aboutHero from "@/assets/community/live/outreach-children.jpeg";
-import { ArrowRight, Heart } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, Globe, Heart, Instagram, Linkedin, X } from "lucide-react";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -42,12 +43,8 @@ const milestones = [
 function About() {
   const { data: c } = usePageContent("about");
   const { data: liveTeam } = usePublicTeam();
-  const people = (liveTeam ?? []).map((member) => ({
-    n: member.name,
-    r: member.role,
-    avatar: member.avatar_url,
-    bio: member.bio,
-  }));
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const people = liveTeam ?? [];
   return (
     <SiteLayout>
       <section className="pt-14 section-y-sm">
@@ -125,23 +122,20 @@ function About() {
           {people.length ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {people.map((p) => (
-              <div key={p.n} className="soft-card p-6 text-center">
-                <div className="size-20 mx-auto overflow-hidden rounded-full bg-secondary grid place-items-center font-display text-2xl text-primary">
-                  {p.avatar ? (
-                    <img src={p.avatar} alt="" className="h-full w-full object-cover" />
-                  ) : (
-                    p.n
-                      .split(" ")
-                      .map((s) => s[0])
-                      .join("")
-                  )}
-                </div>
-                <h4 className="font-display text-lg mt-4 text-primary">{p.n}</h4>
-                <p className="text-sm text-muted-foreground">{p.r}</p>
-                {p.bio ? (
-                  <p className="mt-3 text-xs leading-5 text-muted-foreground">{p.bio}</p>
-                ) : null}
-              </div>
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelectedMember(p)}
+                  className="soft-card soft-card-hover p-6 text-center text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  aria-label={`View ${p.name}'s profile`}
+                >
+                  <div className="size-20 mx-auto overflow-hidden rounded-full bg-secondary grid place-items-center font-display text-2xl text-primary">
+                    {p.avatar_url ? <img src={p.avatar_url} alt="" className="h-full w-full object-cover" /> : p.name.split(" ").map((s) => s[0]).join("")}
+                  </div>
+                  <h4 className="font-display text-lg mt-4 text-primary">{p.name}</h4>
+                  <p className="text-sm text-muted-foreground">{p.role}</p>
+                  <span className="mt-4 inline-block text-[0.65rem] font-bold uppercase tracking-[0.14em] text-earth">View profile</span>
+                </button>
               ))}
             </div>
           ) : (
@@ -152,6 +146,7 @@ function About() {
         </div>
       </section>
 
+      {selectedMember ? <TeamMemberModal member={selectedMember} onClose={() => setSelectedMember(null)} /> : null}
       <section className="section-y-sm">
         <div className="container-wide">
           <div className="grid min-h-[380px] place-items-center overflow-hidden rounded-2xl bg-primary px-6 py-16 text-center">
@@ -178,5 +173,55 @@ function About() {
         </div>
       </section>
     </SiteLayout>
+  );
+}
+
+
+function TeamMemberModal({ member, onClose }: { member: TeamMember; onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-[80] grid place-items-center bg-primary/70 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="team-member-name"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-lg border border-border bg-background p-7 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close profile"
+          className="absolute right-4 top-4 grid size-9 place-items-center border border-border text-muted-foreground transition hover:border-primary hover:text-primary"
+        >
+          <X className="size-4" />
+        </button>
+        <div className="flex flex-col items-center text-center">
+          <div className="grid size-24 place-items-center overflow-hidden rounded-full bg-secondary font-display text-3xl text-primary">
+            {member.avatar_url ? (
+              <img src={member.avatar_url} alt="" className="h-full w-full object-cover" />
+            ) : (
+              member.name.split(" ").map((part) => part[0]).join("")
+            )}
+          </div>
+          <h2 id="team-member-name" className="mt-5 font-display text-3xl text-primary">{member.name}</h2>
+          <p className="mt-1 text-sm font-semibold uppercase tracking-[0.12em] text-earth">{member.role}</p>
+          {member.bio ? (
+            <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground">{member.bio}</p>
+          ) : (
+            <p className="mt-5 text-sm text-muted-foreground">This profile is managed by the Elle’s Foundation team.</p>
+          )}
+          {(member.linkedin_url || member.instagram_url || member.website_url) ? (
+            <div className="mt-6 flex items-center gap-3">
+              {member.linkedin_url ? <a href={member.linkedin_url} target="_blank" rel="noreferrer" aria-label={`${member.name} on LinkedIn`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Linkedin className="size-4" /></a> : null}
+              {member.instagram_url ? <a href={member.instagram_url} target="_blank" rel="noreferrer" aria-label={`${member.name} on Instagram`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Instagram className="size-4" /></a> : null}
+              {member.website_url ? <a href={member.website_url} target="_blank" rel="noreferrer" aria-label={`${member.name}'s website`} className="grid size-10 place-items-center border border-border text-primary transition hover:border-primary hover:bg-secondary"><Globe className="size-4" /></a> : null}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 }

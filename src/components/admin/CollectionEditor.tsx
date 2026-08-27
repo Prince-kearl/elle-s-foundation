@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { Pencil, Trash2, Plus, X, Eye, EyeOff, ArrowUp, ArrowDown } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Eye, EyeOff, ArrowUp, ArrowDown, GripVertical } from "lucide-react";
 import { AdminCard, PrimaryButton, GhostButton, Field, TextInput, TextArea, Toggle, Badge } from "./AdminLayout";
 import { useAdminList, useUpsert, useDelete } from "@/lib/cms";
 import { MediaField } from "./ImageField";
@@ -17,26 +17,57 @@ interface Props<T> {
   columns: { key: string; label: string; render?: (row: T) => ReactNode }[];
   emptyLabel?: string;
   singularName: string;
+  enableDragSort?: boolean;
 }
 
 type Row = Record<string, any>;
 
-export function CollectionEditor<T extends Row>({ table, fields, columns, invalidateKeys = [], singularName }: Props<T>) {
+export function CollectionEditor<T extends Row>({ table, fields, columns, invalidateKeys = [], singularName, enableDragSort = false }: Props<T>) {
   const { data: rows, isLoading } = useAdminList<T>(table);
   const upsert = useUpsert(table, invalidateKeys);
   const del = useDelete(table, invalidateKeys);
   const [editing, setEditing] = useState<Row | null>(null);
+  const [orderedRows, setOrderedRows] = useState<T[]>([]);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
+
+  useEffect(() => {
+    if (!reordering) setOrderedRows([...(rows ?? [])].sort((a: any, b: any) => a.position - b.position));
+  }, [rows, reordering]);
 
   const empty: Row = { visible: true, position: (rows?.length ?? 0) };
   fields.forEach((f) => (empty[f.name] = ""));
 
   const move = async (row: T, dir: -1 | 1) => {
-    const sorted = [...(rows ?? [])].sort((a: any, b: any) => a.position - b.position);
+    const sorted = [...(orderedRows.length ? orderedRows : rows ?? [])].sort((a: any, b: any) => a.position - b.position);
     const idx = sorted.findIndex((r: any) => r.id === (row as any).id);
     const swap = sorted[idx + dir];
     if (!swap) return;
     await upsert.mutateAsync({ id: (row as any).id, position: (swap as any).position });
     await upsert.mutateAsync({ id: (swap as any).id, position: (row as any).position });
+    setOrderedRows(sorted);
+  };
+
+  const dropOn = async (targetId: string) => {
+    if (!enableDragSort || !draggedId || draggedId === targetId) return;
+    const current = [...(orderedRows.length ? orderedRows : rows ?? [])].sort((a: any, b: any) => a.position - b.position);
+    const fromIndex = current.findIndex((row: any) => row.id === draggedId);
+    const toIndex = current.findIndex((row: any) => row.id === targetId);
+    if (fromIndex < 0 || toIndex < 0) return;
+    const next = [...current];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    setOrderedRows(next);
+    setReordering(true);
+    try {
+      await Promise.all(next.map((row: any, index) => upsert.mutateAsync({ id: row.id, position: index })));
+      toast.success("Team order updated");
+    } catch (error: any) {
+      toast.error(error?.message ?? "Could not save team order");
+    } finally {
+      setReordering(false);
+      setDraggedId(null);
+    }
   };
 
   return (
@@ -47,6 +78,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
         </PrimaryButton>
       </div>
 
+      {enableDragSort ? <p className="mb-3 text-xs text-[#6B7280]">Drag a team member row to set its public display order.</p> : null}
       <AdminCard>
         {isLoading ? (
           <div className="p-10 text-center text-sm text-[#6B7280]">Loading…</div>
@@ -64,13 +96,27 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F3F4F6]">
-                {[...rows!].sort((a: any, b: any) => a.position - b.position).map((row: any) => (
-                  <tr key={row.id} className="hover:bg-[#FAFAFB]">
+                {(orderedRows.length ? orderedRows : [...rows!].sort((a: any, b: any) => a.position - b.position)).map((row: any) => (
+                  <tr
+                    key={row.id}
+                    draggable={enableDragSort}
+                    onDragStart={() => enableDragSort && setDraggedId(row.id)}
+                    onDragOver={(event) => enableDragSort && event.preventDefault()}
+                    onDrop={() => void dropOn(row.id)}
+                    onDragEnd={() => setDraggedId(null)}
+                    className={`hover:bg-[#FAFAFB] ${enableDragSort && draggedId === row.id ? "opacity-50" : ""}`}
+                  >
                     <td className="px-6 py-3">
-                      <div className="flex flex-col gap-0.5">
-                        <button onClick={() => move(row as T, -1)} className="text-[#9CA3AF] hover:text-primary"><ArrowUp className="size-3.5" /></button>
-                        <button onClick={() => move(row as T, 1)} className="text-[#9CA3AF] hover:text-primary"><ArrowDown className="size-3.5" /></button>
-                      </div>
+                      {enableDragSort ? (
+                        <span className="inline-flex cursor-grab items-center gap-1 text-[#9CA3AF]" title="Drag to reorder">
+                          <GripVertical className="size-4" />
+                        </span>
+                      ) : (
+                        <div className="flex flex-col gap-0.5">
+                          <button onClick={() => move(row as T, -1)} className="text-[#9CA3AF] hover:text-primary"><ArrowUp className="size-3.5" /></button>
+                          <button onClick={() => move(row as T, 1)} className="text-[#9CA3AF] hover:text-primary"><ArrowDown className="size-3.5" /></button>
+                        </div>
+                      )}
                     </td>
                     {columns.map((c) => (
                       <td key={c.key} className="px-6 py-3 align-top max-w-[380px]">
