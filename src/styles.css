@@ -474,3 +474,27 @@ body::-webkit-scrollbar,
 .media-field-tab:active {
   transform: none;
 }
+
+/* Flat admin tab groups keep their shared container shape instead of becoming pill clusters. */
+.admin-segmented-control {
+  overflow: hidden;
+}
+
+.admin-segmented-tab {
+  border-radius: 0 !important;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.admin-segmented-tab:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.admin-segmented-tab:active {
+  transform: none;
+}

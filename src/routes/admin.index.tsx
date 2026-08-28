@@ -176,9 +176,9 @@ function Dashboard() {
                 <p className="mt-1 text-xs text-[var(--muted-foreground)]">Pledged amount in Ghana cedis · {selectedPeriod.label}</p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <div className="flex border border-[var(--border)] bg-[var(--background)] p-1" role="group" aria-label="Donation trend period">
+                <div className="admin-segmented-control flex border border-[var(--border)] bg-[var(--background)] p-1" role="group" aria-label="Donation trend period">
                   {(["week", "month", "year"] as const).map((period) => (
-                    <button key={period} type="button" onClick={() => setDonationPeriod(period)} className={`px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] transition ${donationPeriod === period ? "bg-primary text-white shadow-sm" : "text-[var(--muted-foreground)] hover:bg-white hover:text-primary"}`}>
+                    <button aria-pressed={donationPeriod === period} key={period} type="button" onClick={() => setDonationPeriod(period)} className={`admin-segmented-tab px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] transition ${donationPeriod === period ? "bg-primary text-white shadow-sm" : "text-[var(--muted-foreground)] hover:bg-white hover:text-primary"}`}>
                       {period}
                     </button>
                   ))}
