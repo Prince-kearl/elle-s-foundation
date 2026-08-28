@@ -71,7 +71,7 @@ export function ChatWidget() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-[60] flex justify-end px-4 pointer-events-none sm:inset-x-auto sm:right-6 sm:px-0" style={{ fontFamily: "var(--font-sans)" }}>
+    <div className="chat-widget-root pointer-events-none" style={{ fontFamily: "var(--font-sans)" }}>
       {open ? (
         <section
           aria-label="Elle's Foundation chat assistant"

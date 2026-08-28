@@ -387,3 +387,22 @@ body::-webkit-scrollbar,
 .rich-text--admin blockquote {
   border-color: var(--primary);
 }
+
+/* Global chat assistant placement: explicit CSS keeps the launcher visible across production builds and route layouts. */
+.chat-widget-root {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1rem;
+  z-index: 60;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+@media (max-width: 639px) {
+  .chat-widget-root {
+    right: 0;
+    left: 0;
+    padding-inline: 1rem;
+  }
+}
