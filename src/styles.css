@@ -304,9 +304,14 @@ body li {
   border-radius: 0;
 }
 
-.admin-shell button,
+.admin-shell button {
+  border-radius: 0.75rem;
+}
+
+/* Admin CTAs explicitly marked as pills retain the full capsule shape. */
+.admin-shell button.rounded-full,
 .admin-shell a.rounded-full {
-  border-radius: 9999px;
+  border-radius: 9999px !important;
 }
 
 /* Keep content scrollable while removing visible scrollbar chrome. */
