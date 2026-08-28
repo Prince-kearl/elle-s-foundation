@@ -213,17 +213,25 @@
   animation: brush-fade 0.8s ease-out both;
 }
 
-/* Sharp interface treatment: cards, buttons, fields, and pills use clean corners. */
+/* Crisp surfaces with friendly, rounded actions. Cards and fields remain sharp; controls get a softer edge. */
 .soft-card,
-button[class*="rounded-"],
-a[class*="rounded-"],
 input[class*="rounded-"],
 textarea[class*="rounded-"],
 select[class*="rounded-"] {
   border-radius: 0 !important;
 }
 
-/* The homepage hero CTAs intentionally use the rounded pill treatment. */
+button {
+  border-radius: 0.75rem;
+}
+
+a[class*="bg-"] {
+  border-radius: 0.75rem;
+}
+
+/* High-priority calls to action use the full pill treatment. */
+button.rounded-full,
+a.rounded-full,
 a.hero-pill[class*="rounded-"] {
   border-radius: 9999px !important;
 }
@@ -262,18 +270,21 @@ body li {
 }
 
 /* Admin portal: crisp dashboard surfaces and controls. */
-.admin-shell .rounded-lg,
-.admin-shell .rounded-xl,
-.admin-shell .rounded-2xl,
-.admin-shell .rounded-full {
+.admin-shell :not(button).rounded-lg,
+.admin-shell :not(button).rounded-xl,
+.admin-shell :not(button).rounded-2xl,
+.admin-shell :not(button).rounded-full {
   border-radius: 0 !important;
 }
 
 .admin-shell input,
 .admin-shell textarea,
-.admin-shell select,
-.admin-shell button {
+.admin-shell select {
   border-radius: 0;
+}
+
+.admin-shell button {
+  border-radius: 0.75rem;
 }
 
 /* Keep content scrollable while removing visible scrollbar chrome. */
