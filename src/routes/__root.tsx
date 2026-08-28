@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth";
 import { BrandStyle } from "../lib/brand";
 import { Toaster } from "sonner";
+import { ChatWidget } from "../components/site/ChatWidget";
 
 function NotFoundComponent() {
   return (
@@ -80,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#0F6848" },
+      { name: "theme-color", content: "var(--primary)" },
       {
         title: "Elle's Foundation — Feeding Hope. Restoring Lives.",
       },
@@ -150,6 +151,7 @@ function RootComponent() {
       <AuthProvider>
         <BrandStyle />
         <Outlet />
+        <ChatWidget />
         <Toaster position="top-right" richColors />
       </AuthProvider>
     </QueryClientProvider>
