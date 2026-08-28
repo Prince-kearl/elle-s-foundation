@@ -221,9 +221,10 @@ select[class*="rounded-"] {
   border-radius: 0 !important;
 }
 
-/* Every action control is a fully rounded pill; square form fields and surfaces remain untouched. */
+/* Only action controls are pills; content-card links keep their own modest corner radius. */
 button,
-a[class*="bg-"] {
+a.rounded-full,
+a.hero-pill[class*="rounded-"] {
   border-radius: 9999px;
 }
 
@@ -234,7 +235,8 @@ a.hero-pill[class*="rounded-"] {
 }
 
 button,
-a[class*="bg-"] {
+a.rounded-full,
+a.hero-pill[class*="rounded-"] {
   transition:
     transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
     background-color 180ms ease,
@@ -245,17 +247,20 @@ a[class*="bg-"] {
 }
 
 button:not(:disabled):hover,
-a[class*="bg-"]:hover {
+a.rounded-full:hover,
+a.hero-pill[class*="rounded-"]:hover {
   filter: brightness(1.02);
 }
 
 button:active,
-a[class*="bg-"]:active {
+a.rounded-full:active,
+a.hero-pill[class*="rounded-"]:active {
   transform: scale(0.97);
 }
 
 button:focus-visible,
-a[class*="bg-"]:focus-visible {
+a.rounded-full:focus-visible,
+a.hero-pill[class*="rounded-"]:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 3px;
 }
@@ -299,7 +304,8 @@ body li {
   border-radius: 0;
 }
 
-.admin-shell button {
+.admin-shell button,
+.admin-shell a.rounded-full {
   border-radius: 9999px;
 }
 
