@@ -6,6 +6,7 @@ import {
   GhostButton,
   Field,
   TextInput,
+  TextArea,
 } from "@/components/admin/AdminLayout";
 import { useBrand, usePageBrand, mergeBrand, BRAND_DEFAULTS } from "@/lib/brand";
 import { supabase } from "@/lib/supabase";
@@ -69,6 +70,8 @@ function BrandAdmin() {
 
   const [v, setV] = useState<any>({});
   const [saving, setSaving] = useState(false);
+  const [sampleHeading, setSampleHeading] = useState("Feeding Hope. Restoring Lives.");
+  const [sampleBody, setSampleBody] = useState("This sample shows how your selected font, weight, style, and scale will appear across the foundation website.");
 
   useEffect(() => {
     if (scope === "global") setV({ ...BRAND_DEFAULTS, ...(global ?? {}) });
@@ -341,8 +344,22 @@ function BrandAdmin() {
         </div>
 
         <AdminCard className="p-6 lg:sticky lg:top-6">
-          <h3 className="font-display text-xl text-primary mb-4">Live preview</h3>
-          <LivePreview v={preview} />
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <h3 className="font-display text-xl text-primary">Live preview</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Test your typography before saving.</p>
+            </div>
+            <button type="button" onClick={() => { setSampleHeading("Feeding Hope. Restoring Lives."); setSampleBody("This sample shows how your selected font, weight, style, and scale will appear across the foundation website."); }} className="text-xs font-semibold text-primary underline underline-offset-2 hover:text-earth">Reset sample</button>
+          </div>
+          <div className="mb-5 grid gap-3 border-b border-border pb-5">
+            <Field label="Sample heading">
+              <TextInput value={sampleHeading} onChange={(event) => setSampleHeading(event.target.value)} placeholder="Enter a heading to preview" />
+            </Field>
+            <Field label="Sample body text">
+              <TextArea value={sampleBody} onChange={(event) => setSampleBody(event.target.value)} rows={3} placeholder="Enter body copy to preview" />
+            </Field>
+          </div>
+          <LivePreview v={preview} sampleHeading={sampleHeading} sampleBody={sampleBody} />
         </AdminCard>
       </div>
     </AdminLayout>
@@ -392,7 +409,7 @@ function Slider({
   );
 }
 
-function LivePreview({ v }: { v: any }) {
+function LivePreview({ v, sampleHeading, sampleBody }: { v: any; sampleHeading: string; sampleBody: string }) {
   const hs = Number(v.heading_scale ?? 1);
   const bs = Number(v.body_scale ?? 1);
   return (
@@ -447,7 +464,7 @@ function LivePreview({ v }: { v: any }) {
             marginTop: "0.75rem",
           }}
         >
-          Feeding Hope. Restoring Lives.
+          {sampleHeading || "Your heading preview"}
         </div>
         <p
           style={{
@@ -461,8 +478,7 @@ function LivePreview({ v }: { v: any }) {
             opacity: 0.85,
           }}
         >
-          This is how body text will look across this page — headings, paragraphs, buttons and cards
-          all follow these tokens.
+          {sampleBody || "Your body-text preview"}
         </p>
         <div className="mt-4 flex gap-2">
           <button
