@@ -498,3 +498,126 @@ body::-webkit-scrollbar,
 .admin-segmented-tab:active {
   transform: none;
 }
+
+/* Chat assistant polish: the widget has its own visual language while inheriting the active brand palette. */
+.chat-widget-panel {
+  transform-origin: bottom right;
+  animation: chat-widget-in 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@keyframes chat-widget-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chat-widget-launcher,
+.chat-widget-icon-button,
+.chat-widget-quick-action,
+.chat-widget-send-button,
+.chat-widget-clear-button {
+  transition:
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.chat-widget-launcher:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 18px 38px color-mix(in srgb, var(--ink) 28%, transparent) !important;
+}
+
+.chat-widget-launcher:active {
+  transform: scale(0.96);
+}
+
+.chat-widget-launcher:focus-visible,
+.chat-widget-icon-button:focus-visible,
+.chat-widget-quick-action:focus-visible,
+.chat-widget-send-button:focus-visible,
+.chat-widget-clear-button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.chat-widget-icon-button:hover {
+  transform: rotate(4deg);
+  background: rgb(255 255 255 / 0.16);
+}
+
+.chat-widget-quick-action {
+  border-radius: 0.75rem !important;
+}
+
+.chat-widget-quick-action:hover {
+  transform: translateY(-1px);
+  background: rgb(255 255 255 / 0.18);
+  border-color: rgb(255 255 255 / 0.5);
+}
+
+.chat-widget-quick-action:active {
+  transform: scale(0.97);
+}
+
+.chat-widget-user-message {
+  border-radius: 1rem 1rem 0.3rem 1rem;
+}
+
+.chat-widget-assistant-message {
+  border-radius: 1rem 1rem 1rem 0.3rem;
+}
+
+.chat-widget-send-button {
+  border-radius: 9999px !important;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--earth) 28%, transparent);
+}
+
+.chat-widget-send-button:not(:disabled):hover {
+  transform: translateY(-1px) scale(1.03);
+  filter: brightness(1.05);
+}
+
+.chat-widget-send-button:active {
+  transform: scale(0.94);
+}
+
+.chat-widget-clear-button {
+  border-radius: 0.5rem !important;
+  padding: 0.2rem 0.45rem;
+}
+
+.chat-widget-clear-button:hover {
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+@media (max-width: 639px) {
+  .chat-widget-root {
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .chat-widget-panel {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget-panel {
+    animation: none;
+  }
+
+  .chat-widget-launcher,
+  .chat-widget-icon-button,
+  .chat-widget-quick-action,
+  .chat-widget-send-button,
+  .chat-widget-clear-button {
+    transition: none;
+  }
+}
