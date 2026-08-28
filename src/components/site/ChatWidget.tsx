@@ -1,4 +1,4 @@
-import { MessageCircle, Send, Sparkles, X } from "lucide-react";
+import { Bot, Send, Sparkles, Volume2, VolumeX, X } from "lucide-react";
 import { useState } from "react";
 
 type ChatMessage = { id: number; from: "assistant" | "user"; text: string };
@@ -53,6 +53,40 @@ export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
+  const [hasNotification, setHasNotification] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  const playChatChime = () => {
+    if (!soundEnabled || typeof window === "undefined") return;
+    try {
+      const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const context = new AudioContextClass();
+      const now = context.currentTime;
+      const gain = context.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.055, now + 0.018);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.34);
+      gain.connect(context.destination);
+      [660, 880].forEach((frequency, index) => {
+        const oscillator = context.createOscillator();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, now + index * 0.08);
+        oscillator.connect(gain);
+        oscillator.start(now + index * 0.08);
+        oscillator.stop(now + 0.34);
+      });
+      window.setTimeout(() => void context.close(), 500);
+    } catch {
+      // Audio is an enhancement only; browsers may block or omit Web Audio support.
+    }
+  };
+
+  const openChat = () => {
+    setOpen(true);
+    setHasNotification(false);
+    playChatChime();
+  };
 
   const sendMessage = (text: string) => {
     const trimmed = text.trim();
@@ -62,6 +96,7 @@ export function ChatWidget() {
       { id: Date.now(), from: "user", text: trimmed },
       { id: Date.now() + 1, from: "assistant", text: answerFor(trimmed) },
     ]);
+    playChatChime();
     setInput("");
   };
 
@@ -107,14 +142,25 @@ export function ChatWidget() {
                   <p className="mt-1 text-xs text-white/65">Helpful answers about our work and ways to help.</p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label="Close chat assistant"
-                className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border border-white/25 text-white"
-              >
-                <X className="size-4" />
-              </button>
+              <div className="flex shrink-0 items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setSoundEnabled((enabled) => !enabled)}
+                  aria-label={soundEnabled ? "Mute chat sounds" : "Enable chat sounds"}
+                  aria-pressed={soundEnabled}
+                  className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border border-white/25 text-white"
+                >
+                  {soundEnabled ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close chat assistant"
+                  className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border border-white/25 text-white"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
             </div>
 
             <div className="relative mt-4">
@@ -191,11 +237,11 @@ export function ChatWidget() {
       ) : (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={openChat}
           aria-label="Open Elle's Foundation chat assistant"
           aria-controls="foundation-chat-panel"
           aria-expanded={open}
-          className="chat-widget-launcher pointer-events-auto grid size-16 place-items-center rounded-full border-4 shadow-xl"
+          className="chat-widget-launcher pointer-events-auto relative grid size-16 place-items-center rounded-full border-4 shadow-xl"
           style={{
             background: "linear-gradient(135deg, var(--earth), color-mix(in srgb, var(--gold) 72%, var(--earth)))",
             borderColor: "var(--background)",
@@ -203,7 +249,12 @@ export function ChatWidget() {
             boxShadow: "0 14px 32px color-mix(in srgb, var(--ink) 24%, transparent)",
           }}
         >
-          <MessageCircle className="size-7" />
+          <span className="chat-widget-launcher-icon grid size-10 place-items-center rounded-full border border-white/30 bg-white/15">
+            <Bot className="size-6" strokeWidth={1.8} aria-hidden="true" />
+          </span>
+          {hasNotification && (
+            <span className="chat-widget-launcher-badge" aria-label="New chat assistant notification">1</span>
+          )}
           <span className="sr-only">Open chat</span>
         </button>
       )}

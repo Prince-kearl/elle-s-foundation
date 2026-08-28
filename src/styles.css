@@ -621,3 +621,59 @@ body::-webkit-scrollbar,
     transition: none;
   }
 }
+
+/* Modern chat launcher icon and notification affordance. */
+.chat-widget-launcher-icon {
+  transition:
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.chat-widget-launcher:hover .chat-widget-launcher-icon {
+  transform: rotate(-6deg) scale(1.06);
+  background: rgb(255 255 255 / 0.22);
+  border-color: rgb(255 255 255 / 0.52);
+}
+
+.chat-widget-launcher-badge {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.2rem;
+  display: grid;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border: 3px solid var(--background);
+  border-radius: 9999px;
+  background: var(--forest);
+  color: var(--primary-foreground, #fff);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 5px 12px color-mix(in srgb, var(--ink) 28%, transparent);
+  animation: chat-widget-badge-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes chat-widget-badge-pulse {
+  0%,
+  100% {
+    box-shadow: 0 5px 12px color-mix(in srgb, var(--ink) 28%, transparent), 0 0 0 0 color-mix(in srgb, var(--gold) 42%, transparent);
+  }
+  50% {
+    box-shadow: 0 5px 12px color-mix(in srgb, var(--ink) 28%, transparent), 0 0 0 6px color-mix(in srgb, var(--gold) 0%, transparent);
+  }
+}
+
+.chat-widget-icon-button[aria-pressed="false"] {
+  color: rgb(255 255 255 / 0.58);
+  background: rgb(255 255 255 / 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget-launcher-icon,
+  .chat-widget-launcher-badge {
+    animation: none;
+    transition: none;
+  }
+}
