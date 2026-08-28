@@ -162,13 +162,13 @@ export function MediaField({
       ) : null}
 
       <div className="rounded-lg border border-[#E5E7EB] bg-white">
-        <div className="flex border-b border-[#EEF0F3] text-xs font-medium">
+        <div className="media-field-tabs grid grid-cols-3 border-b border-[#EEF0F3] text-xs font-medium">
           {(["upload", "library", "url"] as Tab[]).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setTab(t)}
-              className={`flex-1 px-3 py-2 capitalize inline-flex items-center justify-center gap-1.5 ${tab === t ? "text-primary border-b-2 border-primary -mb-px" : "text-[#6B7280] hover:text-primary"}`}
+              className={`media-field-tab min-w-0 px-3 py-2.5 capitalize inline-flex items-center justify-center gap-1.5 ${tab === t ? "text-primary border-b-2 border-primary -mb-px" : "text-[#6B7280] hover:text-primary"}`}
             >
               {t === "upload" && <Upload className="size-3.5" />}
               {t === "library" &&

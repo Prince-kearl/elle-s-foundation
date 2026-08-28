@@ -444,3 +444,33 @@ body::-webkit-scrollbar,
     padding-inline: 1rem;
   }
 }
+
+/* Media selector tabs are segmented controls, not pill buttons. */
+.media-field-tabs {
+  overflow: hidden;
+}
+
+.media-field-tab {
+  min-height: 2.5rem;
+  border-radius: 0 !important;
+  background: transparent;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.media-field-tab:hover {
+  background: color-mix(in oklab, var(--cream) 55%, transparent);
+}
+
+.media-field-tab:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.media-field-tab:active {
+  transform: none;
+}
