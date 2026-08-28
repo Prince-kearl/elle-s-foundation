@@ -17,22 +17,33 @@ interface AuthState {
 }
 
 const AuthCtx = createContext<AuthState | undefined>(undefined);
+const roleCache = new Map<string, Role>();
+const roleRequests = new Map<string, Promise<Role>>();
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadRole = async (userId: string | undefined) => {
+  const loadRole = async (userId: string | undefined, force = false) => {
     if (!userId) { setRole(null); return; }
-    const { data } = await supabase
+    if (!force && roleCache.has(userId)) { setRole(roleCache.get(userId)!); return; }
+    const existing = roleRequests.get(userId);
+    if (existing && !force) { setRole(await existing); return; }
+    const request = Promise.resolve(supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
       .order("role", { ascending: true }) // admin < editor < user alphabetically
       .limit(1)
-      .maybeSingle();
-    setRole((data?.role as Role) ?? "user");
+      .maybeSingle()
+      .then(({ data }) => {
+        const nextRole = (data?.role as Role) ?? "user";
+        roleCache.set(userId, nextRole);
+        return nextRole;
+      }));
+    roleRequests.set(userId, request);
+    try { setRole(await request); } finally { roleRequests.delete(userId); }
   };
 
   useEffect(() => {
@@ -66,7 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setRole(null);
   };
 
-  const refreshRole = async () => loadRole(session?.user.id);
+  const refreshRole = async () => {
+    if (session?.user.id) roleCache.delete(session.user.id);
+    await loadRole(session?.user.id, true);
+  };
 
   const value: AuthState = {
     session,

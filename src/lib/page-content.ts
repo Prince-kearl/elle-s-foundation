@@ -27,10 +27,11 @@ export function usePageContent(page: string) {
       });
       return map;
     },
-    // Published media/content must become visible immediately after an admin publishes.
-    staleTime: 0,
-    refetchOnMount: "always",
-    refetchOnWindowFocus: true,
+    // Realtime invalidation keeps published content fresh without refetching on every mount/focus.
+    staleTime: 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
 

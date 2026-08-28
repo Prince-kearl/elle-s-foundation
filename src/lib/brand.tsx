@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLayoutEffect } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { supabase } from "./supabase";
 
@@ -45,6 +45,38 @@ export const BRAND_DEFAULTS: BrandValues = {
   custom_body_font_style: "normal",
 };
 
+const BRAND_CACHE_KEY = "elles-foundation:brand-settings";
+
+function readCachedBrand(): BrandValues | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    const value = JSON.parse(window.localStorage.getItem(BRAND_CACHE_KEY) ?? "null");
+    return value && typeof value === "object" ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function cacheBrand(value: BrandValues) {
+  if (typeof window === "undefined") return;
+  try { window.localStorage.setItem(BRAND_CACHE_KEY, JSON.stringify(value)); } catch { /* storage may be unavailable */ }
+}
+
+function pageCacheKey(page: string) { return `elles-foundation:page-brand:${page}`; }
+function readCachedPageBrand(page?: string): BrandValues | null | undefined {
+  if (typeof window === "undefined" || !page) return undefined;
+  try {
+    const value = JSON.parse(window.localStorage.getItem(pageCacheKey(page)) ?? "null");
+    return value && typeof value === "object" ? value : null;
+  } catch {
+    return undefined;
+  }
+}
+function cachePageBrand(page: string, value: BrandValues | null) {
+  if (typeof window === "undefined") return;
+  try { window.localStorage.setItem(pageCacheKey(page), JSON.stringify(value)); } catch { /* storage may be unavailable */ }
+}
+
 export function useBrand() {
   return useQuery({
     queryKey: ["brand"],
@@ -55,9 +87,14 @@ export function useBrand() {
         .eq("id", 1)
         .maybeSingle();
       if (error) throw error;
-      return (data as BrandValues) ?? BRAND_DEFAULTS;
+      const value = (data as BrandValues) ?? BRAND_DEFAULTS;
+      cacheBrand(value);
+      return value;
     },
-    staleTime: 30_000,
+    initialData: () => readCachedBrand(),
+    staleTime: 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -72,9 +109,14 @@ export function usePageBrand(page?: string) {
         .eq("page", page!)
         .maybeSingle();
       if (error) throw error;
-      return (data as BrandValues) ?? null;
+      const value = (data as BrandValues) ?? null;
+      cachePageBrand(page!, value);
+      return value;
     },
-    staleTime: 30_000,
+    initialData: () => readCachedPageBrand(page),
+    staleTime: 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -194,7 +236,7 @@ export function BrandStyle() {
   const { data: global } = useBrand();
   const { data: pageOverride } = usePageBrand(page);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const merged = mergeBrand(global, pageOverride);
     const root = document.documentElement;
     const vars = brandCssVars(merged);
