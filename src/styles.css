@@ -904,3 +904,98 @@ body::-webkit-scrollbar,
     transition: none;
   }
 }
+
+/* Reference-inspired chat panel: bright header, horizontal question rail, calm reading area, and simple composer. */
+.chat-widget-panel-header {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.chat-widget-header-icon {
+  border-color: color-mix(in srgb, var(--ink) 18%, transparent);
+  background: color-mix(in srgb, var(--background) 24%, transparent);
+  color: var(--ink);
+}
+
+.chat-widget-header-orb {
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.chat-widget-panel-header .chat-widget-icon-button {
+  border-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  color: var(--ink);
+}
+
+.chat-widget-panel-header .chat-widget-icon-button:hover {
+  background: color-mix(in srgb, var(--background) 22%, transparent);
+}
+
+.chat-widget-question-bar {
+  background: var(--background);
+  border-color: var(--border);
+}
+
+.chat-widget-question-scroller {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--primary) 42%, transparent) transparent;
+}
+
+.chat-widget-question-scroller::-webkit-scrollbar {
+  height: 4px;
+}
+
+.chat-widget-question-scroller::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--primary) 42%, transparent);
+}
+
+.chat-widget-question-bar .chat-widget-quick-action {
+  border-radius: 0.65rem !important;
+  border-color: color-mix(in srgb, var(--gold) 70%, var(--border));
+  background: var(--background);
+  color: var(--primary);
+}
+
+.chat-widget-question-bar .chat-widget-quick-action:hover {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--gold) 16%, var(--background));
+}
+
+.chat-widget-messages {
+  background: var(--background);
+}
+
+.chat-widget-message-avatar {
+  border-color: color-mix(in srgb, var(--primary) 22%, var(--border));
+  background: color-mix(in srgb, var(--gold) 16%, var(--background));
+  color: var(--primary);
+}
+
+.chat-widget-composer {
+  background: color-mix(in srgb, var(--gold) 12%, var(--background)) !important;
+}
+
+.chat-widget-composer input {
+  min-height: 2.75rem;
+  background: var(--background);
+}
+
+.chat-widget-composer .chat-widget-send-button {
+  background: var(--gold) !important;
+  color: var(--ink);
+}
+
+.chat-widget-composer .chat-widget-send-button:not(:disabled):hover {
+  background: var(--earth) !important;
+  color: var(--primary-foreground);
+}
+
+@media (max-width: 639px) {
+  .chat-widget-panel {
+    max-height: calc(100dvh - 1.5rem);
+  }
+
+  .chat-widget-messages {
+    min-height: min(16rem, 38dvh);
+  }
+}

@@ -299,7 +299,7 @@ export function ChatWidget() {
         <section
           id="foundation-chat-panel"
           aria-label={`${pageContext.eyebrow} chat assistant`}
-          className="chat-widget-panel pointer-events-auto w-full max-w-[390px] overflow-hidden border sm:w-[390px]"
+          className="chat-widget-panel pointer-events-auto w-full max-w-[405px] overflow-hidden border sm:w-[405px]"
           style={{
             background: "var(--background)",
             borderColor: "color-mix(in srgb, var(--primary) 22%, var(--border))",
@@ -307,57 +307,57 @@ export function ChatWidget() {
             boxShadow: "0 28px 80px color-mix(in srgb, var(--ink) 24%, transparent)",
           }}
         >
-          <header
-            className="relative overflow-hidden px-4 pb-4 pt-4 sm:px-5"
-            style={{
-              background: "linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--forest) 84%, var(--primary)))",
-              color: "var(--primary-foreground, #fff)",
-            }}
-          >
-            <div className="pointer-events-none absolute -right-12 -top-16 size-40 rounded-full border border-white/15" />
-            <div className="pointer-events-none absolute -right-2 -top-8 size-28 rounded-full border border-white/15" />
+          <header className="chat-widget-panel-header relative overflow-hidden px-4 pb-4 pt-4 sm:px-5">
+            <div className="chat-widget-header-orb pointer-events-none absolute -right-12 -top-16 size-40 rounded-full" />
+            <div className="chat-widget-header-orb pointer-events-none absolute -right-2 -top-8 size-28 rounded-full" />
             <div className="relative flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full border border-white/20 bg-white/15 shadow-inner">
-                  <Sparkles className="size-[18px]" aria-hidden="true" />
+                <span className="chat-widget-header-icon grid size-10 shrink-0 place-items-center rounded-full border shadow-inner">
+                  <Bot className="size-[19px]" aria-hidden="true" />
                 </span>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/75">
-                    <span className="size-1.5 rounded-full bg-[var(--gold)] shadow-[0_0_0_3px_rgba(255,255,255,0.1)]" />
+                  <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] opacity-70">
+                    <span className="size-1.5 rounded-full bg-current opacity-80" />
                     {pageContext.eyebrow}
                   </div>
                   <h2 className="mt-1 truncate font-display text-[1.15rem] font-semibold leading-tight">{pageContext.title}</h2>
-                  <p className="mt-1 text-xs text-white/65">{pageContext.subtitle}</p>
+                  <p className="mt-1 truncate text-xs opacity-70">{pageContext.subtitle}</p>
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                <button type="button" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-label={soundEnabled ? "Mute chat sounds" : "Enable chat sounds"} aria-pressed={soundEnabled} className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border border-white/25 text-white">
+                <button type="button" onClick={() => setSoundEnabled((enabled) => !enabled)} aria-label={soundEnabled ? "Mute chat sounds" : "Enable chat sounds"} aria-pressed={soundEnabled} className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border">
                   {soundEnabled ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
                 </button>
-                <button type="button" onClick={() => setOpen(false)} aria-label="Close chat assistant" className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border border-white/25 text-white">
+                <button type="button" onClick={() => setOpen(false)} aria-label="Close chat assistant" className="chat-widget-icon-button grid size-9 shrink-0 place-items-center rounded-full border">
                   <X className="size-4" />
                 </button>
               </div>
             </div>
-
-            <div className="relative mt-4">
-              <div className="mb-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">
-                <span>Quick questions</span>
-                <span className="text-white/40">Tap to ask</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {pageContext.quickActions.map((action) => (
-                  <button key={action.label} type="button" onClick={() => sendMessage(action.prompt)} className="chat-widget-quick-action min-w-0 border border-white/25 bg-white/10 px-2.5 py-2 text-left text-[11px] font-semibold leading-tight text-white">
-                    <span className="block truncate">{action.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
           </header>
 
-          <div className="chat-widget-messages max-h-[min(46vh,360px)] min-h-[230px] space-y-3 overflow-y-auto px-4 py-4 sm:px-5" aria-live="polite">
+          <div className="chat-widget-question-bar border-b px-4 py-2.5 sm:px-5">
+            <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
+              <Bot className="size-4 shrink-0 text-primary" aria-hidden="true" />
+              <span className="truncate">Ask about {pageContext.key === "home" ? "our work" : pageContext.key}</span>
+              <span className="ml-auto shrink-0 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">Quick questions</span>
+            </div>
+            <div className="chat-widget-question-scroller flex gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+              {pageContext.quickActions.map((action) => (
+                <button key={action.label} type="button" onClick={() => sendMessage(action.prompt)} className="chat-widget-quick-action shrink-0 border px-3 py-2 text-[11px] font-semibold leading-tight">
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="chat-widget-messages max-h-[min(52vh,420px)] min-h-[300px] space-y-3 overflow-y-auto px-4 py-5 sm:min-h-[330px] sm:px-5" aria-live="polite">
             {messages.map((message) => (
-              <div key={message.id} className={`flex ${message.from === "user" ? "justify-end" : "justify-start"}`}>
+              <div key={message.id} className={`flex items-end gap-2 ${message.from === "user" ? "justify-end" : "justify-start"}`}>
+                {message.from === "assistant" && (
+                  <span className="chat-widget-message-avatar grid size-7 shrink-0 place-items-center rounded-full border" aria-hidden="true">
+                    <Bot className="size-3.5" />
+                  </span>
+                )}
                 <div className={`max-w-[88%] border px-3.5 py-3 text-sm leading-6 ${message.from === "user" ? "chat-widget-user-message" : "chat-widget-assistant-message"}`} style={{ background: message.from === "user" ? "var(--sand)" : "var(--card, var(--background))", borderColor: message.from === "user" ? "color-mix(in srgb, var(--primary) 22%, var(--border))" : "var(--border)", color: message.from === "user" ? "var(--ink)" : "var(--foreground, var(--ink))" }}>
                   {message.from === "assistant" && (
                     <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.13em] text-[var(--earth)]">
@@ -370,10 +370,10 @@ export function ChatWidget() {
             ))}
           </div>
 
-          <footer className="border-t p-3.5 sm:p-4" style={{ borderColor: "var(--border)", background: "var(--cream)" }}>
+          <footer className="chat-widget-composer border-t p-3.5 sm:p-4" style={{ borderColor: "var(--border)", background: "var(--cream)" }}>
             <div className="mb-2 flex items-center justify-between gap-3 text-[11px] text-muted-foreground">
               <span>Ask about {pageContext.key === "home" ? "the foundation" : `our ${pageContext.key} page`}</span>
-              <button type="button" onClick={clearConversation} className="chat-widget-clear-button shrink-0 font-semibold text-primary hover:text-earth">Clear chat</button>
+              <button type="button" onClick={clearConversation} className="chat-widget-clear-button shrink-0 font-semibold text-primary hover:text-earth">Clear</button>
             </div>
             <form onSubmit={(event) => { event.preventDefault(); sendMessage(input); }} className="flex gap-2">
               <label className="sr-only" htmlFor="foundation-chat-input">Ask a question</label>
