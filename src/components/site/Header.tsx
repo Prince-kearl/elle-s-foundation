@@ -70,7 +70,9 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2 lg:hidden">
-          <GlobalSearch />
+          <span className="hidden sm:block">
+            <GlobalSearch />
+          </span>
           <button
             type="button"
             className="grid size-10 place-items-center border border-[color:var(--color-forest)]/20 text-[color:var(--color-forest)] transition hover:border-[color:var(--color-earth)] hover:text-[color:var(--color-earth)]"
