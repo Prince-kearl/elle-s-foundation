@@ -28,6 +28,7 @@ const DASHBOARD_TABLES = [
   "event_rsvps",
   "rsvp_email_confirmations",
   "team_profile_views",
+  "faq_interactions",
 ] as const;
 
 function DonationTrendTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value?: number }>; label?: string }) {
@@ -53,6 +54,9 @@ function Dashboard() {
           void queryClient.invalidateQueries({ queryKey: ["a", table] });
           if (table === "team_profile_views") {
             void queryClient.invalidateQueries({ queryKey: ["a:team-profile-analytics"] });
+          }
+          if (table === "faq_interactions") {
+            void queryClient.invalidateQueries({ queryKey: ["a:faq-analytics"] });
           }
         },
       );

@@ -8,7 +8,13 @@ export type Story = { id: string; tag: string | null; title: string; excerpt: st
 export type TeamMember = { id: string; name: string; role: string; bio: string | null; avatar_url: string | null; avatar_original_url?: string | null; linkedin_url?: string | null; instagram_url?: string | null; website_url?: string | null; position: number; visible: boolean };
 export type Testimonial = { id: string; quote: string; name: string; role: string | null; avatar_url: string | null; avatar_original_url?: string | null; position: number; visible: boolean };
 export type TeamProfileView = { id: string; team_member_id: string; source: string; created_at: string };
-export type Faq = { id: string; question: string; answer: string; position: number; visible: boolean };
+export type Faq = { id: string; question: string; answer: string; category: string | null; position: number; visible: boolean };
+export type FaqAnalytics = {
+  totalViews: number;
+  totalSearches: number;
+  byFaq: Array<{ faq_id: string; views: number; searches: number }>;
+  topSearches: Array<{ query: string; searches: number }>;
+};
 export type ContactSub = { id: string; name: string; email: string; interest: string | null; message: string; handled: boolean; created_at: string };
 export type DonationIntent = { id: string; amount: number; frequency: string; currency?: string; sponsorship_id?: string | null; name: string | null; email: string | null; phone: string | null; note: string | null; status: string; created_at: string };
 export type EventRecord = { id: string; title: string; event_type: string; description: string; event_date: string; start_time: string | null; end_time: string | null; location: string; status: "draft" | "published" | "archived"; visible: boolean; accent: string; position: number; created_at: string; updated_at: string };
@@ -68,6 +74,85 @@ export function useTeamProfileAnalytics() {
 }
 
 export const usePublicFaqs = () => useQuery({ queryKey: ["p:faqs"], queryFn: () => selectVisible<Faq>("faqs") });
+
+function safeFaqSearchQuery(query: string) {
+  return query
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+function shouldRecordFaqEvent(key: string) {
+  if (typeof window === "undefined") return true;
+  try {
+    const storageKey = `elle-faq-events:${key}`;
+    if (window.sessionStorage.getItem(storageKey)) return false;
+    window.sessionStorage.setItem(storageKey, "1");
+  } catch {
+    // Analytics must never block the public FAQ experience when storage is unavailable.
+  }
+  return true;
+}
+
+/** Records an anonymous FAQ interaction without visitor identity or contact data. */
+export async function trackFaqInteraction({ faqId, eventType, query, source = "homepage" }: { faqId?: string | null; eventType: "view" | "search"; query?: string; source?: string }) {
+  const normalizedQuery = eventType === "search" ? safeFaqSearchQuery(query ?? "") : null;
+  const key = `${eventType}:${faqId ?? "none"}:${normalizedQuery ?? ""}`;
+  if (!shouldRecordFaqEvent(key)) return;
+  const { error } = await supabase.from("faq_interactions").insert({
+    faq_id: faqId ?? null,
+    event_type: eventType,
+    query_text: normalizedQuery || null,
+    source,
+  });
+  if (error && !["42P01", "42501"].includes(error.code)) throw error;
+}
+
+export async function trackFaqSearch(query: string, faqIds: string[], source = "homepage") {
+  const normalizedQuery = safeFaqSearchQuery(query);
+  if (normalizedQuery.length < 2) return;
+  const targets = faqIds.length ? faqIds : [null];
+  await Promise.all(targets.map((faqId) => trackFaqInteraction({ faqId, eventType: "search", query: normalizedQuery, source })));
+}
+
+export function useFaqAnalytics() {
+  return useQuery<FaqAnalytics>({
+    queryKey: ["a:faq-analytics"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("faq_interactions").select("faq_id,event_type,query_text");
+      if (error) {
+        if (["42P01", "42501"].includes(error.code)) return { totalViews: 0, totalSearches: 0, byFaq: [], topSearches: [] };
+        throw error;
+      }
+      const byFaq = new Map<string, { views: number; searches: number }>();
+      const searches = new Map<string, number>();
+      let totalViews = 0;
+      let totalSearches = 0;
+      (data ?? []).forEach((row: any) => {
+        if (row.event_type === "view") totalViews += 1;
+        if (row.event_type === "search") {
+          totalSearches += 1;
+          const query = String(row.query_text ?? "").trim();
+          if (query) searches.set(query, (searches.get(query) ?? 0) + 1);
+        }
+        if (!row.faq_id) return;
+        const current = byFaq.get(row.faq_id) ?? { views: 0, searches: 0 };
+        if (row.event_type === "view") current.views += 1;
+        if (row.event_type === "search") current.searches += 1;
+        byFaq.set(row.faq_id, current);
+      });
+      return {
+        totalViews,
+        totalSearches,
+        byFaq: Array.from(byFaq, ([faq_id, counts]) => ({ faq_id, ...counts })).sort((a, b) => (b.views + b.searches) - (a.views + a.searches)),
+        topSearches: Array.from(searches, ([query, count]) => ({ query, searches: count })).sort((a, b) => b.searches - a.searches).slice(0, 8),
+      };
+    },
+  });
+}
 export const usePublicEvents = () => useQuery({
   queryKey: ["p:events"],
   queryFn: async () => {

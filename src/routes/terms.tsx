@@ -31,7 +31,7 @@ function TermsOfUse() {
             <PolicySection title="Third-party services and links">The website may link to external services or social platforms. Those services are operated independently, and their availability, content, and privacy practices are governed by their own terms and policies.</PolicySection>
             <PolicySection title="Accuracy and availability">We aim to keep the website accurate and available, but information may change and uninterrupted access cannot be guaranteed. Programme details, event dates, donation instructions, and other information should be confirmed with our team when timing or accuracy is important.</PolicySection>
             <PolicySection title="Changes and termination">We may update website content or these terms as our work and services evolve. Continued use of the website after an update means you accept the revised terms. We may restrict access where necessary to protect the website, our community, or our services.</PolicySection>
-            <PolicySection title="Contact">Questions about these terms can be sent through the <a href="/contact" class="font-semibold text-[var(--primary)] underline underline-offset-4">contact page</a>.</PolicySection>
+            <PolicySection title="Contact">Questions about these terms can be sent through the <a href="/contact" className="font-semibold text-[var(--primary)] underline underline-offset-4">contact page</a>.</PolicySection>
             <p className="border-t border-[var(--primary)]/10 pt-6 text-sm text-[var(--ink)]/55">Last updated: August 29, 2026</p>
           </div>
         </section>

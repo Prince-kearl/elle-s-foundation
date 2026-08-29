@@ -20,11 +20,12 @@ interface Props<T> {
   singularName: string;
   enableDragSort?: boolean;
   preview?: (row: Row) => ReactNode;
+  filter?: (row: T) => boolean;
 }
 
 type Row = Record<string, any>;
 
-export function CollectionEditor<T extends Row>({ table, fields, columns, invalidateKeys = [], singularName, enableDragSort = false, preview }: Props<T>) {
+export function CollectionEditor<T extends Row>({ table, fields, columns, invalidateKeys = [], singularName, enableDragSort = false, preview, filter }: Props<T>) {
   const { data: rows, isLoading } = useAdminList<T>(table);
   const upsert = useUpsert(table, invalidateKeys);
   const del = useDelete(table, invalidateKeys);
@@ -37,6 +38,8 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
     if (!reordering) setOrderedRows([...(rows ?? [])].sort((a: any, b: any) => a.position - b.position));
   }, [rows, reordering]);
 
+  const orderedSource = orderedRows.length ? orderedRows : [...(rows ?? [])].sort((a: any, b: any) => a.position - b.position);
+  const displayedRows = filter ? orderedSource.filter(filter) : orderedSource;
   const empty: Row = { visible: true, position: (rows?.length ?? 0) };
   fields.forEach((f) => (empty[f.name] = ""));
 
@@ -84,8 +87,8 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
       <AdminCard>
         {isLoading ? (
           <div className="p-10 text-center text-sm text-[#6B7280]">Loading…</div>
-        ) : (rows?.length ?? 0) === 0 ? (
-          <div className="p-10 text-center text-sm text-[#6B7280]">No {singularName.toLowerCase()}s yet. Add your first one.</div>
+        ) : displayedRows.length === 0 ? (
+          <div className="p-10 text-center text-sm text-[#6B7280]">{rows?.length ? `No matching ${singularName.toLowerCase()}s found.` : `No ${singularName.toLowerCase()}s yet. Add your first one.`}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -98,7 +101,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F3F4F6]">
-                {(orderedRows.length ? orderedRows : [...rows!].sort((a: any, b: any) => a.position - b.position)).map((row: any) => (
+                {displayedRows.map((row: any) => (
                   <tr
                     key={row.id}
                     draggable={enableDragSort}

@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Search, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { trackFaqSearch } from "@/lib/cms";
 
 type SearchScope = "site" | "admin";
 
@@ -11,14 +12,10 @@ type SearchItem = {
   description: string;
   to: string;
   keywords: string;
+  faqId?: string;
 };
 
-type SearchRecord = {
-  label: string;
-  description: string;
-  to: string;
-  keywords: string;
-};
+type SearchRecord = SearchItem;
 
 const siteItems: SearchItem[] = [
   {
@@ -133,7 +130,7 @@ async function loadSearchRecords(scope: SearchScope): Promise<SearchRecord[]> {
     { table: "programs", route: "/programs", label: "Program" },
     { table: "stories", route: "/", label: "Story" },
     { table: "events", route: "/#events", label: "Event" },
-    { table: "faqs", route: "/contact", label: "FAQ" },
+    { table: "faqs", route: "/#faqs", label: "FAQ" },
     { table: "sponsorships", route: "/sponsor", label: "Sponsorship" },
   ] as const;
   const adminSources = [
@@ -158,6 +155,7 @@ async function loadSearchRecords(scope: SearchScope): Promise<SearchRecord[]> {
         description: description || `Open ${source.route.replace("/#events", "").replace("/", "") || "the website"}`,
         to: source.route,
         keywords: `${title} ${description} ${row.tag ?? ""} ${row.category ?? ""} ${row.status ?? ""}`,
+        faqId: source.table === "faqs" ? String(row.id) : undefined,
       };
     });
   }));
@@ -185,10 +183,19 @@ export function GlobalSearch({ scope = "site" }: { scope?: SearchScope }) {
       )
       .slice(0, 8);
   }, [searchableItems, query]);
+  const faqResultIds = results.flatMap((item) => item.faqId ? [item.faqId] : []);
 
   useEffect(() => {
     if (open) window.setTimeout(() => inputRef.current?.focus(), 0);
   }, [open]);
+
+  useEffect(() => {
+    if (scope !== "site" || query.trim().length < 2 || !faqResultIds.length) return;
+    const timeout = window.setTimeout(() => {
+      void trackFaqSearch(query, faqResultIds, "global-search").catch(() => undefined);
+    }, 600);
+    return () => window.clearTimeout(timeout);
+  }, [faqResultIds.join(","), query, scope]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

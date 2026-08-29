@@ -31,7 +31,7 @@ function PrivacyPolicy() {
             <PolicySection title="Website analytics and cookies">The website may use essential storage or similar technologies to remember preferences and keep core features working. If analytics tools are enabled, they help us understand aggregated website usage and improve the experience.</PolicySection>
             <PolicySection title="Keeping information secure">We use reasonable administrative and technical measures to protect information. No internet transmission or storage system can be guaranteed to be completely secure, so please avoid sending sensitive information through general contact forms.</PolicySection>
             <PolicySection title="Your choices">You may contact us to ask about information you have submitted, request correction of inaccurate details, or opt out of non-essential communications. Some records may need to be retained where required for legitimate operational, accounting, or legal purposes.</PolicySection>
-            <PolicySection title="Contact">For privacy questions or requests, please use the <a href="/contact" class="font-semibold text-[var(--primary)] underline underline-offset-4">contact form</a> and select the most relevant enquiry type.</PolicySection>
+            <PolicySection title="Contact">For privacy questions or requests, please use the <a href="/contact" className="font-semibold text-[var(--primary)] underline underline-offset-4">contact form</a> and select the most relevant enquiry type.</PolicySection>
             <p className="border-t border-[var(--primary)]/10 pt-6 text-sm text-[var(--ink)]/55">Last updated: August 29, 2026</p>
           </div>
         </section>
