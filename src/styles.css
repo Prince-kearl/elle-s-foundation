@@ -677,3 +677,58 @@ body::-webkit-scrollbar,
     transition: none;
   }
 }
+
+/* The bot mark gently breathes to signal that the assistant is available. */
+.chat-widget-launcher-icon {
+  position: relative;
+}
+
+.chat-widget-launcher-icon::after {
+  position: absolute;
+  inset: -0.35rem;
+  border: 1px solid color-mix(in srgb, var(--gold) 48%, transparent);
+  border-radius: 9999px;
+  content: "";
+  pointer-events: none;
+  animation: chat-widget-icon-halo 2.8s ease-in-out infinite;
+}
+
+.chat-widget-launcher-icon svg {
+  transform-origin: center;
+  animation: chat-widget-icon-throb 2.8s ease-in-out infinite;
+}
+
+@keyframes chat-widget-icon-throb {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes chat-widget-icon-halo {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.chat-widget-launcher:hover .chat-widget-launcher-icon::after,
+.chat-widget-launcher:focus-visible .chat-widget-launcher-icon::after {
+  animation-play-state: paused;
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget-launcher-icon::after,
+  .chat-widget-launcher-icon svg {
+    animation: none;
+  }
+}
