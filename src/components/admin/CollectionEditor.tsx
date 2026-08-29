@@ -63,9 +63,9 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
     setReordering(true);
     try {
       await Promise.all(next.map((row: any, index) => upsert.mutateAsync({ id: row.id, position: index })));
-      toast.success("Team order updated");
+      toast.success(`${singularName} order updated`);
     } catch (error: any) {
-      toast.error(error?.message ?? "Could not save team order");
+      toast.error(error?.message ?? `Could not save ${singularName.toLowerCase()} order`);
     } finally {
       setReordering(false);
       setDraggedId(null);
@@ -80,7 +80,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
         </PrimaryButton>
       </div>
 
-      {enableDragSort ? <p className="mb-3 text-xs text-[#6B7280]">Drag a team member row to set its public display order.</p> : null}
+      {enableDragSort ? <p className="mb-3 text-xs text-[#6B7280]">Drag a {singularName.toLowerCase()} row to set its public display order.</p> : null}
       <AdminCard>
         {isLoading ? (
           <div className="p-10 text-center text-sm text-[#6B7280]">Loading…</div>
@@ -110,13 +110,13 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                   >
                     <td className="px-6 py-3">
                       {enableDragSort ? (
-                        <span className="inline-flex cursor-grab items-center gap-1 text-[#9CA3AF]" title="Drag to reorder">
+                        <span className="inline-flex cursor-grab items-center gap-1 text-[#9CA3AF]" title={`Drag to reorder ${singularName.toLowerCase()}`} aria-label={`Drag to reorder ${singularName.toLowerCase()}`}>
                           <GripVertical className="size-4" />
                         </span>
                       ) : (
                         <div className="flex flex-col gap-0.5">
-                          <button onClick={() => move(row as T, -1)} className="text-[#9CA3AF] hover:text-primary"><ArrowUp className="size-3.5" /></button>
-                          <button onClick={() => move(row as T, 1)} className="text-[#9CA3AF] hover:text-primary"><ArrowDown className="size-3.5" /></button>
+                          <button onClick={() => move(row as T, -1)} aria-label={`Move ${singularName.toLowerCase()} up`} className="text-[#9CA3AF] hover:text-primary"><ArrowUp className="size-3.5" /></button>
+                          <button onClick={() => move(row as T, 1)} aria-label={`Move ${singularName.toLowerCase()} down`} className="text-[#9CA3AF] hover:text-primary"><ArrowDown className="size-3.5" /></button>
                         </div>
                       )}
                     </td>
@@ -141,10 +141,11 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                           }}
                           className="p-2 rounded-lg hover:bg-[#F5EFE5] text-[#6B7280]"
                           title={row.visible ? "Hide" : "Show"}
+                          aria-label={row.visible ? `Hide ${singularName.toLowerCase()}` : `Publish ${singularName.toLowerCase()}`}
                         >
                           {row.visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                         </button>
-                        <button onClick={() => setEditing(row)} className="p-2 rounded-lg hover:bg-[#F5EFE5] text-primary" title="Edit">
+                        <button onClick={() => setEditing(row)} className="p-2 rounded-lg hover:bg-[#F5EFE5] text-primary" title="Edit" aria-label={`Edit ${singularName.toLowerCase()}`}>
                           <Pencil className="size-4" />
                         </button>
                         <button
@@ -155,6 +156,7 @@ export function CollectionEditor<T extends Row>({ table, fields, columns, invali
                           }}
                           className="p-2 rounded-lg hover:bg-red-50 text-red-500"
                           title="Delete"
+                          aria-label={`Delete ${singularName.toLowerCase()}`}
                         >
                           <Trash2 className="size-4" />
                         </button>
