@@ -640,7 +640,7 @@ function About({ c, stats }: { c: C; stats?: Stat[] }) {
               loading="lazy"
             />
           </div>
-          <div className="absolute -bottom-6 -right-3 max-w-[15rem] rounded-2xl bg-white p-5 shadow-[0_22px_50px_-25px_rgba(15,104,72,0.4)] sm:-right-7">
+          <div className="card-surface absolute -bottom-6 -right-3 max-w-[15rem] bg-white p-5 shadow-[0_22px_50px_-25px_rgba(15,104,72,0.4)] sm:-right-7">
             <div className="flex items-center gap-2 text-[var(--primary)]">
               <span className="grid size-8 place-items-center rounded-full bg-[var(--cream)]">
                 <Leaf className="size-4" />
