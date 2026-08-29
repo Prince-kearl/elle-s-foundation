@@ -632,7 +632,7 @@ function About({ c, stats }: { c: C; stats?: Stat[] }) {
       <div className="container-wide grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-24">
         <div className="relative">
           <div className="absolute -left-5 -top-5 size-24 rounded-full border border-[var(--gold)]/50" />
-          <div className="relative aspect-[0.95] overflow-hidden rounded-[1.35rem] sm:aspect-[1.05]">
+          <div className="card-surface relative aspect-[0.95] overflow-hidden sm:aspect-[1.05]">
             <img
               src={pv(c, "about.image", childrenUnity)}
               alt={pv(c, "about.image_alt", "A young girl smiling with a community volunteer")}
