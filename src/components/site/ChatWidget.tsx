@@ -1,5 +1,5 @@
 import { Bot, Send, Sparkles, Volume2, VolumeX, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ChatMessage = { id: number; from: "assistant" | "user"; text: string };
 
@@ -55,6 +55,15 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME]);
   const [hasNotification, setHasNotification] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [showGreeting, setShowGreeting] = useState(false);
+  const [greetingExpanded, setGreetingExpanded] = useState(false);
+  const [greetingDismissed, setGreetingDismissed] = useState(false);
+
+  useEffect(() => {
+    if (open || greetingDismissed) return;
+    const timer = window.setTimeout(() => setShowGreeting(true), 4500);
+    return () => window.clearTimeout(timer);
+  }, [open, greetingDismissed]);
 
   const playChatChime = () => {
     if (!soundEnabled || typeof window === "undefined") return;
@@ -84,8 +93,21 @@ export function ChatWidget() {
 
   const openChat = () => {
     setOpen(true);
+    setShowGreeting(false);
+    setGreetingDismissed(true);
     setHasNotification(false);
     playChatChime();
+  };
+
+  const expandGreeting = () => {
+    setGreetingExpanded(true);
+    setHasNotification(false);
+  };
+
+  const dismissGreeting = () => {
+    setShowGreeting(false);
+    setGreetingDismissed(true);
+    setHasNotification(false);
   };
 
   const sendMessage = (text: string) => {
@@ -107,6 +129,40 @@ export function ChatWidget() {
 
   return (
     <div className="chat-widget-root pointer-events-none" style={{ fontFamily: "var(--font-sans)" }}>
+      {!open && showGreeting && !greetingDismissed && (
+        <aside className={`chat-widget-greeting pointer-events-auto ${greetingExpanded ? "chat-widget-greeting-expanded" : ""}`} aria-label="Chat assistant welcome">
+          {greetingExpanded ? (
+            <div className="chat-widget-greeting-content">
+              <div className="flex items-start gap-2.5">
+                <span className="chat-widget-greeting-icon grid size-9 shrink-0 place-items-center rounded-full">
+                  <Bot className="size-[18px]" aria-hidden="true" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">Elle's assistant</p>
+                  <p className="mt-1 text-sm font-semibold leading-5 text-foreground">Need a hand finding your way?</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">Ask about our programmes, volunteering, or ways to support the work.</p>
+                </div>
+                <button type="button" onClick={dismissGreeting} aria-label="Dismiss welcome greeting" className="chat-widget-greeting-close grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground">
+                  <X className="size-3.5" />
+                </button>
+              </div>
+              <button type="button" onClick={openChat} className="chat-widget-greeting-action mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-2 text-[11px] font-bold text-primary-foreground">
+                Open chat <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button type="button" onClick={expandGreeting} aria-expanded={greetingExpanded} className="chat-widget-greeting-trigger min-w-0 flex-1 text-left">
+                <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-primary">Hello from Elle's Foundation</span>
+                <span className="mt-0.5 block truncate text-sm font-semibold text-foreground">How can we help today?</span>
+              </button>
+              <button type="button" onClick={dismissGreeting} aria-label="Dismiss welcome greeting" className="chat-widget-greeting-close grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground">
+                <X className="size-3.5" />
+              </button>
+            </div>
+          )}
+        </aside>
+      )}
       {open ? (
         <section
           id="foundation-chat-panel"
