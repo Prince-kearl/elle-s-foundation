@@ -1011,3 +1011,7 @@ body::-webkit-scrollbar,
   border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
   box-shadow: 0 10px 24px -18px color-mix(in srgb, var(--ink) 45%, transparent);
 }
+
+.sharp-image-card {
+  border-radius: 0 !important;
+}
