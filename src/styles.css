@@ -847,3 +847,60 @@ body::-webkit-scrollbar,
     transition: none;
   }
 }
+
+.chat-widget-greeting-chips {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.chat-widget-greeting-chip {
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+  border-radius: 9999px !important;
+  background: color-mix(in srgb, var(--primary) 6%, var(--background));
+  padding: 0.42rem 0.65rem;
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.1;
+  transition:
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.chat-widget-greeting-chip:hover {
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+  background: color-mix(in srgb, var(--primary) 12%, var(--background));
+  transform: translateY(-1px);
+}
+
+.chat-widget-greeting-chip:active {
+  transform: scale(0.96);
+}
+
+.chat-widget-greeting-chip:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .chat-widget-greeting-chips {
+    gap: 0.35rem;
+  }
+
+  .chat-widget-greeting-chip {
+    padding-inline: 0.55rem;
+    font-size: 0.64rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-widget-greeting-chip {
+    transition: none;
+  }
+}

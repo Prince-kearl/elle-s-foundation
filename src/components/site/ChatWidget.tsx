@@ -61,7 +61,7 @@ export function ChatWidget() {
 
   useEffect(() => {
     if (open || greetingDismissed) return;
-    const timer = window.setTimeout(() => setShowGreeting(true), 4500);
+    const timer = window.setTimeout(() => setShowGreeting(true), 2500);
     return () => window.clearTimeout(timer);
   }, [open, greetingDismissed]);
 
@@ -91,12 +91,12 @@ export function ChatWidget() {
     }
   };
 
-  const openChat = () => {
+  const openChat = (withSound = true) => {
     setOpen(true);
     setShowGreeting(false);
     setGreetingDismissed(true);
     setHasNotification(false);
-    playChatChime();
+    if (withSound) playChatChime();
   };
 
   const expandGreeting = () => {
@@ -146,7 +146,19 @@ export function ChatWidget() {
                   <X className="size-3.5" />
                 </button>
               </div>
-              <button type="button" onClick={openChat} className="chat-widget-greeting-action mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-2 text-[11px] font-bold text-primary-foreground">
+              <div className="chat-widget-greeting-chips" aria-label="Quick replies">
+                {QUICK_ACTIONS.slice(0, 3).map((action) => (
+                  <button
+                    key={action.label}
+                    type="button"
+                    onClick={() => { openChat(false); sendMessage(action.prompt); }}
+                    className="chat-widget-greeting-chip"
+                  >
+                    {action.label.replace("Our ", "")}
+                  </button>
+                ))}
+              </div>
+              <button type="button" onClick={() => openChat()} className="chat-widget-greeting-action mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-2 text-[11px] font-bold text-primary-foreground">
                 Open chat <span aria-hidden="true">→</span>
               </button>
             </div>
@@ -293,7 +305,7 @@ export function ChatWidget() {
       ) : (
         <button
           type="button"
-          onClick={openChat}
+          onClick={() => openChat()}
           aria-label="Open Elle's Foundation chat assistant"
           aria-controls="foundation-chat-panel"
           aria-expanded={open}
