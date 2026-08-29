@@ -889,12 +889,9 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
-                <div className="story-card-action absolute bottom-4 left-4 inline-flex w-fit items-center gap-3 rounded-full bg-white/95 px-3.5 py-2.5 backdrop-blur-md">
-                  <span className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
-                    {tag}
-                  </span>
-                  <ArrowUpRight className="size-4 text-[var(--primary)]" />
-                </div>
+                <span className="story-card-tag absolute bottom-4 left-4 inline-flex w-fit items-center rounded-full bg-white/95 px-3.5 py-2.5 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--earth)] backdrop-blur-md">
+                  {tag}
+                </span>
               </div>
               <div className="mt-6 max-w-sm">
                 <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
