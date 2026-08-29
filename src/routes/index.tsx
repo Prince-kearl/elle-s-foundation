@@ -894,9 +894,6 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                 </span>
               </div>
               <div className="mt-6 max-w-sm">
-                <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
-                  {tag}
-                </div>
                 <h3 className="font-display text-2xl font-semibold leading-tight text-[var(--primary)]">
                   {title}
                 </h3>
