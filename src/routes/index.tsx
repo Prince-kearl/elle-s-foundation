@@ -305,7 +305,7 @@ function UpcomingEvents() {
   const highlightedDay = events[0]?.day;
 
   return (
-    <section id="events" className="border-y border-[var(--primary)]/10 bg-[#f5f3ea] py-12 md:py-16">
+    <section id="events" className="border-y border-[var(--primary)]/10 bg-[var(--cream)] py-12 md:py-16">
       <div className="container-wide">
         <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">

@@ -24,7 +24,7 @@ export const BRAND_DEFAULTS: BrandValues = {
   earth_color: "#F26518",
   gold_color: "#FF8A3D",
   ink_color: "#124A3A",
-  background_color: "#FBFFF8",
+  background_color: "#F1FAE9",
   heading_font: "DM Sans",
   body_font: "Manrope",
   base_font_size: "16px",
@@ -128,18 +128,36 @@ export function pageKeyFromPath(path: string): string {
 }
 
 /** Merge global brand with an enabled per-page override. */
+const LEGACY_WARM_PALETTE: Record<string, string> = {
+  "#fffdf8": "#f1fae9",
+  "#faf7f1": "#f1fae9",
+  "#fffbf7": "#f1fae9",
+  "#f4ead8": "#f1fae9",
+  "#f7e8dc": "#f1fae9",
+  "#f8f4ee": "#f1fae9",
+};
+
+function restoreLightGreenDefaults(values: BrandValues) {
+  const restored = { ...values };
+  for (const key of ["background_color", "cream_color"]) {
+    const value = String(restored[key] ?? "").trim().toLowerCase();
+    if (LEGACY_WARM_PALETTE[value]) restored[key] = LEGACY_WARM_PALETTE[value];
+  }
+  return restored;
+}
+
 export function mergeBrand(
   global: BrandValues | undefined,
   page: BrandValues | null | undefined,
 ): BrandValues {
-  const base = { ...BRAND_DEFAULTS, ...(global ?? {}) };
+  const base = restoreLightGreenDefaults({ ...BRAND_DEFAULTS, ...(global ?? {}) });
   if (!page || !page.enabled) return base;
   const out = { ...base };
   Object.entries(page).forEach(([k, v]) => {
     if (k === "page" || k === "enabled" || k === "updated_at") return;
     if (v !== null && v !== undefined && v !== "") out[k] = v;
   });
-  return out;
+  return restoreLightGreenDefaults(out);
 }
 
 export function brandCssVars(v: BrandValues): Record<string, string> {

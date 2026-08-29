@@ -25,7 +25,7 @@ function AdminGate() {
 
   if (loading || !user || !isAdmin) {
     return (
-      <div className="min-h-screen grid place-items-center bg-[#F9FAFB] text-primary">
+      <div className="min-h-screen grid place-items-center bg-background text-primary">
         <Loader2 className="size-6 animate-spin" />
       </div>
     );
