@@ -290,7 +290,7 @@ export function Footer() {
                   type="submit"
                   aria-label={submitting ? "Sending subscription and welcome request" : "Send subscription and welcome request"}
                   disabled={submitting}
-                  className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--color-gold)] px-4 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[color:var(--color-gold)] px-4 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
                 >
                   {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
                   {submitting ? "Sending…" : "Send"}
