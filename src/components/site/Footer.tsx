@@ -255,7 +255,7 @@ export function Footer() {
                 >
                   {pv(c, "newsletter.title", "Stay updated")}
                 </label>
-                <div className="mx-auto mt-2 flex w-full max-w-md border border-white/10 bg-black/10 lg:mx-0">
+                <div className="mx-auto mt-2 w-full max-w-md space-y-2 lg:mx-0">
                   <input
                     id="footer-email"
                     type="email"
@@ -268,22 +268,10 @@ export function Footer() {
                     aria-label="Email address for newsletter"
                     autoComplete="email"
                     required
-                    className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
+                    className="w-full border border-white/10 bg-black/10 px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:border-[color:var(--color-gold)] focus:ring-1 focus:ring-[color:var(--color-gold)]"
                   />
-                  <button
-                    type="submit"
-                    aria-label={submitting ? "Joining the newsletter" : "Join the newsletter"}
-                    disabled={submitting}
-                    className="grid size-10 shrink-0 place-items-center bg-[color:var(--color-gold)] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
-                  >
-                    {submitting ? (
-                      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                    ) : (
-                      <Send className="size-4" aria-hidden="true" />
-                    )}
-                  </button>
                 </div>
-                <div className="mt-2 flex w-full border border-white/10 bg-black/10">
+                <div className="w-full">
                   <input
                     id="footer-whatsapp"
                     type="tel"
@@ -295,17 +283,18 @@ export function Footer() {
                     placeholder="WhatsApp number (optional)"
                     aria-label="WhatsApp number for welcome message (optional)"
                     autoComplete="tel"
-                    className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:ring-1 focus:ring-[color:var(--color-gold)]"
+                    className="w-full border border-white/10 bg-black/10 px-3 py-2.5 text-xs text-white outline-none placeholder:text-white/35 focus:border-[color:var(--color-gold)] focus:ring-1 focus:ring-[color:var(--color-gold)]"
                   />
-                  <button
-                    type="submit"
-                    aria-label="Send WhatsApp welcome request"
-                    disabled={submitting}
-                    className="grid size-10 shrink-0 place-items-center bg-[color:var(--color-gold)] text-[color:var(--color-ink)] hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
-                  >
-                    <Send className="size-3.5" aria-hidden="true" />
-                  </button>
                 </div>
+                <button
+                  type="submit"
+                  aria-label={submitting ? "Sending subscription and welcome request" : "Send subscription and welcome request"}
+                  disabled={submitting}
+                  className="inline-flex w-full items-center justify-center gap-2 bg-[color:var(--color-gold)] px-4 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--color-ink)] transition hover:bg-[color:var(--color-earth)] hover:text-white disabled:cursor-wait disabled:opacity-70"
+                >
+                  {submitting ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Send className="size-4" aria-hidden="true" />}
+                  {submitting ? "Sending…" : "Send"}
+                </button>
                 <p
                   className="mt-2 min-h-4 text-[0.65rem] text-[color:var(--color-sand)]"
                   aria-live="polite"
