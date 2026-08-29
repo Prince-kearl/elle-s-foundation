@@ -889,7 +889,7 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
-                <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-xl bg-white/90 px-4 py-3 backdrop-blur-md">
+                <div className="story-card-action absolute bottom-4 left-4 inline-flex w-fit items-center gap-3 rounded-full bg-white/95 px-3.5 py-2.5 backdrop-blur-md">
                   <span className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[var(--earth)]">
                     {tag}
                   </span>
