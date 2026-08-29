@@ -73,7 +73,7 @@ function About() {
             </p>
           </div>
           <div className="relative">
-            <div className="rounded-2xl overflow-hidden aspect-[5/6]">
+            <div className="card-surface overflow-hidden aspect-[5/6]">
               <Media
                 src={pv(c, "hero.image") || pv(c, "story.image", aboutHero)}
                 alt="Children and volunteers at an Elle's Foundation outreach"

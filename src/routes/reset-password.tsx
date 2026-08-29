@@ -27,8 +27,8 @@ function ResetPassword() {
   };
 
   return <main className="min-h-screen grid place-items-center bg-background p-6">
-    <div className="w-full max-w-md rounded-lg border border-[#E5E7EB] bg-white p-8 shadow-sm">
-      <div className="size-10 rounded-lg bg-primary text-white grid place-items-center"><KeyRound className="size-5" /></div>
+    <div className="card-surface w-full max-w-md border border-[#E5E7EB] bg-white p-8 shadow-sm">
+      <div className="size-10 bg-primary text-white grid place-items-center"><KeyRound className="size-5" /></div>
       <h1 className="mt-5 font-display text-3xl text-primary">Reset password</h1>
       {!recovery && <p className="mt-2 text-sm text-[#6B7280]">Open the password-reset link from your email to continue.</p>}
       {recovery && <form onSubmit={submit} className="mt-6 space-y-4">

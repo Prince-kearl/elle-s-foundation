@@ -928,7 +928,7 @@ function Mission({ c, stats }: { c: C; stats?: Stat[] }) {
       <div className="card-surface container-wide grid items-center gap-10 overflow-hidden bg-[#f6dfc9] p-6 md:p-10 lg:grid-cols-[0.95fr_1.05fr] lg:p-12">
         <div className="relative order-2 lg:order-1">
           <div className="absolute -left-5 -top-5 size-20 rounded-full border border-[var(--earth)]/40" />
-          <div className="relative aspect-[1.12] overflow-hidden rounded-[1.15rem]">
+          <div className="card-surface relative aspect-[1.12] overflow-hidden">
             <img
               src={image}
               alt={pv(
@@ -942,7 +942,7 @@ function Mission({ c, stats }: { c: C; stats?: Stat[] }) {
             />
           </div>
           {volunteerStat && (
-            <div className="absolute -bottom-5 -right-3 flex items-center gap-3 rounded-xl bg-white px-4 py-3 shadow-[0_18px_36px_-20px_rgba(15,104,72,0.5)] sm:-right-5">
+            <div className="card-surface absolute -bottom-5 -right-3 flex items-center gap-3 bg-white px-4 py-3 shadow-[0_18px_36px_-20px_rgba(15,104,72,0.5)] sm:-right-5">
               <div className="grid size-9 place-items-center rounded-full bg-[var(--cream)] text-[var(--primary)]">
                 <HandHeart className="size-4" />
               </div>

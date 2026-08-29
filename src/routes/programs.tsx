@@ -63,7 +63,7 @@ function Programs() {
         </div>
         {headerImage ? (
           <div className="container-wide mt-10">
-            <div className="rounded-2xl overflow-hidden aspect-[16/7] bg-black">
+            <div className="card-surface overflow-hidden aspect-[16/7] bg-black">
               <Media
                 src={headerImage}
                 alt="Elle's Foundation programs"
@@ -83,7 +83,7 @@ function Programs() {
                 key={p.id ?? p.title}
                 className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}
               >
-                <div className="rounded-2xl overflow-hidden aspect-[5/4] bg-secondary">
+                <div className="card-surface overflow-hidden aspect-[5/4] bg-secondary">
                   <Media
                     src={p.image_url || ""}
                     alt={p.title}

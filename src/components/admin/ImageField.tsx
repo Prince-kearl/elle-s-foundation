@@ -140,13 +140,13 @@ export function MediaField({
               muted
               playsInline
               controls
-              className="h-32 w-auto rounded-lg border border-[#E5E7EB] bg-black"
+              className="h-32 w-auto rounded-none border border-[#E5E7EB] bg-black"
             />
           ) : (
             <img
               src={value}
               alt=""
-              className="h-32 w-auto rounded-lg border border-[#E5E7EB] object-cover"
+              className="h-32 w-auto rounded-none border border-[#E5E7EB] object-cover"
             />
           )}
           <button
@@ -161,7 +161,7 @@ export function MediaField({
         </div>
       ) : null}
 
-      <div className="rounded-lg border border-[#E5E7EB] bg-white">
+      <div className="card-surface border border-[#E5E7EB] bg-white">
         <div className="media-field-tabs grid grid-cols-3 border-b border-[#EEF0F3] text-xs font-medium">
           {(["upload", "library", "url"] as Tab[]).map((t) => (
             <button
@@ -186,7 +186,7 @@ export function MediaField({
         <div className="p-3">
           {tab === "upload" && (
             <div
-              className="rounded-lg border-2 border-dashed border-[#E5E7EB] p-6 text-center cursor-pointer hover:border-primary/40 hover:bg-[#F5EFE5]/30 transition"
+              className="border-2 border-dashed border-[#E5E7EB] p-6 text-center cursor-pointer hover:border-primary/40 hover:bg-[#F5EFE5]/30 transition"
               onClick={() => fileRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -249,7 +249,7 @@ export function MediaField({
                         onChange(a.url);
                         toast.success("Selected");
                       }}
-                      className={`relative aspect-square rounded-md overflow-hidden border ${value === a.url ? "border-primary ring-2 ring-primary/30" : "border-[#EEF0F3] hover:border-primary/40"}`}
+                      className={`relative aspect-square overflow-hidden border ${value === a.url ? "border-primary ring-2 ring-primary/30" : "border-[#EEF0F3] hover:border-primary/40"}`}
                     >
                       {(a.kind ?? "image") === "video" ? (
                         <video
@@ -288,7 +288,7 @@ export function MediaField({
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder="https://…"
-              className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm outline-none focus:border-primary"
+              className="w-full border border-[#E5E7EB] px-3 py-2 text-sm outline-none focus:border-primary"
             />
           )}
         </div>

@@ -134,7 +134,7 @@ function SponsorModal({ tier, onClose }: { tier: Sponsorship; onClose: () => voi
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4" onClick={onClose}>
-      <div className="w-full max-w-lg bg-card rounded-2xl shadow-xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <div className="card-surface w-full max-w-lg bg-card shadow-xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <div className="p-6 border-b border-border">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Sponsor</div>
           <h3 className="font-display text-2xl text-primary mt-1">{tier.title}</h3>

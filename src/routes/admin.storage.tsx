@@ -62,13 +62,13 @@ function StorageAdmin() {
             <h2 className="font-display text-xl">Storage overview</h2>
           </div>
           <ul className="space-y-2 text-sm">
-            <li className="flex justify-between rounded-lg border border-[#EEF0F3] px-3 py-2">
+            <li className="flex justify-between border border-[#EEF0F3] px-3 py-2">
               <span>Provider</span><strong>Database storage (media bucket)</strong>
             </li>
-            <li className="flex justify-between rounded-lg border border-[#EEF0F3] px-3 py-2">
+            <li className="flex justify-between border border-[#EEF0F3] px-3 py-2">
               <span>Files stored</span><strong>{assets.length}</strong>
             </li>
-            <li className="flex justify-between rounded-lg border border-[#EEF0F3] px-3 py-2">
+            <li className="flex justify-between border border-[#EEF0F3] px-3 py-2">
               <span>Total size</span><strong>{(totalBytes / 1024 / 1024).toFixed(1)} MB</strong>
             </li>
           </ul>
@@ -101,7 +101,7 @@ function StorageAdmin() {
           </div>
 
           {results && (
-            <div className="mt-5 max-h-[420px] overflow-auto rounded-lg border border-[#EEF0F3]">
+            <div className="mt-5 max-h-[420px] overflow-auto border border-[#EEF0F3]">
               <table className="w-full text-xs">
                 <thead className="bg-[#F9FAFB] text-[#6B7280]">
                   <tr>

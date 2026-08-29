@@ -196,7 +196,7 @@ function EditorModal({ row, fields, preview, title, onClose, onSave }: { row: Ro
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={onClose}>
-      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+      <div className="card-surface w-full max-w-2xl bg-white shadow-xl max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="p-6 border-b border-[#EEF0F3] flex items-center justify-between">
           <h3 className="font-display text-2xl text-primary">{title}</h3>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-[#F5EFE5]"><X className="size-4" /></button>
