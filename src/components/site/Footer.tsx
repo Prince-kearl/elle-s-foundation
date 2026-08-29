@@ -40,8 +40,8 @@ const linkGroups = [
     links: [
       { label: "Frequently asked questions", to: "/#faqs" },
       { label: "Contact Elle's Foundation", to: "/contact" },
-      { label: "Privacy policy", to: "/#privacy" },
-      { label: "Terms of use", to: "/#terms" },
+      { label: "Privacy policy", to: "/privacy" },
+      { label: "Terms of use", to: "/terms" },
     ],
   },
   {
@@ -316,13 +316,13 @@ export function Footer() {
               {pv(c, "legal.copyright", "Elle's Foundation. All rights reserved.")}
             </div>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:justify-start">
-              <a href="#privacy" className="transition-colors hover:text-white">
+              <Link to="/privacy" className="transition-colors hover:text-white">
                 Privacy policy
-              </a>
+              </Link>
               <span aria-hidden="true">•</span>
-              <a id="terms" href="#terms" className="transition-colors hover:text-white">
+              <Link to="/terms" className="transition-colors hover:text-white">
                 Terms of use
-              </a>
+              </Link>
               <span aria-hidden="true">•</span>
               <span className="text-[color:var(--color-gold)]">Community nonprofit · Ghana</span>
             </div>

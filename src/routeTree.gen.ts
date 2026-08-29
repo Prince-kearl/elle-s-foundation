@@ -15,9 +15,11 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DonateRouteImport } from './routes/donate'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SponsorRouteImport } from './routes/sponsor'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminBrandRouteImport } from './routes/admin.brand'
 import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
@@ -31,6 +33,7 @@ import { Route as AdminPagesRouteImport } from './routes/admin.pages'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminProgramsRouteImport } from './routes/admin.programs'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminSponsorshipSubmissionsRouteImport } from './routes/admin.sponsorship-submissions'
 import { Route as AdminSponsorshipsRouteImport } from './routes/admin.sponsorships'
 import { Route as AdminStatsRouteImport } from './routes/admin.stats'
 import { Route as AdminStorageRouteImport } from './routes/admin.storage'
@@ -69,6 +72,11 @@ const DonateRoute = DonateRouteImport.update({
   path: '/donate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
@@ -82,6 +90,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const SponsorRoute = SponsorRouteImport.update({
   id: '/sponsor',
   path: '/sponsor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -149,6 +162,12 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSponsorshipSubmissionsRoute =
+  AdminSponsorshipSubmissionsRouteImport.update({
+    id: '/sponsorship-submissions',
+    path: '/sponsorship-submissions',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminSponsorshipsRoute = AdminSponsorshipsRouteImport.update({
   id: '/sponsorships',
   path: '/sponsorships',
@@ -192,9 +211,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sponsor': typeof SponsorRoute
+  '/terms': typeof TermsRoute
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
@@ -207,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/admin/profile': typeof AdminProfileRoute
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/sponsorship-submissions': typeof AdminSponsorshipSubmissionsRoute
   '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/storage': typeof AdminStorageRoute
@@ -222,9 +244,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sponsor': typeof SponsorRoute
+  '/terms': typeof TermsRoute
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
@@ -237,6 +261,7 @@ export interface FileRoutesByTo {
   '/admin/profile': typeof AdminProfileRoute
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/sponsorship-submissions': typeof AdminSponsorshipSubmissionsRoute
   '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/storage': typeof AdminStorageRoute
@@ -254,9 +279,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/privacy': typeof PrivacyRoute
   '/programs': typeof ProgramsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sponsor': typeof SponsorRoute
+  '/terms': typeof TermsRoute
   '/admin/brand': typeof AdminBrandRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/donations': typeof AdminDonationsRoute
@@ -269,6 +296,7 @@ export interface FileRoutesById {
   '/admin/profile': typeof AdminProfileRoute
   '/admin/programs': typeof AdminProgramsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/sponsorship-submissions': typeof AdminSponsorshipSubmissionsRoute
   '/admin/sponsorships': typeof AdminSponsorshipsRoute
   '/admin/stats': typeof AdminStatsRoute
   '/admin/storage': typeof AdminStorageRoute
@@ -287,9 +315,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/donate'
+    | '/privacy'
     | '/programs'
     | '/reset-password'
     | '/sponsor'
+    | '/terms'
     | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
@@ -302,6 +332,7 @@ export interface FileRouteTypes {
     | '/admin/profile'
     | '/admin/programs'
     | '/admin/settings'
+    | '/admin/sponsorship-submissions'
     | '/admin/sponsorships'
     | '/admin/stats'
     | '/admin/storage'
@@ -317,9 +348,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/donate'
+    | '/privacy'
     | '/programs'
     | '/reset-password'
     | '/sponsor'
+    | '/terms'
     | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
@@ -332,6 +365,7 @@ export interface FileRouteTypes {
     | '/admin/profile'
     | '/admin/programs'
     | '/admin/settings'
+    | '/admin/sponsorship-submissions'
     | '/admin/sponsorships'
     | '/admin/stats'
     | '/admin/storage'
@@ -348,9 +382,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/donate'
+    | '/privacy'
     | '/programs'
     | '/reset-password'
     | '/sponsor'
+    | '/terms'
     | '/admin/brand'
     | '/admin/contacts'
     | '/admin/donations'
@@ -363,6 +399,7 @@ export interface FileRouteTypes {
     | '/admin/profile'
     | '/admin/programs'
     | '/admin/settings'
+    | '/admin/sponsorship-submissions'
     | '/admin/sponsorships'
     | '/admin/stats'
     | '/admin/storage'
@@ -380,9 +417,11 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProgramsRoute: typeof ProgramsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SponsorRoute: typeof SponsorRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -429,6 +468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/programs': {
       id: '/programs'
       path: '/programs'
@@ -448,6 +494,13 @@ declare module '@tanstack/react-router' {
       path: '/sponsor'
       fullPath: '/sponsor'
       preLoaderRoute: typeof SponsorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -541,6 +594,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/sponsorship-submissions': {
+      id: '/admin/sponsorship-submissions'
+      path: '/sponsorship-submissions'
+      fullPath: '/admin/sponsorship-submissions'
+      preLoaderRoute: typeof AdminSponsorshipSubmissionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/sponsorships': {
       id: '/admin/sponsorships'
       path: '/sponsorships'
@@ -606,6 +666,7 @@ interface AdminRouteChildren {
   AdminProfileRoute: typeof AdminProfileRoute
   AdminProgramsRoute: typeof AdminProgramsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSponsorshipSubmissionsRoute: typeof AdminSponsorshipSubmissionsRoute
   AdminSponsorshipsRoute: typeof AdminSponsorshipsRoute
   AdminStatsRoute: typeof AdminStatsRoute
   AdminStorageRoute: typeof AdminStorageRoute
@@ -629,6 +690,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminProfileRoute: AdminProfileRoute,
   AdminProgramsRoute: AdminProgramsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSponsorshipSubmissionsRoute: AdminSponsorshipSubmissionsRoute,
   AdminSponsorshipsRoute: AdminSponsorshipsRoute,
   AdminStatsRoute: AdminStatsRoute,
   AdminStorageRoute: AdminStorageRoute,
@@ -648,9 +710,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
+  PrivacyRoute: PrivacyRoute,
   ProgramsRoute: ProgramsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SponsorRoute: SponsorRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -4,11 +4,13 @@ import { publicImageValue, pv, usePageContent } from "@/lib/page-content";
 import { useSiteCopy } from "@/lib/cms";
 import {
   usePublicEvents,
+  usePublicFaqs,
   usePublicPrograms,
   usePublicStats,
   usePublicStories,
   usePublicTestimonials,
   type EventRecord,
+  type Faq,
   type Program,
   type Stat,
   type Story,
@@ -91,6 +93,7 @@ function Home() {
   const { data: programs } = usePublicPrograms();
   const { data: stories } = usePublicStories();
   const { data: testimonials } = usePublicTestimonials();
+  const { data: faqs } = usePublicFaqs();
 
   const heroContent: C = {
     ...c,
@@ -115,6 +118,7 @@ function Home() {
       <FieldStories c={c} records={stories} />
       <Mission c={c} stats={stats} />
       <Testimonials records={testimonials} />
+      <FaqSection records={faqs} />
       <CTA c={c} />
     </SiteLayout>
   );
@@ -1043,6 +1047,47 @@ function Testimonials({ records }: { records?: Testimonial[] }) {
         ) : (
           <div className="border border-dashed border-white/20 bg-white/[0.04] px-5 py-8 text-sm text-white/60">
             Testimonials will appear here once they are published in the foundation CMS.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function FaqSection({ records }: { records?: Faq[] }) {
+  const faqs = records ?? [];
+
+  return (
+    <section id="faqs" className="section-y bg-[var(--background)] scroll-mt-24">
+      <div className="container-wide">
+        <div className="mb-10 max-w-2xl">
+          <div className="mb-5 flex items-center gap-3 text-[0.66rem] font-bold uppercase tracking-[0.22em] text-[var(--primary)]">
+            <span className="size-2 rounded-full bg-[var(--gold)]" /> FAQs
+          </div>
+          <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-[-0.05em] text-[var(--forest)] md:text-6xl">
+            Answers before you ask.
+          </h2>
+          <p className="mt-5 max-w-xl text-base leading-7 text-[var(--ink)]/70 md:text-lg">
+            Find quick answers about our work, volunteering, donations, and how to stay connected with Elle’s Foundation.
+          </p>
+        </div>
+        {faqs.length ? (
+          <div className="grid gap-3 md:grid-cols-2">
+            {faqs.map((faq) => (
+              <details key={faq.id} className="group card-surface border border-[var(--primary)]/15 bg-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-6 py-5 text-base font-semibold text-[var(--forest)] [&::-webkit-details-marker]:hidden">
+                  <span>{faq.question}</span>
+                  <ChevronRight className="size-5 shrink-0 text-[var(--primary)] transition-transform group-open:rotate-90" />
+                </summary>
+                <div className="border-t border-[var(--primary)]/10 px-6 py-5 text-sm leading-7 text-[var(--ink)]/75">
+                  <div className="rich-text" dangerouslySetInnerHTML={{ __html: richTextForDisplay(faq.answer) }} />
+                </div>
+              </details>
+            ))}
+          </div>
+        ) : (
+          <div className="border border-dashed border-[var(--primary)]/25 bg-white/60 px-6 py-8 text-sm leading-7 text-[var(--ink)]/65">
+            Our frequently asked questions are being prepared. Please contact us and our team will be happy to help.
           </div>
         )}
       </div>
