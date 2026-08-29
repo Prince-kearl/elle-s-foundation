@@ -799,7 +799,7 @@ function Programs({ records, c }: { records?: Program[]; c: C }) {
             <Link
               key={title}
               to="/programs"
-              className="group block overflow-hidden rounded-[1.2rem] border border-[var(--primary)]/10 bg-white shadow-[0_18px_45px_-35px_rgba(15,104,72,0.5)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_25px_50px_-30px_rgba(15,104,72,0.4)]"
+              className="card-surface group block overflow-hidden border border-[var(--primary)]/10 bg-white shadow-[0_18px_45px_-35px_rgba(15,104,72,0.5)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_25px_50px_-30px_rgba(15,104,72,0.4)]"
             >
               <div className="relative aspect-[1.12] overflow-hidden bg-[var(--sand)]">
                 <img
@@ -882,7 +882,7 @@ function FieldStories({ c, records }: { c: C; records?: Story[] }) {
           <div className="grid gap-6 md:grid-cols-3">
             {stories.map(({ image, tag, title, text }, index) => (
             <article key={title} className={`group ${index === 1 ? "md:translate-y-10" : ""}`}>
-              <div className="relative aspect-[0.88] overflow-hidden rounded-[1.2rem] bg-[var(--sand)]">
+              <div className="card-surface relative aspect-[0.88] overflow-hidden bg-[var(--sand)]">
                 <img
                   src={image}
                   alt={title}
@@ -931,7 +931,7 @@ function Mission({ c, stats }: { c: C; stats?: Stat[] }) {
 
   return (
     <section className="section-y bg-[var(--background)]">
-      <div className="container-wide grid items-center gap-10 overflow-hidden rounded-[1.5rem] bg-[#f6dfc9] p-6 md:p-10 lg:grid-cols-[0.95fr_1.05fr] lg:p-12">
+      <div className="card-surface container-wide grid items-center gap-10 overflow-hidden bg-[#f6dfc9] p-6 md:p-10 lg:grid-cols-[0.95fr_1.05fr] lg:p-12">
         <div className="relative order-2 lg:order-1">
           <div className="absolute -left-5 -top-5 size-20 rounded-full border border-[var(--earth)]/40" />
           <div className="relative aspect-[1.12] overflow-hidden rounded-[1.15rem]">
@@ -1031,7 +1031,7 @@ function Testimonials({ records }: { records?: Testimonial[] }) {
             {quotes.map(([quote, name, role]) => (
             <blockquote
               key={name}
-              className="rounded-[1.15rem] border border-white/10 bg-white/[0.07] p-7 transition hover:-translate-y-1 hover:bg-white/10 md:p-8"
+              className="card-surface border border-white/10 bg-white/[0.07] p-7 transition hover:-translate-y-1 hover:bg-white/10 md:p-8"
             >
               <div className="flex gap-1 text-[var(--gold)]">
                 {Array.from({ length: 5 }).map((_, index) => (
@@ -1060,7 +1060,7 @@ function CTA({ c }: { c: C }) {
   return (
     <section className="section-y-sm bg-[var(--background)]">
       <div className="container-wide">
-        <div className="relative overflow-hidden rounded-[1.5rem] bg-[var(--gold)] px-7 py-12 text-[var(--forest)] md:px-14 md:py-16">
+        <div className="card-surface relative overflow-hidden bg-[var(--gold)] px-7 py-12 text-[var(--forest)] md:px-14 md:py-16">
           <div className="absolute -right-24 -top-32 size-96 rounded-full border border-[var(--forest)]/15" />
           <div className="absolute -right-5 -top-12 size-64 rounded-full border border-[var(--forest)]/15" />
           <div className="relative grid items-end gap-10 lg:grid-cols-[1.2fr_0.8fr]">

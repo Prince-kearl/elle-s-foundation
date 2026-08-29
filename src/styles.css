@@ -999,3 +999,10 @@ body::-webkit-scrollbar,
     min-height: min(16rem, 38dvh);
   }
 }
+
+/* Content cards and section panels stay sharp; rounded geometry is reserved for intentional controls and indicators. */
+.card-surface,
+.soft-card,
+.admin-card {
+  border-radius: 0 !important;
+}

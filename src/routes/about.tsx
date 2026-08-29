@@ -126,7 +126,7 @@ function About() {
             <div className="grid gap-6 bg-transparent sm:grid-cols-2 lg:grid-cols-4 lg:gap-7">
               {people.map((p) => (
                 <article key={p.id} className="group relative">
-                  <div className="relative overflow-hidden rounded-[1.25rem] border border-border bg-background shadow-[0_16px_32px_-26px_var(--forest)] transition duration-300 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_24px_42px_-25px_var(--forest)]">
+                  <div className="card-surface relative overflow-hidden border border-border bg-background shadow-[0_16px_32px_-26px_var(--forest)] transition duration-300 group-hover:-translate-y-1 group-hover:border-primary/35 group-hover:shadow-[0_24px_42px_-25px_var(--forest)]">
                     <button type="button" onClick={() => { setSelectedMember(p); void trackTeamProfileClick(p.id).catch(() => undefined); }} className="block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={`View ${p.name}'s profile`}>
                       <div className="relative aspect-[1.28/1] overflow-hidden bg-[var(--forest)]">
                         {p.avatar_url ? (
@@ -189,7 +189,7 @@ function About() {
       {selectedMember ? <TeamMemberModal member={selectedMember} onClose={() => setSelectedMember(null)} /> : null}
       <section className="section-y-sm">
         <div className="container-wide">
-          <div className="grid min-h-[380px] place-items-center overflow-hidden rounded-2xl bg-primary px-6 py-16 text-center">
+          <div className="card-surface grid min-h-[380px] place-items-center overflow-hidden bg-primary px-6 py-16 text-center">
             <div>
               <h3 className="font-display text-4xl md:text-5xl text-white leading-tight max-w-2xl mx-auto">
                 {pv(c, "cta.title", "Walk with us into the next decade.")}
